@@ -26,13 +26,13 @@
 #include "QnCorrections/QnCorrectionsManager.h"
 #include "Base/DataContainer.h"
 #include "DifferentialCorrection/EventInfo.h"
-#include "ReducedEvent/AliReducedEventInfo.h"
-#include "ReducedEvent/AliReducedVarManager.h"
-#include "ReducedEvent/AliReducedTrackInfo.h"
-#include "ReducedEvent/AliReducedBaseTrack.h"
+//#include "ReducedEvent/AliReducedEventInfo.h"
+//#include "ReducedEvent/AliReducedVarManager.h"
+//#include "ReducedEvent/AliReducedTrackInfo.h"
+//#include "ReducedEvent/AliReducedBaseTrack.h"
 #include "DifferentialCorrection/CorrectionManager.h"
 
-#define VAR AliReducedVarManager
+//#define VAR AliReducedVarManager
 
 namespace Qn {
 /**

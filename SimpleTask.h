@@ -11,7 +11,7 @@
 #include "Correlation/Correlation.h"
 #include "Correlation/CorrelationManager.h"
 
-#define VAR AliReducedVarManager
+//#define VAR AliReducedVarManager
 
 class SimpleTask {
  public:

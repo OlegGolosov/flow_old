@@ -5,9 +5,10 @@ set(CMAKE_cpp_STANDARD 14)
 set(CMAKE_BUILD_TYPE debug)
 
 set(EXE_SOURCES
-        SimpleTask.cpp
-        TestTask.cpp
-        main.cpp)
+#        SimpleTask.cpp
+#        TestTask.cpp
+#        main.cpp
+)
 
 set(CORR_SOURCES
         Correlation/Correlation.cpp
@@ -122,7 +123,8 @@ target_link_libraries(correlationflow ${ROOT_LIBRARIES} baseflow)
 #target_include_directories(flow PUBLIC ${CMAKE_SOURCE_DIR} ${QNCORRECT_INC} ${REDUCEDINC})
 #target_link_libraries(flow ${ROOT_LIBRARIES} ${QNCORRECT_LIB} ${REDUCEDEVENT_LIB})
 #
+
 # Create a main program using the library
-add_executable(main ${EXE_SOURCES})
-target_link_libraries(main correlationflow diffflow baseflow ${ROOT_LIBRARIES} ${QNCORRECT_LIB})
-target_include_directories(main PUBLIC ${EXE_HEADERS} ${QNCORRECT_INC})
+#add_executable(main ${EXE_SOURCES})
+#target_link_libraries(main correlationflow diffflow baseflow ${ROOT_LIBRARIES} ${QNCORRECT_LIB})
+#target_include_directories(main PUBLIC ${EXE_HEADERS} ${QNCORRECT_INC})
