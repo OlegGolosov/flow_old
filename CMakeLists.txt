@@ -19,7 +19,8 @@ set(DIFF_SOURCES
         DifferentialCorrection/VariableManager.cpp
         DifferentialCorrection/CorrectionManager.cpp
         DifferentialCorrection/Detector.cpp
-        DifferentialCorrection/Interface/DataFiller.cpp)
+        DifferentialCorrection/Interface/DataFiller.cpp
+        DifferentialCorrection/Interface/VarManager.cpp)
 
 set(BASE_SOURCES
         Base/DataVector.cpp
@@ -104,10 +105,10 @@ include_directories(${CMAKE_SOURCE_DIR} ${ROOT_INCLUDE_DIRS} ${QNCORRECT_INC} ${
 
 ROOT_GENERATE_DICTIONARY(G__QnCorrFlow ${QNCORR_HEADERS} LINKDEF QnCorrections/QnLinkDef.h)
 add_library(qncorrflow SHARED ${QNCORR_SOURCES} G__QnCorrFlow)
-target_link_libraries(qncorrflow ${ROOT_LIBRARIES} )
+target_link_libraries(qncorrflow ${ROOT_LIBRARIES})
 
 ROOT_GENERATE_DICTIONARY(G__BaseFlow ${BASE_HEADERS} LINKDEF Base/BaseLinkDef.h)
-add_library(baseflow SHARED ${BASE_SOURCES} ${QNCORR_SOURCES} G__BaseFlow)
+add_library(baseflow SHARED ${BASE_SOURCES} G__BaseFlow)
 target_link_libraries(baseflow ${ROOT_LIBRARIES} qncorrflow)
 
 add_library(diffflow SHARED ${DIFF_SOURCES})
@@ -126,4 +127,4 @@ target_link_libraries(correlationflow ${ROOT_LIBRARIES} baseflow)
 # Create a main program using the library
 add_executable(main ${EXE_SOURCES})
 target_link_libraries(main correlationflow diffflow baseflow ${ROOT_LIBRARIES} ${QNCORRECT_LIB} ${REDUCEDEVENT_LIB})
-target_include_directories(main PUBLIC ${EXE_HEADERS} ${QNCORRECT_INC} ${REDUCED_INC} )
+target_include_directories(main PUBLIC ${EXE_HEADERS} ${QNCORRECT_INC} ${REDUCED_INC})
