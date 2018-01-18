@@ -95,13 +95,11 @@ include(${ROOT_USE_FILE})
 add_definitions(${ROOT_CXX_FLAGS})
 
 # Adding libraries and includes
-find_library(REDUCEDEVENT_LIB NAMES ReducedEvent)
 find_path(BASE_INC DataContainer.h HINTS "${CMAKE_SOURCE_DIR}/Base")
 find_path(CORR_INC Correlation.h HINTS "${CMAKE_SOURCE_DIR}/Correlation")
 find_path(DIFF_INC CorrectionManager.h HINTS "${CMAKE_SOURCE_DIR}/DifferentialCorrection")
 find_path(QNCORRECT_INC QnCorrectionsQnVector.h HINTS "${CMAKE_SOURCE_DIR}/QnCorrections")
-find_path(REDUCED_INC AliReducedEventInfo.h HINTS "${CMAKE_SOURCE_DIR}/ReducedEvent")
-include_directories(${CMAKE_SOURCE_DIR} ${ROOT_INCLUDE_DIRS} ${QNCORRECT_INC} ${REDUCED_INC} ${BASE_INC} ${CORR_INC} ${DIFF_INC})
+include_directories(${CMAKE_SOURCE_DIR} ${ROOT_INCLUDE_DIRS} ${QNCORRECT_INC} ${BASE_INC} ${CORR_INC} ${DIFF_INC})
 
 ROOT_GENERATE_DICTIONARY(G__QnCorrFlow ${QNCORR_HEADERS} LINKDEF QnCorrections/QnLinkDef.h)
 add_library(qncorrflow SHARED ${QNCORR_SOURCES} G__QnCorrFlow)
@@ -126,5 +124,5 @@ target_link_libraries(correlationflow ${ROOT_LIBRARIES} baseflow)
 #
 # Create a main program using the library
 add_executable(main ${EXE_SOURCES})
-target_link_libraries(main correlationflow diffflow baseflow ${ROOT_LIBRARIES} ${QNCORRECT_LIB} ${REDUCEDEVENT_LIB})
-target_include_directories(main PUBLIC ${EXE_HEADERS} ${QNCORRECT_INC} ${REDUCED_INC})
+target_link_libraries(main correlationflow diffflow baseflow ${ROOT_LIBRARIES} ${QNCORRECT_LIB})
+target_include_directories(main PUBLIC ${EXE_HEADERS} ${QNCORRECT_INC})
