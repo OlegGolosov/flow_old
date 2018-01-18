@@ -7,9 +7,9 @@
 #include <utility>
 #include <QnCorrections/QnCorrectionsDetector.h>
 #include <QnCorrections/QnCorrectionsEventClassVariablesSet.h>
+#include <QnCorrections/QnCorrectionsDetectorConfigurationChannels.h>
 #include <QnCorrections/QnCorrectionsDetectorConfigurationTracks.h>
 
-#include "DetectorConfig.h"
 #include "Base/DataContainer.h"
 #include "Base/QVector.h"
 #include "Base/DataVector.h"
