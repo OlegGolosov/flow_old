@@ -5,7 +5,6 @@
 #include <TCanvas.h>
 #include <TFile.h>
 #include <TLegend.h>
-#include <ReducedEvent/AliReducedVarManager.h>
 
 #include "SimpleTask.h"
 #include "Base/DataContainerHelper.h"
