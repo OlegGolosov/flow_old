@@ -26,13 +26,9 @@
 #include "QnCorrections/QnCorrectionsManager.h"
 #include "Base/DataContainer.h"
 #include "DifferentialCorrection/EventInfo.h"
-//#include "ReducedEvent/AliReducedEventInfo.h"
-//#include "ReducedEvent/AliReducedVarManager.h"
-//#include "ReducedEvent/AliReducedTrackInfo.h"
-//#include "ReducedEvent/AliReducedBaseTrack.h"
 #include "DifferentialCorrection/CorrectionManager.h"
 
-//#define VAR AliReducedVarManager
+#define VAR AliReducedVarManager
 
 namespace Qn {
 /**
@@ -65,12 +61,6 @@ class TestTask {
    * @param filename name of file containing paths to root files containing the input trees
    * @return Pointer to the TChain
    */
-
-  void SetVariables(std::vector<VAR::Variables> vars) {
-    for (auto var : vars) {
-      AliReducedVarManager::SetUseVariable(var);
-    }
-  }
  protected:
   std::shared_ptr<TFile> out_file_;
   std::shared_ptr<TFile> in_calibration_file_;
