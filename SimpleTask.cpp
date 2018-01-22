@@ -11,7 +11,7 @@
 
 SimpleTask::SimpleTask(std::string filelist, std::string treename) :
     in_tree_(this->MakeChain(std::move(filelist), treename)),
-    reader_(new TTreeReader(in_tree_.get())) {}
+    reader_(new TTreeReader(in_tree_.get())) { }
 
 void SimpleTask::Configure(Qn::CorrelationManager &a) {
 
@@ -20,10 +20,13 @@ void SimpleTask::Configure(Qn::CorrelationManager &a) {
   };
 
 
-  a.AddDataContainer("DET1");
+  a.AddDataContainer("PSD1");
+  a.AddDataContainer("PSD2");
+  a.AddDataContainer("PSD3");
+  
   a.AddEventVariable({"Centrality", {0., 5., 10., 20., 30., 40., 50., 60., 70.}});
 //  a.AddFunction("TPC", Rebin);
-  a.AddCorrelation("TEST","DET1, DET1", XX);
+  a.AddCorrelation("TEST","PSD1, PSD1", XX);
 }
 
 void SimpleTask::Run() {
@@ -66,16 +69,20 @@ void SimpleTask::Run() {
 
 std::unique_ptr<TChain> SimpleTask::MakeChain(std::string filename, std::string treename) {
   std::unique_ptr<TChain> chain(new TChain(treename.data()));
-  std::ifstream in;
-  in.open(filename);
-  std::string line;
-  std::cout << "files in TChain:" << "\n";
-  while ((in >> line).good()) {
-    if (!line.empty()) {
-      chain->AddFile(line.data());
-      std::cout << line << std::endl;
-    }
-  }
+  chain->AddFile(filename.data());
+  
+  std::cout << "Number of entries = " << chain->GetEntries() << std::endl;
+  
+//   std::ifstream in;
+//   in.open(filename);
+//   std::string line;
+//   std::cout << "files in TChain:" << "\n";
+//   while ((in >> line).good()) {
+//     if (!line.empty()) {
+//       chain->AddFile(line.data());
+//       std::cout << line << std::endl;
+//     }
+//   }
   return chain;
 }
 

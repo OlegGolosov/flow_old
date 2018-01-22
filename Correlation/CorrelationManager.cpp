@@ -43,14 +43,18 @@ void CorrelationManager::MakeProjections() {
   }
 }
 void CorrelationManager::Initialize() {
+  std::cout << " 111111111111111 " << std::endl;  
   for (auto &value : tree_values_) {
+    std::cout << value.first << std::endl;  
     qvectors_.at(value.first) = *value.second.Get();
   }
   int i = 0;
+  std::cout << " 2222222222222222222222 " << std::endl;  
   for (auto &value : tree_event_values_) {
     event_values_.at(i) = *value.second.Get();
     i++;
   }
+  std::cout << " 3333333333333333 " << std::endl;  
   for (auto &projection : projections_) {
     std::list<std::string> axisnames;
     tokenize(std::get<1>(projection.second), axisnames, ", ", true);
@@ -59,8 +63,11 @@ void CorrelationManager::Initialize() {
       std::get<2>(projection.second).push_back(toproject.GetAxis(name));
     }
   }
+  std::cout << " 44444444444444444444 " << std::endl;  
   MakeProjections();
+  std::cout << " 5555555555555555 " << std::endl;  
   BuildCorrelation();
+  std::cout << " 666666666666666666666 " << std::endl;  
   ApplyFunction();
 }
 

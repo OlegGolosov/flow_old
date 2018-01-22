@@ -21,12 +21,16 @@
 #include <QnCorrections/QnCorrectionsQnVectorAlignment.h>
 #include "TFile.h"
 #include "TTree.h"
+#include "TChain.h"
 #include "TTreeReader.h"
 
 #include "QnCorrections/QnCorrectionsManager.h"
 #include "Base/DataContainer.h"
 #include "DifferentialCorrection/EventInfo.h"
 #include "DifferentialCorrection/CorrectionManager.h"
+
+#include "DataTreeEvent.h"
+
 
 #define VAR AliReducedVarManager
 
@@ -61,12 +65,18 @@ class TestTask {
    * @param filename name of file containing paths to root files containing the input trees
    * @return Pointer to the TChain
    */
- protected:
+ virtual std::unique_ptr<TChain> MakeChain(std::string filename, std::string treename);
+
+protected:
+  std::unique_ptr<TTree> in_tree_;
   std::shared_ptr<TFile> out_file_;
   std::shared_ptr<TFile> in_calibration_file_;
   std::shared_ptr<TFile> out_calibration_file_;
   std::unique_ptr<TTree> out_tree_;
   std::unique_ptr<TTree> out_tree_raw;
+  
+  DataTreeEvent *event_;
+  
   Qn::CorrectionManager manager;
   bool write_tree_;
 

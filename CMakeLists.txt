@@ -4,6 +4,8 @@ set(CMAKE_MACOSX_RPATH 1)
 set(CMAKE_cpp_STANDARD 14)
 set(CMAKE_BUILD_TYPE debug)
 
+set(DATATREE /lustre/nyx/cbm/users/klochkov/soft/DataTree)
+
 set(EXE_SOURCES
         SimpleTask.cpp
         TestTask.cpp
@@ -99,11 +101,11 @@ find_path(BASE_INC DataContainer.h HINTS "${CMAKE_SOURCE_DIR}/Base")
 find_path(CORR_INC Correlation.h HINTS "${CMAKE_SOURCE_DIR}/Correlation")
 find_path(DIFF_INC CorrectionManager.h HINTS "${CMAKE_SOURCE_DIR}/DifferentialCorrection")
 find_path(QNCORRECT_INC QnCorrectionsQnVector.h HINTS "${CMAKE_SOURCE_DIR}/QnCorrections")
-include_directories(${CMAKE_SOURCE_DIR} ${ROOT_INCLUDE_DIRS} ${QNCORRECT_INC} ${BASE_INC} ${CORR_INC} ${DIFF_INC})
+include_directories(${CMAKE_SOURCE_DIR} ${ROOT_INCLUDE_DIRS} ${QNCORRECT_INC} ${BASE_INC} ${CORR_INC} ${DIFF_INC} ${DATATREE}/include)
 
 ROOT_GENERATE_DICTIONARY(G__QnCorrFlow ${QNCORR_HEADERS} LINKDEF QnCorrections/QnLinkDef.h)
 add_library(qncorrflow SHARED ${QNCORR_SOURCES} G__QnCorrFlow)
-target_link_libraries(qncorrflow ${ROOT_LIBRARIES})
+target_link_libraries(qncorrflow ${ROOT_LIBRARIES} "${DATATREE}/build/libDataTree.so")
 
 ROOT_GENERATE_DICTIONARY(G__BaseFlow ${BASE_HEADERS} LINKDEF Base/BaseLinkDef.h)
 add_library(baseflow SHARED ${BASE_SOURCES} G__BaseFlow)

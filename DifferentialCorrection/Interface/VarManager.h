@@ -5,6 +5,10 @@
 // Variable manager
 //
 
+// TODO move to DataTree?
+
+#include "DataTreeEvent.h"
+
 #ifndef VARMANAGER_H
 #define VARMANAGER_H
 
@@ -15,18 +19,30 @@ class VarManager {
  public:
 
   enum Values {
-    kSignal = 0,
-    kCentrality = kSignal + 4,
-    kNMax = kCentrality + 1
+    kCentrality = 0,
+    kMult,
+    kPsdEnergy,
+    kNMax = kPsdEnergy + 1
   };
 
-  static void FillEventInfo(float *values) {
-    values[kSignal] = -1.0;
-    values[kSignal] = 0.0;
-    values[kSignal] = 1.0;
-    values[kSignal] = 0.0;
-    values[kCentrality] = 50.0;
+  enum Variables {
+//     kSignal = 0,
+//     kCentrality = kSignal + 4,
+//     kNMax = kCentrality + 1
+  };
 
+
+  static void FillEventInfo(const DataTreeEvent &event, float *values) {
+    float centrality = 10;
+    
+    if ( event.GetNTracks() < 9 ) centrality = 90;
+    else if ( event.GetNTracks() < 36 ) centrality = 70;
+    else if ( event.GetNTracks() < 95 ) centrality = 50;
+    else if ( event.GetNTracks() < 197 ) centrality = 30;
+    
+    values[kCentrality] = centrality;
+    values[kPsdEnergy] = event.GetPSDEnergy();
+    values[kMult] = event.GetNTracks();
   }
 };
 }

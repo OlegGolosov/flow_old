@@ -11,12 +11,14 @@
 namespace Qn {
 
 TestTask::TestTask(std::string filelist, std::string incalib, std::string treename) :
+    in_tree_(this->MakeChain(filelist, treename)),
     out_file_(new TFile("output.root", "RECREATE")),
     in_calibration_file_(new TFile(incalib.data(), "READ")),
     out_calibration_file_(new TFile("qn.root", "RECREATE")),
     out_tree_(nullptr),
     out_tree_raw(nullptr),
     manager(),
+    event_(nullptr),
     write_tree_(true) {
   out_file_->cd();
   std::unique_ptr<TTree> treeraw(new TTree("datatree", "datatree"));
@@ -31,6 +33,7 @@ void TestTask::Run() {
   std::cout << "Processing..." << std::endl;
   int i = 0;
   while (i < 100) {
+    in_tree_->GetEntry(i);
     Process();
     ++i;
   }
@@ -56,8 +59,15 @@ void TestTask::Initialize() {
 
   manager.AddVariable("Centrality", VarManager::Values::kCentrality);
 
-  manager.AddDetector("DET1", DetectorType::Channel,4);
-  manager.SetCorrectionSteps("DET1", configure);
+//   manager.AddDetector("DET1", DetectorType::Channel,4);
+  manager.AddDetector("PSD1", DetectorType::Channel, 4);
+  manager.AddDetector("PSD2", DetectorType::Channel, 12);
+  manager.AddDetector("PSD3", DetectorType::Channel, 26);
+
+//   manager.SetCorrectionSteps("DET1", configure);
+  manager.SetCorrectionSteps("PSD1", configure);
+  manager.SetCorrectionSteps("PSD2", configure);
+  manager.SetCorrectionSteps("PSD3", configure);
 
   manager.AddCorrectionAxis({"Centrality", 5, 0, 100});
 
@@ -71,11 +81,12 @@ void TestTask::Initialize() {
 
 void TestTask::Process() {
   manager.Reset();
-  Differential::Interface::DataFiller filler;
-
+    
+  Differential::Interface::DataFiller filler ( event_ );
+ 
   manager.FillDataToFramework(filler);
 
-  VarManager::FillEventInfo(manager.GetVariableContainer());
+  VarManager::FillEventInfo(*event_, manager.GetVariableContainer());
   manager.Process();
   out_tree_->Fill();
   out_tree_raw->Fill();
@@ -91,5 +102,25 @@ void TestTask::Finalize() {
     std::cout << "Output file written." << std::endl;
   }
 }
+
+std::unique_ptr<TChain> TestTask::MakeChain(std::string filename, std::string treename) {
+  std::unique_ptr<TChain> chain(new TChain(treename.data()));
+
+  std::cout << "Adding files to chain:" << std::endl;
+  chain->Add(filename.data());
+  
+  event_ = new DataTreeEvent();
+  chain->SetBranchAddress("fDTEvent", &event_);
+  
+  std::cout << "Number of entries = " << chain->GetEntries() << std::endl;
+
+return chain;
+}
+
+
+
+
+
+
 
 }
