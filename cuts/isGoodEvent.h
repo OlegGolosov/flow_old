@@ -4,13 +4,13 @@
 
 #include "constants.h"
 #include "DataTreeEvent.h"
+#include "isGoodTrack.h"
 
 
 namespace Cuts{
 
 bool isGoodEventCbm(const DataTreeEvent& event);
 bool isGoodEvent(const DataTreeEvent& event,
-//                 const double e = 30,
                  const double e = 40,
                  const int bitBPD=0,
                  const int bitWFAbeam=0,
@@ -24,6 +24,7 @@ int WFAcoincidence(const DataTreeEvent& event, const int TriggerId, const int ti
 bool IsGoodVertex(const DataTreeEvent& event, const int kFittedVertexID);
 bool IsGoodTrigger(const DataTreeEvent& event, const int TriggerId);
 bool IsGoodSimpleTriggers(const DataTreeEvent& event);
+int GetNGoodTracks(const DataTreeEvent &event);
 
 
 

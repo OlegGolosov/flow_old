@@ -50,7 +50,7 @@ class TestTask {
 
  void SetIsSim(bool is=true) { issim_ = is; }
  void SetSetup(std::string setup) { setup_ = setup; }
-  
+
  std::string GetSetup() const { return setup_; }
  bool GetIsSim() const { return issim_; }
 
@@ -74,7 +74,7 @@ private:
    * @return Pointer to the TChain
    */
  virtual std::unique_ptr<TChain> MakeChain(std::string filename, std::string treename);
- 
+
 protected:
   std::unique_ptr<TTree> in_tree_;
   std::shared_ptr<TFile> out_file_;
@@ -82,15 +82,15 @@ protected:
   std::shared_ptr<TFile> out_calibration_file_;
   std::unique_ptr<TTree> out_tree_;
   std::unique_ptr<TTree> out_tree_raw;
-  
+
   DataTreeEvent *event_;
   CentralityManager *centr_;
-  
+
   Qn::CorrectionManager manager;
   bool write_tree_;
   bool issim_{true};
   std::string setup_{"cbm"};
-
+  double energy_ {40};
 };
 }
 #endif //FLOW_QNTASK_H

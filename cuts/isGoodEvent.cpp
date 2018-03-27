@@ -14,10 +14,11 @@ const double bpd1_cut_30[2][2] = { { -0.4, 0.0}, {-0.6,  0.8} };
 const double bpd2_cut_30[2][2] = { { -0.2, 0.1}, {-0.3,  0.3} };
 const double bpd3_cut_30[2][2] = { { -0.34, 0.22}, {-0.35,  0.05} };
 
+const double vertex_cut_10[3][2] = { {-1, 1.}, {-1, 1}, {-1, 1.} };
 const double vertex_cut_13[3][2] = { {-1.1, 0.0}, {-0.8, 0.4}, {-594., -590.} };
 const double vertex_cut_30[3][2] = { {-0.35, 0.3}, {-0.37, 0.08}, {-594., -590.} };
 const double vertex_cut_40[3][2] = { {-0.5, 0.5}, {-0.5, 0.5}, {-581.6, -580.6} };
-const double vertex_cut_10[3][2] = { {-1, 1.}, {-1, 1}, {-1, 1.} };
+const double vertex_cut_158[3][2] = { {-0.5, 0.5}, {-0.5, 0.5}, {-581.6, -580.6} };
 
 bool isGoodEventCbm(const DataTreeEvent& event)
 {
@@ -31,6 +32,19 @@ bool isGoodEventCbm(const DataTreeEvent& event)
     return true;
 }
 
+int GetNGoodTracks(const DataTreeEvent &event) {
+    Int_t Msel{0};
+    DataTreeTrack *track;
+
+    for (int i=0; i<event.GetNTracks(); i++)
+    {
+        track = event.GetTrack(i);
+        if ( ! isGoodTrack(*track) ) continue;
+        Msel++;
+    }
+    return Msel;
+}
+
 bool isGoodEvent(const DataTreeEvent& event,
                  const double e,
                  const int bitBPD,
@@ -42,15 +56,16 @@ bool isGoodEvent(const DataTreeEvent& event,
 {
 
     energy = e;
-    if ( event.GetPSDEnergy() < 100 )  return false;
-    if ( bitBPD            && !IsGoodBPD(event)                                                   ) return false;
-    if ( bitWFAbeam        &&  WFAcoincidence(event, EnumWFA::kS1_1, EnumWFATimeWindow::kT1)!=1 ) return false;
-    if ( bitWFAinteract    &&  WFAcoincidence(event, EnumWFA::kT4,   EnumWFATimeWindow::kT4)!=1 ) return false;
-    if ( bitVTX            && !IsGoodVertex(event, fittedVertexID)                                ) return false;
-    if ( bitT4 == 1        && !IsGoodTrigger(event, EnumTrigger::kT4)                             ) return false;
-    if ( bitT4 == 2        && !IsGoodTrigger(event, EnumTrigger::kT4) && !IsGoodTrigger(event, EnumTrigger::kT2) ) return false;
-    if ( bitS1V1           && !IsGoodSimpleTriggers(event)                                        ) return false;
-
+//    if ( event.GetPSDEnergy() < 100 )  return false;
+//    if ( bitBPD            && !IsGoodBPD(event)                                                   ) return false;
+//    if ( bitWFAbeam        &&  WFAcoincidence(event, EnumWFA::kS1_1, EnumWFATimeWindow::kT1)!=1 ) return false;
+//    if ( bitWFAinteract    &&  WFAcoincidence(event, EnumWFA::kT4,   EnumWFATimeWindow::kT4)!=1 ) return false;
+    if ( bitVTX            && !IsGoodVertex(event, fittedVertexID)) return false;
+//    if ( bitT4 == 1        && !IsGoodTrigger(event, EnumTrigger::kT4)                             ) return false;
+//    if ( bitT4 == 2        && !IsGoodTrigger(event, EnumTrigger::kT4) && !IsGoodTrigger(event, EnumTrigger::kT2) ) return false;
+//    if ( bitS1V1           && !IsGoodSimpleTriggers(event)                                        ) return false;
+    if (event.GetNTracks () < 10) return false;
+    if (GetNGoodTracks (event) < 10) return false;
 //     std::cout << "               GoodEvent" << std::endl;
 
     return true;
@@ -111,17 +126,18 @@ int WFAcoincidence(const DataTreeEvent& event, const int TriggerId, const int ti
 
 
 bool IsGoodVertex(const DataTreeEvent& event, const int kFittedVertexID){
-
-    if ( event.GetVertexQuality(kFittedVertexID) < 0.5 || event.GetVertexQuality(kFittedVertexID) > 1 ) return false;
+    if ( event.GetVertexQuality(kFittedVertexID) < 0.5 || event.GetVertexQuality(kFittedVertexID) > 1. ) return false;
     for (int iXyz=0; iXyz<3; ++iXyz)
     {
         double vtx = event.GetVertexPositionComponent(iXyz, kFittedVertexID);
-        if (energy == 30)
-            if ( vtx < vertex_cut_30[iXyz][0] || vtx > vertex_cut_30[iXyz][1] ) return false;
         if (energy == 13)
             if ( vtx < vertex_cut_13[iXyz][0] || vtx > vertex_cut_13[iXyz][1] ) return false;
+        if (energy == 30)
+            if ( vtx < vertex_cut_30[iXyz][0] || vtx > vertex_cut_30[iXyz][1] ) return false;
         if (energy == 40)
             if ( vtx < vertex_cut_40[iXyz][0] || vtx > vertex_cut_40[iXyz][1] ) return false;
+        if (energy == 158)
+            if ( vtx < vertex_cut_158[iXyz][0] || vtx > vertex_cut_158[iXyz][1] ) return false;
     }
     return true;
 }

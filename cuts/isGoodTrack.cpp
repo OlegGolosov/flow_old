@@ -6,7 +6,7 @@ namespace Cuts{
 int GetTrackPid(const DataTreeTrack& track)
 {
     const int charge = track.GetCharge();
-    const float dEdx = track.GetdEdx(EnumTPC::kTPCAll) / 1000.0; // na49
+    const float dEdx = 0.001 * track.GetdEdx(EnumTPC::kTPCAll); // na49
     const double p = track.GetP();
 
     if (dEdx > 0.931 + 0.138 * TMath::Log(p) && dEdx < 1.232 + 0.174 * TMath::Log(p)) {
@@ -37,19 +37,19 @@ int GetTrackPid(const DataTreeTrack& track)
 
 bool isGoodTrack(const DataTreeTrack& track)
 {
-    const double NhitsTotal = track.GetNumberOfHits(EnumTPC::kTPCAll);
-    const double NhitsVTPC1 = track.GetNumberOfHits(EnumTPC::kVTPC1);
-    const double NhitsVTPC2 = track.GetNumberOfHits(EnumTPC::kVTPC2);
-//     const double NhitsMTPC = track.GetNumberOfHits(EnumTPC::kMTPC);
-    const double dcax = track.GetDCAComponent(0);
-    const double dcay = track.GetDCAComponent(1);
-    const double pT = track.GetPt();
+    const double NhitsFit = track.GetNumberOfHitsFit(EnumTPC::kTPCAll);
+    const double NhitsPot = track.GetNumberOfHitsPotential(EnumTPC::kTPCAll);
+    const double NhitsPotVTPC1 = track.GetNumberOfHitsPotential(EnumTPC::kVTPC1);
+    const double NhitsPotVTPC2 = track.GetNumberOfHitsPotential(EnumTPC::kVTPC2);
+    const double NhitsPotMTPC = track.GetNumberOfHitsPotential(EnumTPC::kMTPC);
+    const double DCAx = track.GetDCAComponent(0);
+    const double DCAy = track.GetDCAComponent(1);
+    const double pt = track.GetPt();
     const double eta = track.GetEta();
     const double dEdx = track.GetdEdx(EnumTPC::kTPCAll);
-
-    const double Chi2 = track.GetChi2();
+    const double chi2 = track.GetChi2();
 //     const int Ndf = track.GetNDF();
-    const double ratio = double(NhitsTotal) / track.GetNumberOfHitsPotential(EnumTPC::kTPCAll);
+    const double ratio_ = double(NhitsFit) / NhitsPot;
 //     const int charge = track.GetCharge();
 
 //     std::cout << "dca = " << dcax << "   " << dcay << std::endl;
@@ -57,15 +57,15 @@ bool isGoodTrack(const DataTreeTrack& track)
 //     std::cout << "pT = " << pT << "   " << eta << std::endl;
 //     std::cout << "dEdx = " << dEdx << "   " << ratio << std::endl;
 
-    if ( dcax*dcax/4 + dcay*dcay > 1 )                      return false;
-    if ( NhitsTotal < 20 && NhitsVTPC1 + NhitsVTPC2 < 15 )  return false;
-    if ( dEdx <= 0 )                                        return false;
-	if ( pT > 2.5 || pT < 0.05 )                            return false;
-	if ( eta > 5 || eta < 1.4 )                             return false;
-// 	if  (Ndf == 0)                                          return false;
-//     if ( Chi2/Ndf > 10 )                                    return false;
-    if ( ratio < 0.55 || ratio > 1. )                       return false;
+//    if ( DCAx * DCAx / 4. + DCAy * DCAy > 1. )              return false;
 
+    if ( TMath::Abs (DCAx) > 3. || TMath::Abs (DCAy) > .5 ) return false;
+    if ( NhitsPotMTPC < 30 || NhitsPotVTPC1 + NhitsPotVTPC2 < 20 )    return false;
+    if ( dEdx <= 0 )                                        return false;
+	if ( pt < 0.05 || pt > 2.5 )                            return false;
+	if ( eta < 1.4 || eta > 5.0 )                           return false;
+    if ( chi2 < 0. || chi2 > 10 )                           return false;
+    if ( ratio_ < 0.55 || ratio_ > 1. )                     return false;
     return true;
 
 }

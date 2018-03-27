@@ -16,12 +16,11 @@ namespace Qn {
 
 TestTask::TestTask(std::string filelist, std::string incalib, std::string centrality) :
     in_tree_(this->MakeChain(filelist, "DataTree")),
-    out_file_(new TFile("output.root", "RECREATE")),
+    out_file_(new TFile("qn.root", "RECREATE")),
     in_calibration_file_(new TFile(incalib.data(), "READ")),
-    out_calibration_file_(new TFile("qn.root", "RECREATE")),
+    out_calibration_file_(new TFile("calib.root", "RECREATE")),
     out_tree_(nullptr),
     out_tree_raw(nullptr),
-    manager(),
     event_(nullptr),
     write_tree_(true) {
 
@@ -42,16 +41,18 @@ void TestTask::Run() {
   Initialize();
   QnCorrectionsSetTracingLevel(kError);
   std::cout << "Processing..." << std::endl;
-  int i = 0;
-  while (i < in_tree_->GetEntries() ) {
+  int nEntries = in_tree_->GetEntries();
+  int nGoodEvents = 0;
+  for (int i = 0; i < nEntries; i++)
+  {
+//    std::cout << "\rEvent " << i + 1 << " from " << nEntries << "\tGood: " << nGoodEvents;
     in_tree_->GetEntry(i);
-    if ( setup_ == "na61" && !Cuts::isGoodEvent (*event_) ) { ++i;  continue; }
-    if ( setup_ == "na49" && !Cuts::isGoodEvent (*event_) ) { ++i;  continue; }
-
+    if ( setup_ == "na61" && !Cuts::isGoodEvent (*event_) ) continue;
+    if ( setup_ == "na49" && !Cuts::isGoodEvent (*event_, energy_, 0, 0, 0, 1, 0, 1) ) continue;
+    nGoodEvents++;
     Process();
-    ++i;
   }
-  std::cout << i << std::endl;
+  std::cout << "\n" << nGoodEvents << " good events from " << nEntries << std::endl;
   Finalize();
 }
 

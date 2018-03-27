@@ -7,10 +7,11 @@
 
 EXE_DIR=$1
 OUT_DIR=$2
-FILELIST=$3
+FILE_LIST=$3
 CENTRALITY=$4
 MIN_STEP=$5
 MAX_STEP=$6
+BATCH_DIR=$7
 
 INDEX=$(($SLURM_ARRAY_TASK_ID))
 INDEX=$(printf "%03d" "$INDEX")
@@ -23,26 +24,37 @@ cp $EXE_DIR/main ./
     echo Building Q-vectors:
     for ((i=0; i<=$MAX_STEP; i++))
     do
-        INFILE=qn_step_$(($i-1)).root
+        CALIB=calib_step_$(($i-1)).root
         echo Step $i...
-        ./main correct $FILELIST $INFILE $CENTRALITY &> log_correction_$i.txt
+        ./main correct $FILE_LIST $CALIB $CENTRALITY &> log_qn_$i.txt
+        mv calib.root calib_step_$i.root
         mv qn.root qn_step_$i.root
-        mv output.root output_step_$i.root
     done
 
     echo Building correlations:
     for ((i=$MIN_STEP; i<=$MAX_STEP; i++))
     do
         echo Step $i...
-        IN_FILE=output_step_$i.root
-        OUT_FILE=qncorr_$i.root
+        QN_FILE=qn_step_$i.root
+        CORR_FILE=corr_step_$i.root
 
-        ./main analysis $IN_FILE &> log_ana_${i}.txt
-        mv corr.root $OUT_FILE
+        ./main analysis $QN_FILE &> log_corr_${i}.txt
+        mv corr.root $CORR_FILE
     done
 
 rm main
 
-cd -
+    echo Saving graphs:
+    cd $EXE_DIR/..
+    for ((i=$MIN_STEP; i<=$MAX_STEP; i++))
+    do
+        echo Step $i...
+        CORR_FILE=$OUT_DIR/corr_step_$i.root
+        GRAPH_FILE=$OUT_DIR/graph_step_$i.root
+        LOG_FILE=$OUT_DIR/log_graph_$i.log
+        root -b -l -q 'macro/save_profiles.C ("'$CORR_FILE'","'$GRAPH_FILE'")' &> $LOG_FILE
+    done
+
+cd $BATCH_DIR
 
 echo "Done!"

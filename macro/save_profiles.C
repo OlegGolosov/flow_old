@@ -13,14 +13,10 @@ Qn::DataContainer<Qn::Profile>  GetResolution( const TString top1, const TString
 TFile *fIn {nullptr};
 TFile *fOut {nullptr};
 TDirectory *savdir;
-TString inputFileName = "../NA49_flow/qncorr_1.root";
-TString outputFileName = "../NA49_flow/corr_1.root";
 
-void save_profiles(TString inputFileName = "../NA49_flow/qncorr_1.root",
-                   TString outputFileName = "../NA49_flow/corr_1.root")
+void save_profiles(TString inputFileName = "~/Desktop/Analysis/NA49_flow/corr_step_1.root",
+                   TString outputFileName = "~/Desktop/Analysis/NA49_flow/graph_step_1.root")
 {
-    inputFileName = "../NA49_flow/qncorr_1.root";
-    outputFileName = "../NA49_flow/corr_1.root";
     gStyle->SetOptStat(0);
     fIn = TFile::Open(inputFileName);
     fOut = TFile::Open(outputFileName, "recreate");
