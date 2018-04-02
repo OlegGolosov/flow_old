@@ -46,13 +46,13 @@ void SaveV1()
             {
                 if (iRes == 5 && !issim) continue;
 
-                const TString corr_name = Form("STS_%s_%s_%s%s", var[iVar].Data(), PsdName[iPsd].Data(), XY[iXy].Data(), XY[iXy].Data() );
+                const TString corr_name = Form("TPC_%s_%s_%s%s", var[iVar].Data(), PsdName[iPsd].Data(), XY[iXy].Data(), XY[iXy].Data() );
                 TString res_name = Form("RES_%s_%s_%d", PsdName[iPsd].Data(), XY[iXy].Data(), iRes ) ;
                 if (iRes == 5) res_name = Form("%s_PSI_%s%s", PsdName[iPsd].Data(), XY[iXy].Data(), XY[iXy].Data()) ;
                 std::cout << corr_name << "  /  " << res_name << std::endl;
 
                 mgraphs.push_back( GetV1( corr_name, res_name ) );
-                mgraphs.back()->SetName( Form("v1_STS_%s_%s_%s_%d", var[iVar].Data(), PsdName[iPsd].Data(), XY[iXy].Data(), iRes)  );
+                mgraphs.back()->SetName( Form("v1_TPC_%s_%s_%s_%d", var[iVar].Data(), PsdName[iPsd].Data(), XY[iXy].Data(), iRes)  );
                 mgraphs.back()->Write();
             }
 }
@@ -69,7 +69,7 @@ void SaveV2()
     for (int iPsd=0; iPsd<3; ++iPsd)
         for (int iXy=0; iXy<4; ++iXy)
         {
-            const TString corr_name = Form("STS_%s_%s_%s", var[iVar].Data(), psd_psd[iPsd].Data(), v2[iXy][0].Data() );
+            const TString corr_name = Form("TPC_%s_%s_%s", var[iVar].Data(), psd_psd[iPsd].Data(), v2[iXy][0].Data() );
             TString res_name1 = "";
             TString res_name2 = "";
 
@@ -85,7 +85,7 @@ void SaveV2()
 
             mgraphs.push_back( GetV2( corr_name, res_name1, res_name2, iVar ) );
 
-            mgraphs.back()->SetName( Form("v2_STS_%s_%s_%s", var[iVar].Data(), psd_psd[iPsd].Data(), v2[iXy][0].Data() ) );
+            mgraphs.back()->SetName( Form("v2_TPC_%s_%s_%s", var[iVar].Data(), psd_psd[iPsd].Data(), v2[iXy][0].Data() ) );
             mgraphs.back()->Write();
         }
 }

@@ -24,12 +24,12 @@ class DataFiller {
   explicit DataFiller() = default;
   explicit DataFiller(DataTreeEvent* event) : event_(event) {}
 
- void Fill(std::map<std::string, Detector> &detectors) const;
+  void Fill(std::map<std::string, Detector> &detectors) const;
 
-  void FillTrackingDetector(Qn::Detector &detector, const DataTreeEvent &event, const std::string subevent) const;
+  void FillTrackingDetector(std::map<std::string, Detector> &detectors, const DataTreeEvent &event, std::string detectorName, const std::string subevent) const;
   void FillMCTrackingDetector(Qn::Detector &detector, const DataTreeEvent &event,  const bool isPidCut) const;
 
-  void FillPSD(Qn::Detector &detector, const DataTreeEvent &event, const int ipsd) const ;
+  void FillPSD(Qn::Detector &detector, const DataTreeEvent &event, u_short ipsd) const ;
   void FillPsi(Qn::Detector &detector, const DataTreeEvent &event) const;
 
   void SetSetup(std::string setup) { setup_ = setup; }
@@ -67,9 +67,9 @@ private:
    {29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44} };
 
   const std::vector<std::vector<int>> na49veto_ = {
-   {1,2,3,4},
-   {1,2,3,4},
-   {1,2,3,4} };
+   {1,4},
+   {5,124},
+   {125,244}};
 
 
 };

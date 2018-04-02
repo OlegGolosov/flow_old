@@ -15,10 +15,10 @@ namespace Interface {
 
  void DataFiller::Fill(std::map<std::string, Detector> &detectors) const
  {
-    FillTrackingDetector(detectors.at("STS_pT"), *event_, "pT");
-    FillTrackingDetector(detectors.at("STS_eta"), *event_, "y");
-    FillTrackingDetector(detectors.at("STS_R1"), *event_, "r1");
-    FillTrackingDetector(detectors.at("STS_R2"), *event_, "r2");
+    FillTrackingDetector(detectors, *event_, "TPC_eta", "y");
+    FillTrackingDetector(detectors, *event_, "TPC_pT", "pT");
+    FillTrackingDetector(detectors, *event_, "TPC_R1", "r1");
+    FillTrackingDetector(detectors, *event_, "TPC_R2", "r2");
 
     try { detectors.at("PSD1").GetNChannels(); }
     catch (std::out_of_range &)
@@ -41,8 +41,6 @@ namespace Interface {
     std::cout << "PSD3 was not found in the list of detectors. It needs to be created before it can be filled." << std::endl;//);
     }
 
-
-
     FillPSD(detectors.at("PSD1"), *event_, 0);
     FillPSD(detectors.at("PSD2"), *event_, 1);
     FillPSD(detectors.at("PSD3"), *event_, 2);
@@ -55,26 +53,45 @@ namespace Interface {
     }
   }
 
-  void DataFiller::FillTrackingDetector(Qn::Detector &detector, const DataTreeEvent &event, const std::string subevent) const
+  void DataFiller::FillTrackingDetector(std::map<std::string, Detector> &detectors, const DataTreeEvent &event, std::string detectorName, const std::string subevent) const
   {
+    const int flowPid = -211;
+    std::vector <short> pid_r1 = {2212, -211, 211};
+    std::vector <short> pid_r2 = {2212, -211, 211};
+
+    try { detectors.at(detectorName).GetNChannels();}
+    catch (std::out_of_range &)
+    {
+//    throw std::out_of_range(
+    std::cout << detectorName << " was not found in the list of detectors. It needs to be created before it can be filled." << std::endl;//);
+    return;
+    }
+
+    Qn::Detector& detector = detectors.at (detectorName);
     auto values = new float[VarManager::Variables::kNVars];
     DataTreeTrack *track = nullptr;
 
-    const int pid = 2212;
-
+    u_short nPids_r1 = pid_r1.size ();
+    u_short nPids_r2 = pid_r2.size ();
+    short pid;
+    float pt, eta, y;
     auto &datacontainer = detector.GetDataContainer();
     auto &axes = datacontainer->GetAxes();
     std::vector<float> trackparams;
     trackparams.reserve(axes.size());
 
-    const long ntracks = setup_ == "na61" ? event.GetNVertexTracks() : event.GetNTracks();
+    unsigned long ntracks;
+    if (setup_ == "na61" || setup_ == "na49") ntracks = event.GetNVertexTracks();
+    else ntracks = event.GetNTracks();
+
     std::for_each(datacontainer->begin(),
                   datacontainer->end(),
                   [ntracks](std::vector<DataVector> &vector) { vector.reserve(ntracks); });
-
+    bool skipFlag;
     for (u_short itrack = 0; itrack < ntracks; itrack++) {
-
-      track = setup_ == "na61" ? event.GetVertexTrack(itrack) : event.GetTrack(itrack);
+      skipFlag = true;
+      if (setup_ == "na61" || setup_ == "na49") track = event.GetVertexTrack(itrack);
+      else track = event.GetTrack(itrack);
       if ( isnan( track->GetPt() ) ) continue;
 
       if ( ! Cuts::isGoodTrackCbm(*track) && setup_ == "cbm" ) continue;
@@ -82,25 +99,47 @@ namespace Interface {
       if ( ! Cuts::isGoodTrack(*track) && setup_ == "na49" ) continue;
 
       VarManager::FillTrackInfo(*track, values);
+      pid = values[VarManager::Variables::kPid];
+      pt = values[VarManager::Variables::kPt];
+      eta = values[VarManager::Variables::kEta];
+      y = values[VarManager::Variables::kRapidity];
 
-      if ( subevent == "pT" || subevent == "y" ) if ( values[VarManager::Variables::kPid] != pid ) continue;
+//	flowReconstructor.SetPtAveragingRange (1, 0.0, 2.0);
+//	flowReconstructor.SetEtaAveragingRange (1, 0.0, 1.8);
+
+// RS
+//	flowReconstructor.SetPtSubeventsLimits (1, 0.0, 1.0, 0.0, 1.0);
+//	flowReconstructor.SetPtSubeventsLimits (2, 0.0, 1.0, 0.0, 1.0);
+//	flowReconstructor.SetEtaSubeventsLimits (1, 0.8, 2.8, 0.8, 2.8);
+//    flowReconstructor.SetEtaSubeventsLimits (2, -0.4, 1.8, -0.4, 1.8);
+
+// 3S VETO
+//	flowReconstructor.SetPtSubeventsLimits (1, 0.1, 2.0, 0.1, 2.0, 0.0, 2.0);
+//	flowReconstructor.SetEtaSubeventsLimits (1, -3.0, -0.2, 0.2, 3.0, -3.0, 3.0);
+
+      if ( subevent == "pT" || subevent == "y" ) if ( pid != flowPid ) continue;
       if (subevent == "pT")
       {
-        if ( values[VarManager::Variables::kRapidity] < 0. || values[VarManager::Variables::kRapidity] > 1.8 ) continue;  // rapidity cut
+        if ( y < 0. || y > 1.8 ) continue;  // rapidity cut
       }
       else if (subevent == "y")
       {
-        if ( values[VarManager::Variables::kPt] < 0.05 || values[VarManager::Variables::kPt] > 2. ) continue;  // pT cut
+        if ( pt < 0.05 || pt > 2. ) continue;  // pT cut
       }
-/*      else if (subevent == "r1")
+      else if (subevent == "r1")
       {
-        if ( values[VarManager::Variables::kPt] < 0.05 || values[VarManager::Variables::kPt] > 2. ) continue;  // pT cut
+        for (int i = 0; i < nPids_r1; i++) if (pid == pid_r1 [i]) skipFlag = false;
+        if (skipFlag) continue;
+        if ( pt < 0. || pt > 1. ) continue;  // pT cut
+        if ( y < .8 || y > 2.8 ) continue;  // rapidity cut
       }
       else if (subevent == "r2")
       {
-        if ( values[VarManager::Variables::kPt] < 0.05 || values[VarManager::Variables::kPt] > 2. ) continue;  // pT cut
-      } */
-
+        for (int i = 0; i < nPids_r2; i++) if (pid == pid_r2 [i]) skipFlag = false;
+        if (skipFlag) continue;
+        if ( pt < 0. || pt > 1. ) continue;  // pT cut
+        if ( y < -.4 || y > 1.8 ) continue;  // rapidity cut
+      }
 
       for (const auto num : detector.GetEnums()) {
         trackparams.push_back(values[num]);
@@ -120,7 +159,7 @@ namespace Interface {
     delete[] values;
   }
 
-  void DataFiller::FillPSD(Qn::Detector &detector, const DataTreeEvent &event, const int ipsd) const
+  void DataFiller::FillPSD(Qn::Detector &detector, const DataTreeEvent &event, u_short ipsd) const
   {
     auto &datacontainer = detector.GetDataContainer();
 
@@ -135,13 +174,32 @@ namespace Interface {
 
     if ( psdpos->size() < ipsd+1 ) return;
 
-    for (u_short ich = 0; ich < psdpos->at(ipsd).size(); ich++) {
+//    for (u_short ich = 0; ich < psdpos->at(ipsd).size(); ich++) {
+//
+//      auto psd = event.GetPSDModule( psdpos->at(ipsd).at(ich) - 1 );  // modules numbering starts with 1
+//
+//      const double x = psd->GetPositionComponent(0) - psdxshift;
+//      const double y = psd->GetPositionComponent(1);
+//      const double weight = psd->GetEnergy();
+//
+////       std::cout << ipsd << " " << x << " " << y << " " << weight << std::endl;
+//
+//      if (weight > 0) {
+//        datacontainer->CallOnElement([ich, y, x, weight](std::vector<DataVector> &vector) {
+//          vector.emplace_back(TMath::ATan2(y, x), weight);
+//        });
+//      }
+//    }
 
-      auto psd = event.GetPSDModule( psdpos->at(ipsd).at(ich) - 1 );  // modules numbering starts with 1
+    u_short chMin = psdpos->at(ipsd).at(0);
+    u_short chMax = psdpos->at(ipsd).at(1);
+    for (u_short ich = chMin; ich < chMax; ich++) {
 
-      const double x = psd->GetPositionComponent(0) - psdxshift;
-      const double y = psd->GetPositionComponent(1);
-      const double weight = psd->GetEnergy();
+      auto module = event.GetPSDModule( ich - 1 );  // modules numbering starts with 1
+
+      const double x = module->GetPositionComponent(0) - psdxshift;
+      const double y = module->GetPositionComponent(1);
+      const double weight = module->GetEnergy();
 
 //       std::cout << ipsd << " " << x << " " << y << " " << weight << std::endl;
 

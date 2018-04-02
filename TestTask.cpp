@@ -105,14 +105,14 @@ void TestTask::Initialize() {
 
   int psd_size[3];
   if (setup_ == "na61" ) psd_size[0] = 16; psd_size[1] = 12; psd_size[2] = 16;
-  if (setup_ == "na49" ) psd_size[0] = 4; psd_size[1] = 4; psd_size[2] = 4;
+  if (setup_ == "na49" ) psd_size[0] = 4; psd_size[1] = 120; psd_size[2] = 120;
   if (setup_ == "cbm" ) psd_size[0] = 4; psd_size[1] = 12; psd_size[2] = 28;
   if (setup_ == "cbm52" ) psd_size[0] = 12; psd_size[1] = 12; psd_size[2] = 28;
 
-  manager.AddDetector("STS_pT", DetectorType::Track, {ptaxis});
-  manager.AddDetector("STS_eta", DetectorType::Track, {yaxis});
-  manager.AddDetector("STS_R1", DetectorType::Track);
-  manager.AddDetector("STS_R2", DetectorType::Track);
+  manager.AddDetector("TPC_pT", DetectorType::Track, {ptaxis});
+  manager.AddDetector("TPC_eta", DetectorType::Track, {yaxis});
+  manager.AddDetector("TPC_R1", DetectorType::Track);
+  manager.AddDetector("TPC_R2", DetectorType::Track);
   manager.AddDetector("PSD1", DetectorType::Channel, psd_size[0]);
   manager.AddDetector("PSD2", DetectorType::Channel, psd_size[1]);
   manager.AddDetector("PSD3", DetectorType::Channel, psd_size[2]);
@@ -126,10 +126,10 @@ void TestTask::Initialize() {
   manager.SetCorrectionSteps("PSD1", confPsd);
   manager.SetCorrectionSteps("PSD2", confPsd);
   manager.SetCorrectionSteps("PSD3", confPsd);
-  manager.SetCorrectionSteps("STS_pT", confTracks);
-  manager.SetCorrectionSteps("STS_eta", confTracks);
-  manager.SetCorrectionSteps("STS_R1", confTracks);
-  manager.SetCorrectionSteps("STS_R2", confTracks);
+  manager.SetCorrectionSteps("TPC_pT", confTracks);
+  manager.SetCorrectionSteps("TPC_eta", confTracks);
+  manager.SetCorrectionSteps("TPC_R1", confTracks);
+  manager.SetCorrectionSteps("TPC_R2", confTracks);
 
   if (issim_)
   {

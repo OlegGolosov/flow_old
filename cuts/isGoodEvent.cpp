@@ -36,9 +36,9 @@ int GetNGoodTracks(const DataTreeEvent &event) {
     Int_t Msel{0};
     DataTreeTrack *track;
 
-    for (int i=0; i<event.GetNTracks(); i++)
+    for (int i=0; i<event.GetNVertexTracks(); i++)
     {
-        track = event.GetTrack(i);
+        track = event.GetVertexTrack(i);
         if ( ! isGoodTrack(*track) ) continue;
         Msel++;
     }
@@ -64,7 +64,7 @@ bool isGoodEvent(const DataTreeEvent& event,
 //    if ( bitT4 == 1        && !IsGoodTrigger(event, EnumTrigger::kT4)                             ) return false;
 //    if ( bitT4 == 2        && !IsGoodTrigger(event, EnumTrigger::kT4) && !IsGoodTrigger(event, EnumTrigger::kT2) ) return false;
 //    if ( bitS1V1           && !IsGoodSimpleTriggers(event)                                        ) return false;
-    if (event.GetNTracks () < 10) return false;
+    if (event.GetNVertexTracks () < 10) return false;
     if (GetNGoodTracks (event) < 10) return false;
 //     std::cout << "               GoodEvent" << std::endl;
 

@@ -41,18 +41,29 @@ class VarManager {
 
     const double ybeam = 2.079; // TODO set as global variable
 
-    const int pid = Cuts::GetTrackPid(track);
+    const int pid = Cuts::GetTrackPid (track);
     double y = -999;
 
-    if (pid == 2212)
+    if (abs (pid) == 211)
+    {
+        y = track.GetRapidity() - ybeam;
+    }
+
+    else if (abs (pid) == 2212)
     {
         const double p = track.GetP();
         const double pz = track.GetPz();
         const double e=sqrt( p*p + 0.938*0.938 );
         y = 0.5*log( (e+pz)/(e-pz) ) - ybeam ;
     }
-    else
-        y = track.GetRapidity() - ybeam;
+
+    else if (abs (pid) == 11)
+    {
+        const double p = track.GetP();
+        const double pz = track.GetPz();
+        const double e=sqrt( p*p + 0.000511*0.000511 );
+        y = 0.5*log( (e+pz)/(e-pz) ) - ybeam ;
+    }
 
 //     std::cout << track.GetEta() << "     " << y << std::endl;
 
@@ -62,7 +73,6 @@ class VarManager {
     values[kPid] = pid;
     values[kCharge] = track.GetCharge();
     values[kEta] = track.GetEta();
-
   }
 
   static void FillMCTrackInfo(const DataTreeMCTrack &track, float *values) {
@@ -92,7 +102,7 @@ class VarManager {
      }
 
     values[kCentrality] = centr -> GetCentrality(m);
-    values[kMultiplicity] = event.GetNTracks();
+    values[kMultiplicity] = event.GetNVertexTracks();
 }
 
 

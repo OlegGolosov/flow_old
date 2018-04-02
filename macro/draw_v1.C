@@ -32,7 +32,7 @@ void draw_v1(TString inputFileName = "../NA49_flow/corr_1.root")
         for (int iXy=0; iXy<2; ++iXy)
             for (uint iCentr=0; iCentr<ncentr; ++iCentr)
             {
-                TString name = Form("v1_STS_%s_%s_%s", var[iVar].Data(), PsdName[iPsd].Data(), XY[iXy].Data());
+                TString name = Form("v1_TPC_%s_%s_%s", var[iVar].Data(), PsdName[iPsd].Data(), XY[iXy].Data());
                 c[iPsd][iXy][iCentr] = new TCanvas(Form("c_%i_%i_%i_%i", iVar, iPsd, iXy, iCentr), "",1200, 1000);
                 leg[iPsd][iXy][iCentr] = new TLegend(0.5, 0.65, 0.99, 0.9);
 
@@ -49,7 +49,7 @@ void draw_v1(TString inputFileName = "../NA49_flow/corr_1.root")
                     v1_mc_psi[iVar][iXy][iCentr]->Draw("Lsame");
 
                     leg[iPsd][iXy][iCentr]->AddEntry(v1_mc_psi[iVar][iXy][iCentr], "MC #Psi", "l");
-                    leg[iPsd][iXy][iCentr]->AddEntry(v1_psi[iVar][iXy][iCentr], "STS #Psi", "l");
+                    leg[iPsd][iXy][iCentr]->AddEntry(v1_psi[iVar][iXy][iCentr], "TPC #Psi", "l");
                 }
                 for (int iRes=0; iRes<6; ++iRes)
                 {
@@ -67,7 +67,7 @@ void draw_v1(TString inputFileName = "../NA49_flow/corr_1.root")
                     else
                         v1_psd[iVar][iPsd][iXy][iRes][iCentr]->Draw(drawopt);
 
-                    TString legEntryName = iRes==5 ? "STS PSD (#Psi resolution)" : sres[5*(iPsd + iXy*3)+iRes][4];
+                    TString legEntryName = iRes==5 ? "TPC PSD (#Psi resolution)" : sres[5*(iPsd + iXy*3)+iRes][4];
                     leg[iPsd][iXy][iCentr]->AddEntry(v1_psd[iVar][iPsd][iXy][iRes][iCentr], legEntryName, "pl");
                 }
                 leg[iPsd][iXy][iCentr]->Draw("same");
@@ -84,7 +84,7 @@ void flow_psd()
             for (int iRes=0; iRes<6; ++iRes)
             {
                 if (iRes==5 && !issim) continue;
-                TString name = Form("v1/v1_STS_%s_%s_%s_%d", var[iVar].Data(), PsdName[iPsd].Data(), XY[iXy].Data(), iRes) ;
+                TString name = Form("v1/v1_TPC_%s_%s_%s_%d", var[iVar].Data(), PsdName[iPsd].Data(), XY[iXy].Data(), iRes) ;
                 std::cout << name << std::endl;
 
                 TMultiGraph *mgr;
@@ -103,7 +103,7 @@ void flow_psi()
     for (int iVar=0; iVar<2; ++iVar)
     for (int iXy=0; iXy<2; ++iXy)
     {
-        TString name = Form("multi_graphs/STS_%s_PSI_%s%s", var[iVar].Data(), XY[iXy].Data(), XY[iXy].Data()) ;
+        TString name = Form("multi_graphs/TPC_%s_PSI_%s%s", var[iVar].Data(), XY[iXy].Data(), XY[iXy].Data()) ;
         TMultiGraph *mgr;
         fIn->GetObject(name, mgr);
         TList *list = mgr->GetListOfGraphs();

@@ -32,12 +32,11 @@ int GetTrackPid(const DataTreeTrack& track)
 //    if ( (charge > 0) && (dEdx < dEdx_cut-0.27) && (p>2.5) ) pid = 2212;
 //    if ( (charge > 0) && (dEdx < dEdx_cut) && (dEdx > dEdx_cut-0.27) ) pid = 211;
 
-    return -1;
+    return 0;
 }
 
 bool isGoodTrack(const DataTreeTrack& track)
 {
-    const double NhitsFit = track.GetNumberOfHitsFit(EnumTPC::kTPCAll);
     const double NhitsPot = track.GetNumberOfHitsPotential(EnumTPC::kTPCAll);
     const double NhitsPotVTPC1 = track.GetNumberOfHitsPotential(EnumTPC::kVTPC1);
     const double NhitsPotVTPC2 = track.GetNumberOfHitsPotential(EnumTPC::kVTPC2);
@@ -49,7 +48,7 @@ bool isGoodTrack(const DataTreeTrack& track)
     const double dEdx = track.GetdEdx(EnumTPC::kTPCAll);
     const double chi2 = track.GetChi2();
 //     const int Ndf = track.GetNDF();
-    const double ratio_ = double(NhitsFit) / NhitsPot;
+    const double ratio_ = double(NhitsPot) / NhitsPot;
 //     const int charge = track.GetCharge();
 
 //     std::cout << "dca = " << dcax << "   " << dcay << std::endl;
@@ -59,11 +58,11 @@ bool isGoodTrack(const DataTreeTrack& track)
 
 //    if ( DCAx * DCAx / 4. + DCAy * DCAy > 1. )              return false;
 
+    if ( eta < 1.4 || eta > 5.0  ) return false;
+    if ( pt < 0.0 || pt > 3.0 ) return false;
     if ( TMath::Abs (DCAx) > 3. || TMath::Abs (DCAy) > .5 ) return false;
     if ( NhitsPotMTPC < 30 || NhitsPotVTPC1 + NhitsPotVTPC2 < 20 )    return false;
     if ( dEdx <= 0 )                                        return false;
-	if ( pt < 0.05 || pt > 2.5 )                            return false;
-	if ( eta < 1.4 || eta > 5.0 )                           return false;
     if ( chi2 < 0. || chi2 > 10 )                           return false;
     if ( ratio_ < 0.55 || ratio_ > 1. )                     return false;
     return true;

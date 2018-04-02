@@ -31,9 +31,9 @@ set(CUTS_SOURCES
         cuts/isGoodTrack.cpp
         )
 
-set(QA_SOURCES
-        datatreeqa/DataTreeQA.cpp
-        )
+#set(QA_SOURCES
+#        datatreeqa/DataTreeQA.cpp
+#        )
 
 set(BASE_SOURCES
         Base/DataVector.cpp
@@ -48,7 +48,7 @@ string(REPLACE ".cpp" ".h" BASE_HEADERS "${BASE_SOURCES}")
 string(REPLACE ".cpp" ".h" DIFF_HEADERS "${DIFF_SOURCES}")
 string(REPLACE ".cpp" ".h" CORR_HEADERS "${CORR_SOURCES}")
 string(REPLACE ".cpp" ".h" CUTS_HEADERS "${CUTS_SOURCES}")
-string(REPLACE ".cpp" ".h" QA_HEADERS "${QA_SOURCES}")
+#string(REPLACE ".cpp" ".h" QA_HEADERS "${QA_SOURCES}")
 
 set(CMAKE_VERBOSE_MAKEFILE ON)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
@@ -82,8 +82,8 @@ target_link_libraries(diffflow ${ROOT_LIBRARIES} qncorrflow BaseFlow "${DATATREE
 add_library(correlationflow SHARED ${CORR_SOURCES})
 target_link_libraries(correlationflow ${ROOT_LIBRARIES} BaseFlow)
 
-add_library(dtqa SHARED ${QA_SOURCES})
-target_link_libraries(dtqa ${ROOT_LIBRARIES} cuts "${DATATREE}/build/libDataTree.so")
+#add_library(dtqa SHARED ${QA_SOURCES})
+#target_link_libraries(dtqa ${ROOT_LIBRARIES} cuts "${DATATREE}/build/libDataTree.so")
 
 
 # Create a main program using the library
@@ -97,7 +97,7 @@ target_link_libraries(centr ${ROOT_LIBRARIES} "${CENTRALITY}/build/libCentrality
 target_include_directories(centr PUBLIC ${EXE_HEADERS})
 
 # Create a exe for QA
-add_executable(qa macro/datatree_qa.C)
-target_link_libraries(qa ${ROOT_LIBRARIES} "${DATATREE}/build/libDataTree.so" dtqa cuts)
-target_include_directories(qa PUBLIC ${EXE_HEADERS})
+#add_executable(qa macro/datatree_qa.C)
+#target_link_libraries(qa ${ROOT_LIBRARIES} "${DATATREE}/build/libDataTree.so" dtqa cuts)
+#target_include_directories(qa PUBLIC ${EXE_HEADERS})
 

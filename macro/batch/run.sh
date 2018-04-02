@@ -11,8 +11,8 @@ EXE_DIR=$MY_PATH/Lucas_flow/build
 OUT_DIR=$MY_PATH/NA49_flow
 FILE_LIST=$MY_PATH/NA49_data/fileList.txt
 CENTRALITY=$MY_PATH/tpc_centr.root
-MIN_STEP=1
-MAX_STEP=1
+MIN_STEP=0
+MAX_STEP=0
 
 #split -n l/10 -d -a 3 filelist.txt filelist_
 

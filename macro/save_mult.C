@@ -116,7 +116,7 @@ void centrality(const TH1F& hm)
     //    manager->SetNormalization (1485808);                                 // set full integral (calculated with Glauber model, for mc simulation we don't neeed it?)
     manager->Det1IsInt(true);                                            // if multiplicity used as det1 - true; if as det2 - manager->Det2IsInt(true);
     manager->Do1DAnalisys(true);                                      // 1D slicing
-    manager->SetDetectorsForCentralityAnalisys ("Tracking detector");    // for 2D slicing give 2 arguments for function (for example sts_det, psd1_det)
+    manager->SetDetectorsForCentralityAnalisys ("Tracking detector");    // for 2D slicing give 2 arguments for function (for example sts_det, PSD1_det)
     manager->SetCentralityMax(100);                                      // set maximum value for centrality, more peripheral events will not be analysed
     manager->SetDirectionCentralEvents(1);                               // if impact parameter and detector signal is correlated = 0 (forfard energy), if anticorelated (tracks) = 1
     manager->SetSliceStep (5);                                           // slice step (width) in percents

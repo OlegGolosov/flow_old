@@ -32,7 +32,7 @@ void draw_v1_psd(TString inputFileName = "../NA49_flow/corr_1.root")
     for (uint iCentr=0; iCentr<ncentr; ++iCentr)
     {
 
-        TString name = Form("v1_STS_%s_%s", var[iVar].Data(), XY[iXy].Data());
+        TString name = Form("v1_TPC_%s_%s", var[iVar].Data(), XY[iXy].Data());
         c[iXy][iCentr] = new TCanvas(Form("c_%i_%i_%i", iVar, iXy, iCentr), "",1200, 1000);
         leg[iXy][iCentr] = new TLegend(0.1, 0.1, 0.3, 0.3);
 
@@ -51,7 +51,7 @@ void draw_v1_psd(TString inputFileName = "../NA49_flow/corr_1.root")
                 v1_mc_psi[iVar][iXy][iCentr]->Draw("Lsame");
 
                 leg[iXy][iCentr]->AddEntry(v1_mc_psi[iVar][iXy][iCentr], "MC #Psi", "l");
-                leg[iXy][iCentr]->AddEntry(v1_psi[iVar][iXy][iCentr], "STS #Psi", "l");
+                leg[iXy][iCentr]->AddEntry(v1_psi[iVar][iXy][iCentr], "TPC #Psi", "l");
             }
 
             v1_psd[iVar][iPsd][iXy][iCentr] -> SetMarkerSize(1.6);
@@ -80,7 +80,7 @@ void flow_psd()
     for (int iPsd=0; iPsd<3; ++iPsd)
         for (int iXy=0; iXy<2; ++iXy)
         {
-            TString name = Form("v1/v1_STS_%s_%s_%s_0", var[iVar].Data(), PsdName[iPsd].Data(), XY[iXy].Data()) ;
+            TString name = Form("v1/v1_TPC_%s_%s_%s_0", var[iVar].Data(), PsdName[iPsd].Data(), XY[iXy].Data()) ;
             std::cout << name << std::endl;
 
             TMultiGraph *mgr;
@@ -99,7 +99,7 @@ void flow_psi()
     for (int iVar=0; iVar<2; ++iVar)
     for (int iXy=0; iXy<2; ++iXy)
     {
-        TString name = Form("multi_graphs/STS_%s_PSI_%s%s", var[iVar].Data(), XY[iXy].Data(), XY[iXy].Data()) ;
+        TString name = Form("multi_graphs/TPC_%s_PSI_%s%s", var[iVar].Data(), XY[iXy].Data(), XY[iXy].Data()) ;
         TMultiGraph *mgr;
         fIn->GetObject(name, mgr);
         TList *list = mgr->GetListOfGraphs();

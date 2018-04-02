@@ -24,7 +24,7 @@ void draw_v2(TString inputFileName = "../NA49_flow/corr_1.root")
     for (uint iCentr=0; iCentr<ncentr; ++iCentr)
     {
 
-        TString name = Form("v2_STS_%s_%s", var[iVar].Data(), v2[iXy][0].Data());
+        TString name = Form("v2_TPC_%s_%s", var[iVar].Data(), v2[iXy][0].Data());
         c[iXy][iCentr] = new TCanvas(Form("c_%i_%i_%i", iVar, iXy, iCentr), "",1200, 1000);
         leg[iXy][iCentr] = new TLegend(0.1, 0.1, 0.3, 0.3);
 
@@ -58,7 +58,7 @@ void flow_psd()
     for (int iPsd=0; iPsd<3; ++iPsd)
         for (int iXy=0; iXy<4; ++iXy)
         {
-            TString name = Form("v2/v2_STS_%s_%s_%s", var[iVar].Data(), psd_psd[iPsd].Data(), v2[iXy][0].Data()  ) ;
+            TString name = Form("v2/v2_TPC_%s_%s_%s", var[iVar].Data(), psd_psd[iPsd].Data(), v2[iXy][0].Data()  ) ;
             std::cout << name << std::endl;
 
             TMultiGraph *mgr;

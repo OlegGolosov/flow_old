@@ -42,14 +42,20 @@ void SimpleTask::Configure(Qn::CorrelationManager &a) {
   auto X2YY = [](const std::vector<Qn::QVector> &a) {
     return a[0].x(2)*a[1].y(1)* a[2].y(1);
   };
+  auto psiA_psiB = [](const std::vector<Qn::QVector> &a) {
+    return atan2 (a[0].y(1), a[0].x(1)) - atan2 (a[1].y(1), a[1].x(1));
+  };
+  auto psi2A_psi2B = [](const std::vector<Qn::QVector> &a) {
+    return atan2 (a[0].y(2), a[0].x(2)) - atan2 (a[1].y(2), a[1].x(2));
+  };
 
   a.AddDataContainer("PSD1");
   a.AddDataContainer("PSD2");
   a.AddDataContainer("PSD3");
-  a.AddDataContainer("STS_eta");
-  a.AddDataContainer("STS_pT");
-  a.AddDataContainer("STS_R1");
-  a.AddDataContainer("STS_R2");
+  a.AddDataContainer("TPC_eta");
+  a.AddDataContainer("TPC_pT");
+  a.AddDataContainer("TPC_R1");
+  a.AddDataContainer("TPC_R2");
 
   if (issim_)
   {
@@ -65,7 +71,7 @@ void SimpleTask::Configure(Qn::CorrelationManager &a) {
   a.AddEventVariable({"Multiplicity", multBins});
 //  a.AddFunction("TPC", Rebin);
 
-  const std::string sDet[] = { "PSD1", "PSD2", "PSD3", "STS_eta", "STS_pT", "STS_R1", "STS_R2" };
+  const std::string sDet[] = { "PSD1", "PSD2", "PSD3", "TPC_eta", "TPC_pT", "TPC_R1", "TPC_R2" };
   const std::string sMc[] = { "MC_pT", "MC_eta"};
 
   const std::string sTracks[] = { sDet[3], sDet[4], sDet[5], sDet[6] };
@@ -110,21 +116,28 @@ void SimpleTask::Configure(Qn::CorrelationManager &a) {
     a.AddCorrelation(sPsdPsd[iDet] + "_XY", sPsdPsdName[iDet], XY);
     a.AddCorrelation(sPsdPsd[iDet] + "_YX", sPsdPsdName[iDet], YX);
 
-    a.AddCorrelation("STS_R2_" + sPsdPsd[iDet] + "_X2XX", "STS_R2, " + sPsdPsdName[iDet], X2XX);
-    a.AddCorrelation("STS_R2_" + sPsdPsd[iDet] + "_X2YY", "STS_R2, " + sPsdPsdName[iDet], X2YY);
-    a.AddCorrelation("STS_R2_" + sPsdPsd[iDet] + "_Y2XY", "STS_R2, " + sPsdPsdName[iDet], Y2XY);
-    a.AddCorrelation("STS_R2_" + sPsdPsd[iDet] + "_Y2YX", "STS_R2, " + sPsdPsdName[iDet], Y2YX);
+    a.AddCorrelation("TPC_R2_" + sPsdPsd[iDet] + "_X2XX", "TPC_R2, " + sPsdPsdName[iDet], X2XX);
+    a.AddCorrelation("TPC_R2_" + sPsdPsd[iDet] + "_X2YY", "TPC_R2, " + sPsdPsdName[iDet], X2YY);
+    a.AddCorrelation("TPC_R2_" + sPsdPsd[iDet] + "_Y2XY", "TPC_R2, " + sPsdPsdName[iDet], Y2XY);
+    a.AddCorrelation("TPC_R2_" + sPsdPsd[iDet] + "_Y2YX", "TPC_R2, " + sPsdPsdName[iDet], Y2YX);
 
-    a.AddCorrelation("STS_eta_" + sPsdPsd[iDet] + "_X2XX", "STS_eta, " + sPsdPsdName[iDet], X2XX);
-    a.AddCorrelation("STS_eta_" + sPsdPsd[iDet] + "_X2YY", "STS_eta, " + sPsdPsdName[iDet], X2YY);
-    a.AddCorrelation("STS_eta_" + sPsdPsd[iDet] + "_Y2XY", "STS_eta, " + sPsdPsdName[iDet], Y2XY);
-    a.AddCorrelation("STS_eta_" + sPsdPsd[iDet] + "_Y2YX", "STS_eta, " + sPsdPsdName[iDet], Y2YX);
+    a.AddCorrelation("TPC_eta_" + sPsdPsd[iDet] + "_X2XX", "TPC_eta, " + sPsdPsdName[iDet], X2XX);
+    a.AddCorrelation("TPC_eta_" + sPsdPsd[iDet] + "_X2YY", "TPC_eta, " + sPsdPsdName[iDet], X2YY);
+    a.AddCorrelation("TPC_eta_" + sPsdPsd[iDet] + "_Y2XY", "TPC_eta, " + sPsdPsdName[iDet], Y2XY);
+    a.AddCorrelation("TPC_eta_" + sPsdPsd[iDet] + "_Y2YX", "TPC_eta, " + sPsdPsdName[iDet], Y2YX);
 
-    a.AddCorrelation("STS_pT_" + sPsdPsd[iDet] + "_X2XX", "STS_pT, " + sPsdPsdName[iDet], X2XX);
-    a.AddCorrelation("STS_pT_" + sPsdPsd[iDet] + "_X2YY", "STS_pT, " + sPsdPsdName[iDet], X2YY);
-    a.AddCorrelation("STS_pT_" + sPsdPsd[iDet] + "_Y2XY", "STS_pT, " + sPsdPsdName[iDet], Y2XY);
-    a.AddCorrelation("STS_pT_" + sPsdPsd[iDet] + "_Y2YX", "STS_pT, " + sPsdPsdName[iDet], Y2YX);
-}
+    a.AddCorrelation("TPC_pT_" + sPsdPsd[iDet] + "_X2XX", "TPC_pT, " + sPsdPsdName[iDet], X2XX);
+    a.AddCorrelation("TPC_pT_" + sPsdPsd[iDet] + "_X2YY", "TPC_pT, " + sPsdPsdName[iDet], X2YY);
+    a.AddCorrelation("TPC_pT_" + sPsdPsd[iDet] + "_Y2XY", "TPC_pT, " + sPsdPsdName[iDet], Y2XY);
+    a.AddCorrelation("TPC_pT_" + sPsdPsd[iDet] + "_Y2YX", "TPC_pT, " + sPsdPsdName[iDet], Y2YX);
+  }
+
+  // RS
+
+//  a.AddCorrelation ("TPC_R2_TPC_R1_psiA_psiB", "TPC_R2, TPC_R1", psiA_psiB);
+//  a.AddCorrelation ("TPC_R2_TPC_R1_psiA_psiB", "TPC_R2, TPC_R1", psi2A_psi2B);
+
+  //END RS
 
 }
 
