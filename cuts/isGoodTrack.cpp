@@ -61,7 +61,7 @@ bool isGoodTrack(const DataTreeTrack& track)
     if ( eta < 1.4 || eta > 5.0  ) return false;
     if ( pt < 0.0 || pt > 3.0 ) return false;
     if ( TMath::Abs (DCAx) > 3. || TMath::Abs (DCAy) > .5 ) return false;
-    if ( NhitsPotMTPC < 30 || NhitsPotVTPC1 + NhitsPotVTPC2 < 20 )    return false;
+    if ( (NhitsPotVTPC1 < 20 && NhitsPotVTPC2 < 20) || NhitsPotMTPC < 30)    return false;
     if ( dEdx <= 0 )                                        return false;
     if ( chi2 < 0. || chi2 > 10 )                           return false;
     if ( ratio_ < 0.55 || ratio_ > 1. )                     return false;

@@ -22,8 +22,8 @@ TestTask::TestTask(std::string filelist, std::string incalib, std::string centra
     out_tree_(nullptr),
     out_tree_raw(nullptr),
     event_(nullptr),
-    write_tree_(true) {
-
+    write_tree_(true)
+{
   centr_ = new CentralityManager;
   centr_->LoadCentalityDataFile(centrality);
 
@@ -48,7 +48,7 @@ void TestTask::Run() {
 //    std::cout << "\rEvent " << i + 1 << " from " << nEntries << "\tGood: " << nGoodEvents;
     in_tree_->GetEntry(i);
     if ( setup_ == "na61" && !Cuts::isGoodEvent (*event_) ) continue;
-    if ( setup_ == "na49" && !Cuts::isGoodEvent (*event_, energy_, 0, 0, 0, 1, 0, 1) ) continue;
+    if ( setup_ == "na49" && !Cuts::isGoodEvent (*event_, energy_, 0, 0, 0, 1, 0, 0) ) continue;
     nGoodEvents++;
     Process();
   }
@@ -62,10 +62,22 @@ void TestTask::Initialize() {
   Axis etaaxis("Eta", 20, 1.4, 5.0);
   Axis yaxis("Rapidity", 15, -0.6, 2.4);
   Axis ptaxis("Pt", { 0., .2, .4, .6, .8, 1., 1.2, 1.4, 1.8, 2.2, 2.6, 3.0 } );
-  std::vector <float> multBins ({2.6, 4.4, 6.6, 9.9, 14.5, 20.4, 28.3, 38.1, 50.2, 64.7,
-                                81.9, 102.1, 125.0, 152.1, 183.1, 218.5, 259.9, 307.3, 364.2});
 
-  Axis multaxis("Multiplicity", multBins );
+  //40 AGeV
+  const float Ebeam = 8.32e3;
+  std::vector <float> eVetoBins ({0., 0.169 * Ebeam, 0.314 * Ebeam, 0.509 * Ebeam, 0.66 * Ebeam, 0.778 * Ebeam, 9.e3});
+  std::vector <float> multBins5 ({0, 2.6, 4.4, 6.6, 9.9, 14.5, 20.4, 28.3, 38.1, 50.2, 64.7,
+                                81.9, 102.1, 125.0, 152.1, 183.1, 218.5, 259.9, 307.3, 364.2, 510});
+  std::vector <float> multBins10 ({0, 4.4, 9.9, 20.4, 38.1, 64.7, 102.1, 152.1, 218.5, 307.3, 510});
+  //40 AGeV
+
+//  //158 AGeV
+//  const float Ebeam = 32.86e3;
+//  std::vector <float> eVetoBins ({0., 0.251 * Ebeam, 0.399 * Ebeam, 0.576 * Ebeam, 0.709 * Ebeam, 0.797 * Ebeam, 33.e3});
+//  //158 AGeV
+
+  Axis multaxis("Multiplicity", multBins10);
+  Axis eVetoaxis("Eveto", eVetoBins);
   Axes tpcaxes = {ptaxis, etaaxis};
 
   auto confPsd = [](QnCorrectionsDetectorConfigurationBase *config) {
@@ -98,6 +110,7 @@ void TestTask::Initialize() {
 
   manager.AddVariable("Centrality", VAR::Variables::kCentrality);
   manager.AddVariable("Multiplicity", VAR::Variables::kMultiplicity);
+  manager.AddVariable("Eveto", VAR::Variables::kEveto);
   manager.AddVariable("Pt", VAR::Variables::kPt);
   manager.AddVariable("Eta", VAR::Variables::kEta);
   manager.AddVariable("Rapidity", VAR::Variables::kRapidity);
@@ -138,9 +151,13 @@ void TestTask::Initialize() {
     manager.SetCorrectionSteps("MC_pT",  confMC);
   }
 
-  manager.AddCorrectionAxis(multaxis);
-  manager.SetEventVariable("Multiplicity");
-  manager.AddHist1D("Multiplicity", multBins);
+  manager.AddCorrectionAxis(eVetoaxis);
+  manager.SetEventVariable("Eveto");
+  manager.AddHist1D("Eveto", eVetoBins);
+
+//  manager.AddCorrectionAxis(multaxis);
+//  manager.SetEventVariable("Multiplicity");
+//  manager.AddHist1D("Multiplicity", multBins10);
 
 //  manager.AddCorrectionAxis({"Centrality", 10, 0, 100});
 //  manager.SetEventVariable("Centrality");

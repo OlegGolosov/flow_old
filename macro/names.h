@@ -9,6 +9,22 @@ const int colors[] = {/*kOrange,*/ kBlue, kRed, kGreen+2, kMagenta, kBlack};
 const int markers[] = { 20, 21, 22, 26, 27, 1};
 
 const std::vector <float> centrality_bins = {0,15,35,60,100};
+
+  //40 AGeV
+  const float Ebeam = 8.32e3;
+  std::vector <double> eVetoBins ({0., 0.169 * Ebeam, 0.314 * Ebeam, 0.509 * Ebeam, 0.66 * Ebeam, 0.778 * Ebeam, 9.e3});
+  std::vector <double> eVetoBins3 ({0., 0.314 * Ebeam, 0.66 * Ebeam, 9.e3});
+  std::vector <double> multBins5 ({0, 2.6, 4.4, 6.6, 9.9, 14.5, 20.4, 28.3, 38.1, 50.2, 64.7,
+                                81.9, 102.1, 125.0, 152.1, 183.1, 218.5, 259.9, 307.3, 364.2, 510});
+  std::vector <double> multBins10 ({0, 4.4, 9.9, 20.4, 38.1, 64.7, 102.1, 152.1, 218.5, 307.3, 510});
+  //40 AGeV
+
+//  //158 AGeV
+//  const float Ebeam = 32.86e3;
+//  std::vector <float> eVetoBins ({0., 0.251 * Ebeam, 0.399 * Ebeam, 0.576 * Ebeam, 0.709 * Ebeam, 0.797 * Ebeam, 33.e3});
+//  //158 AGeV
+
+
 const int ncentr = 4;
 
 const TString psd_psd[] = {"PSD1_PSD2", "PSD1_PSD3", "PSD2_PSD3"};
@@ -86,14 +102,34 @@ const std::vector <TString> profiles =
 //   "PSD2_PSI_YX",
 //   "PSD3_PSI_XY",
 //   "PSD3_PSI_YX",
-//   "TPC_R1_PSI_XX",
-//   "TPC_R1_PSI_YY",
-//   "TPC_R1_PSI_XY",
-//   "TPC_R1_PSI_YX",
-//   "TPC_R2_PSI_XX",
-//   "TPC_R2_PSI_YY",
-//   "TPC_R2_PSI_XY",
-//   "TPC_R2_PSI_YX",
+
+
+
+   "TPC_R1_TPC_R2_XX",
+   "TPC_R1_TPC_R2_YY",
+   "TPC_R1_TPC_R2_XY",
+   "TPC_R1_TPC_R2_YX",
+   "TPC_R1_PSD1_XX",
+   "TPC_R1_PSD1_YY",
+   "TPC_R1_PSD1_XY",
+   "TPC_R1_PSD1_YX",
+   "TPC_R2_PSD1_XX",
+   "TPC_R2_PSD1_YY",
+   "TPC_R2_PSD1_XY",
+   "TPC_R2_PSD1_YX",
+   "TPC_R1_PSD2_XX",
+   "TPC_R1_PSD2_YY",
+   "TPC_R1_PSD2_XY",
+   "TPC_R1_PSD2_YX",
+   "TPC_R2_PSD2_XX",
+   "TPC_R2_PSD2_YY",
+   "TPC_R2_PSD2_XY",
+   "TPC_R2_PSD2_YX",
+   "TPC_R1_PSD3_YX",
+   "TPC_R2_PSD3_XX",
+   "TPC_R2_PSD3_YY",
+   "TPC_R2_PSD3_XY",
+   "TPC_R2_PSD3_YX",
 
   "PSD1_PSD2_XX",
   "PSD1_PSD2_YY",
@@ -140,6 +176,14 @@ const std::vector <TString> multiprof =
   "TPC_pT_PSD3_YY",
   "TPC_pT_PSD3_XY",
   "TPC_pT_PSD3_YX",
+//  "TPC_pT_TPC_R1_XX",
+//  "TPC_pT_TPC_R1_YY"
+//  "TPC_pT_TPC_R1_XY",
+//  "TPC_pT_TPC_R1_YX",
+//  "TPC_pT_TPC_R2_XX",
+//  "TPC_pT_TPC_R2_YY"
+//  "TPC_pT_TPC_R2_XY",
+//  "TPC_pT_TPC_R2_YX",
   "TPC_eta_PSD1_XX",
   "TPC_eta_PSD1_YY",
   "TPC_eta_PSD1_XY",
@@ -152,19 +196,26 @@ const std::vector <TString> multiprof =
   "TPC_eta_PSD3_YY",
   "TPC_eta_PSD3_XY",
   "TPC_eta_PSD3_YX",
-"TPC_pT_PSD1_PSD2_X2XX",
-"TPC_pT_PSD1_PSD2_X2YY",
-"TPC_pT_PSD1_PSD3_X2XX",
-"TPC_pT_PSD1_PSD3_X2YY",
-"TPC_pT_PSD2_PSD3_X2XX",
-"TPC_pT_PSD2_PSD3_X2YY",
-"TPC_eta_PSD1_PSD2_X2XX",
-"TPC_eta_PSD1_PSD2_X2YY",
-"TPC_eta_PSD1_PSD3_X2XX",
-"TPC_eta_PSD1_PSD3_X2YY",
-"TPC_eta_PSD2_PSD3_X2XX",
-"TPC_eta_PSD2_PSD3_X2YY"
-
+//  "TPC_eta_TPC_R1_XX",
+//  "TPC_eta_TPC_R1_YY"
+//  "TPC_eta_TPC_R1_XY",
+//  "TPC_eta_TPC_R1_YX",
+//  "TPC_eta_TPC_R2_XX",
+//  "TPC_eta_TPC_R2_YY"
+//  "TPC_eta_TPC_R2_XY",
+//  "TPC_eta_TPC_R2_YX",
+  "TPC_pT_PSD1_PSD2_X2XX",
+  "TPC_pT_PSD1_PSD2_X2YY",
+  "TPC_pT_PSD1_PSD3_X2XX",
+  "TPC_pT_PSD1_PSD3_X2YY",
+  "TPC_pT_PSD2_PSD3_X2XX",
+  "TPC_pT_PSD2_PSD3_X2YY",
+  "TPC_eta_PSD1_PSD2_X2XX",
+  "TPC_eta_PSD1_PSD2_X2YY",
+  "TPC_eta_PSD1_PSD3_X2XX",
+  "TPC_eta_PSD1_PSD3_X2YY",
+  "TPC_eta_PSD2_PSD3_X2XX",
+  "TPC_eta_PSD2_PSD3_X2YY"
 };
 
 

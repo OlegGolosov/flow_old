@@ -130,15 +130,19 @@ namespace Interface {
       {
         for (int i = 0; i < nPids_r1; i++) if (pid == pid_r1 [i]) skipFlag = false;
         if (skipFlag) continue;
-        if ( pt < 0. || pt > 1. ) continue;  // pT cut
-        if ( y < .8 || y > 2.8 ) continue;  // rapidity cut
+//        if ( pt < 0. || pt > 1. ) continue;  // pT cut
+//        if ( y < .8 || y > 2.8 ) continue;
+        if ( pt < .1 || pt > 2. ) continue;  // pT cut
+        if ( y < -3. || y > .2 ) continue;  // rapidity cut
       }
       else if (subevent == "r2")
       {
         for (int i = 0; i < nPids_r2; i++) if (pid == pid_r2 [i]) skipFlag = false;
         if (skipFlag) continue;
-        if ( pt < 0. || pt > 1. ) continue;  // pT cut
-        if ( y < -.4 || y > 1.8 ) continue;  // rapidity cut
+//        if ( pt < 0. || pt > 1. ) continue;  // pT cut
+//        if ( y < -.4 || y > 1.8 ) continue;  // rapidity cut
+        if ( pt < .1 || pt > 2. ) continue;  // pT cut
+        if ( y < .2 || y > 3. ) continue;  // rapidity cut
       }
 
       for (const auto num : detector.GetEnums()) {
@@ -193,13 +197,32 @@ namespace Interface {
 
     u_short chMin = psdpos->at(ipsd).at(0);
     u_short chMax = psdpos->at(ipsd).at(1);
-    for (u_short ich = chMin; ich < chMax; ich++) {
+      float summWeights = 1.;
+    if (setup_ == "na49")
+    {
+      summWeights = 0.;
+      for (u_short ich = chMin; ich < chMax; ich++)
+      {
+        summWeights += event.GetPSDModule( ich - 1 ) -> GetEnergy();
+      }
+    }
 
+    for (u_short ich = chMin; ich < chMax; ich++)
+    {
       auto module = event.GetPSDModule( ich - 1 );  // modules numbering starts with 1
 
-      const double x = module->GetPositionComponent(0) - psdxshift;
-      const double y = module->GetPositionComponent(1);
-      const double weight = module->GetEnergy();
+      double x = module->GetPositionComponent(0) - psdxshift;
+      double y = module->GetPositionComponent(1);
+      const double weight = module -> GetEnergy() / summWeights;
+
+      // patch
+
+      if (ich == 0) {x = -1; y = 1;}
+      if (ich == 1) {x = -1; y = -1;}
+      if (ich == 2) {x = 1; y = -1;}
+      if (ich == 3) {x = 1; y = 1;}
+
+      // end patch
 
 //       std::cout << ipsd << " " << x << " " << y << " " << weight << std::endl;
 

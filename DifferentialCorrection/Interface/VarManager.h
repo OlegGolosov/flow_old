@@ -28,6 +28,7 @@ class VarManager {
   enum Variables {
     kCentrality = 0,
     kMultiplicity,
+    kEveto,
     kPt,
     kEta,
     kRapidity,
@@ -101,7 +102,9 @@ class VarManager {
        m++;
      }
 
-    values[kCentrality] = centr -> GetCentrality(m);
+//    values[kCentrality] = centr -> GetCentrality(m);
+    values[kCentrality] = event.GetImpactParameter(); // here NA49 centrality is stored
+    values[kEveto] = event.GetPSDEnergy ();
     values[kMultiplicity] = event.GetNVertexTracks();
 }
 

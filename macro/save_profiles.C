@@ -9,13 +9,14 @@ TMultiGraph* GetV1(const TString corr, const TString res);
 TMultiGraph* GetV2(const TString corr, const TString res1, const TString res2, const int iVar);
 
 Qn::DataContainer<Qn::Profile>  GetResolution( const TString top1, const TString top2, const TString bot);
+Qn::DataContainer<Qn::Profile>  GetResolutionRS( const TString top1, const TString top2);
 
 TFile *fIn {nullptr};
 TFile *fOut {nullptr};
 TDirectory *savdir;
 
-void save_profiles(TString inputFileName = "~/Desktop/Analysis/NA49_flow/corr_step_1.root",
-                   TString outputFileName = "~/Desktop/Analysis/NA49_flow/graph_step_1.root")
+void save_profiles(TString inputFileName = "~/Desktop/Analysis/Lucas_flow/build/corr.root",
+                   TString outputFileName = "~/Desktop/Analysis/Lucas_flow/build/graph.root")
 {
     gStyle->SetOptStat(0);
     fIn = TFile::Open(inputFileName);
@@ -106,7 +107,12 @@ TMultiGraph* GetV1(const TString corr, const TString res)
 //     flow = flow.Rebin( {"Centrality", centrality_bins }, [](Qn::Profile &a, Qn::Profile &b) { return  a+b; } );
 
 //    TMultiGraph* ret =  DataToMultiGraph( flow, "Centrality"  ) ;
-    TMultiGraph* ret =  DataToMultiGraph( flow, "Multiplicity"  ) ;
+//    TMultiGraph* ret =  DataToMultiGraph( flow, "Multiplicity"  ) ;
+
+//    flow = flow.Rebin( {"Eveto", eVetoBins3}, [](Qn::Profile &a, Qn::Profile &b) { return  a+b; } );
+
+    TMultiGraph* ret =  DataToMultiGraph( flow, "Eveto"  ) ;
+
     return ret;
 }
 
@@ -137,10 +143,11 @@ TMultiGraph* GetV2(const TString corr, const TString res1, const TString res2, c
 //     for (auto i : flow.GetAxes())
 //         std::cout << i.Name() << std::endl;
 
-    flow = flow.Rebin( {axisName[iVar], v2axis[iVar]}, [](Qn::Profile &a, Qn::Profile &b) { return  a+b; } );
+//    flow = flow.Rebin( {axisName[iVar], v2axis[iVar]}, [](Qn::Profile &a, Qn::Profile &b) { return  a+b; } );
 
 //    TMultiGraph* ret =  DataToMultiGraph( flow, "Centrality"  ) ;
-    TMultiGraph* ret =  DataToMultiGraph( flow, "Multiplicity"  ) ;
+//    TMultiGraph* ret =  DataToMultiGraph( flow, "Multiplicity"  ) ;
+    TMultiGraph* ret =  DataToMultiGraph( flow, "Eveto"  ) ;
     return ret;
 }
 
@@ -157,6 +164,7 @@ void SaveGraphs()
 //     save TGraphErrors (config in names.h)
     for (auto iprofile : profiles)
     {
+      cout << iprofile << endl;
         Qn::DataContainer<Qn::Profile> *profile;
         fIn->GetObject(iprofile, profile);
         graphs.push_back ( DataToProfileGraph(*profile) );
@@ -171,12 +179,15 @@ void SaveGraphs()
 //     save TMultiGraph (config in names.h)
     for (auto iprofile : multiprof)
     {
+      cout << iprofile << endl;
         Qn::DataContainer<Qn::Profile> *profile;
         fIn->GetObject(iprofile, profile);
 //         *profile = profile->Rebin( {"Centrality", centrality_bins }, [](Qn::Profile &a, Qn::Profile &b) { return  a+b; } );
+//         *profile = profile->Rebin( {"Eveto", eVetoBins3}, [](Qn::Profile &a, Qn::Profile &b) { return  a+b; } );
 
 //        mgraphs.push_back ( DataToMultiGraph(*profile, "Centrality") );
-        mgraphs.push_back ( DataToMultiGraph(*profile, "Multiplicity") );
+//        mgraphs.push_back ( DataToMultiGraph(*profile, "Multiplicity") );
+        mgraphs.push_back ( DataToMultiGraph(*profile, "Eveto") );
 
         mgraphs.back()->SetName(iprofile);
         mgraphs.back()->Write();
@@ -201,7 +212,7 @@ void SaveResolution()
 
         Qn::DataContainer<Qn::Profile> pres = GetResolution(sres[ires][0], sres[ires][1], sres[ires][2]);
         pres.Write( sres[ires][3]);
-        res[ires] = DataToProfileGraph( pres );
+        res[ires] = DataToProfileGraph (pres);
         res[ires] -> SetName(sres[ires][3]);
     }
 
@@ -232,6 +243,19 @@ Qn::DataContainer<Qn::Profile> GetResolution(const TString top1, const TString t
     fIn->GetObject(bot , pbot);
 
     Qn::DataContainer<Qn::Profile> ret = Sqrt( (*ptop1) * (*ptop2) / (*pbot) ) ;
+    return ret;
+}
+
+Qn::DataContainer<Qn::Profile> GetResolutionRS(const TString top1, const TString top2)
+{
+    Qn::DataContainer<Qn::Profile> *ptop1;
+    Qn::DataContainer<Qn::Profile> *ptop2;
+    Qn::DataContainer<Qn::Profile> *pbot;
+
+    fIn->GetObject(top1, ptop1);
+    fIn->GetObject(top2, ptop2);
+
+    Qn::DataContainer<Qn::Profile> ret = Sqrt( (*ptop1) * (*ptop2)) ;
     return ret;
 }
 

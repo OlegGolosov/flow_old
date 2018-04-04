@@ -64,11 +64,24 @@ void SimpleTask::Configure(Qn::CorrelationManager &a) {
     a.AddDataContainer("PSI");
   }
 
-  std::vector <float> multBins ({2.6, 4.4, 6.6, 9.9, 14.5, 20.4, 28.3, 38.1, 50.2, 64.7,
-                                81.9, 102.1, 125.0, 152.1, 183.1, 218.5, 259.9, 307.3, 364.2});
+
+  //40 AGeV
+  const float Ebeam = 8.32e3;
+  std::vector <float> eVetoBins ({0., 0.169 * Ebeam, 0.314 * Ebeam, 0.509 * Ebeam, 0.66 * Ebeam, 0.778 * Ebeam, 9.e3});
+  std::vector <float> multBins5 ({0, 2.6, 4.4, 6.6, 9.9, 14.5, 20.4, 28.3, 38.1, 50.2, 64.7,
+                                81.9, 102.1, 125.0, 152.1, 183.1, 218.5, 259.9, 307.3, 364.2, 510});
+  std::vector <float> multBins10 ({0, 4.4, 9.9, 20.4, 38.1, 64.7, 102.1, 152.1, 218.5, 307.3, 510});
+  //40 AGeV
+
+//  //158 AGeV
+//  const float Ebeam = 32.86e3;
+//  std::vector <float> eVetoBins ({0., 0.251 * Ebeam, 0.399 * Ebeam, 0.576 * Ebeam, 0.709 * Ebeam, 0.797 * Ebeam, 33.e3});
+//  //158 AGeV
 
 //  a.AddEventVariable({"Centrality", {0., 5., 10., 15., 20., 25., 30., 35., 40, 45., 50., 55., 60., 65., 70., 80, 90, 100}});
-  a.AddEventVariable({"Multiplicity", multBins});
+
+  a.AddEventVariable({"Eveto", eVetoBins});
+//  a.AddEventVariable({"Multiplicity", multBins10});
 //  a.AddFunction("TPC", Rebin);
 
   const std::string sDet[] = { "PSD1", "PSD2", "PSD3", "TPC_eta", "TPC_pT", "TPC_R1", "TPC_R2" };
@@ -98,6 +111,28 @@ void SimpleTask::Configure(Qn::CorrelationManager &a) {
         a.AddCorrelation( sMc[iDet] + "_PSI_YX", sMc[iDet] + ", PSI", YX);
     }
  }
+
+
+  a.AddCorrelation( "TPC_R1_TPC_R2_XX", "TPC_R1, TPC_R2", XX);
+  a.AddCorrelation( "TPC_R1_TPC_R2_YY", "TPC_R1, TPC_R2", YY);
+  a.AddCorrelation( "TPC_R1_TPC_R2_XY", "TPC_R1, TPC_R2", XY);
+  a.AddCorrelation( "TPC_R1_TPC_R2_YX", "TPC_R1, TPC_R2", YX);
+  a.AddCorrelation( "TPC_pT_TPC_R1_XX", "TPC_pT, TPC_R1", XX);
+  a.AddCorrelation( "TPC_pT_TPC_R1_YY", "TPC_pT, TPC_R1", YY);
+  a.AddCorrelation( "TPC_pT_TPC_R1_XY", "TPC_pT, TPC_R1", XY);
+  a.AddCorrelation( "TPC_pT_TPC_R1_YX", "TPC_pT, TPC_R1", YX);
+  a.AddCorrelation( "TPC_eta_TPC_R1_XX", "TPC_eta, TPC_R1", XX);
+  a.AddCorrelation( "TPC_eta_TPC_R1_YY", "TPC_eta, TPC_R1", YY);
+  a.AddCorrelation( "TPC_eta_TPC_R1_XY", "TPC_eta, TPC_R1", XY);
+  a.AddCorrelation( "TPC_eta_TPC_R1_YX", "TPC_eta, TPC_R1", YX);
+  a.AddCorrelation( "TPC_pT_TPC_R2_XX", "TPC_pT, TPC_R2", XX);
+  a.AddCorrelation( "TPC_pT_TPC_R2_YY", "TPC_pT, TPC_R2", YY);
+  a.AddCorrelation( "TPC_pT_TPC_R2_XY", "TPC_pT, TPC_R2", XY);
+  a.AddCorrelation( "TPC_pT_TPC_R2_YX", "TPC_pT, TPC_R2", YX);
+  a.AddCorrelation( "TPC_eta_TPC_R2_XX", "TPC_eta, TPC_R2", XX);
+  a.AddCorrelation( "TPC_eta_TPC_R2_YY", "TPC_eta, TPC_R2", YY);
+  a.AddCorrelation( "TPC_eta_TPC_R2_XY", "TPC_eta, TPC_R2", XY);
+  a.AddCorrelation( "TPC_eta_TPC_R2_YX", "TPC_eta, TPC_R2", YX);
 
 
   for (ushort iPsd=0; iPsd<3; ++iPsd)
@@ -131,14 +166,6 @@ void SimpleTask::Configure(Qn::CorrelationManager &a) {
     a.AddCorrelation("TPC_pT_" + sPsdPsd[iDet] + "_Y2XY", "TPC_pT, " + sPsdPsdName[iDet], Y2XY);
     a.AddCorrelation("TPC_pT_" + sPsdPsd[iDet] + "_Y2YX", "TPC_pT, " + sPsdPsdName[iDet], Y2YX);
   }
-
-  // RS
-
-//  a.AddCorrelation ("TPC_R2_TPC_R1_psiA_psiB", "TPC_R2, TPC_R1", psiA_psiB);
-//  a.AddCorrelation ("TPC_R2_TPC_R1_psiA_psiB", "TPC_R2, TPC_R1", psi2A_psi2B);
-
-  //END RS
-
 }
 
 void SimpleTask::Run() {
