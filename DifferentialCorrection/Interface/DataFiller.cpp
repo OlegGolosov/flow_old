@@ -133,7 +133,7 @@ namespace Interface {
 //        if ( pt < 0. || pt > 1. ) continue;  // pT cut
 //        if ( y < .8 || y > 2.8 ) continue;
         if ( pt < .1 || pt > 2. ) continue;  // pT cut
-        if ( y < -3. || y > .2 ) continue;  // rapidity cut
+        if ( y < -3. || y > -.2 ) continue;  // rapidity cut
       }
       else if (subevent == "r2")
       {
@@ -197,15 +197,6 @@ namespace Interface {
 
     u_short chMin = psdpos->at(ipsd).at(0);
     u_short chMax = psdpos->at(ipsd).at(1);
-      float summWeights = 1.;
-    if (setup_ == "na49")
-    {
-      summWeights = 0.;
-      for (u_short ich = chMin; ich < chMax; ich++)
-      {
-        summWeights += event.GetPSDModule( ich - 1 ) -> GetEnergy();
-      }
-    }
 
     for (u_short ich = chMin; ich < chMax; ich++)
     {
@@ -213,14 +204,14 @@ namespace Interface {
 
       double x = module->GetPositionComponent(0) - psdxshift;
       double y = module->GetPositionComponent(1);
-      const double weight = module -> GetEnergy() / summWeights;
+      const double weight = module -> GetEnergy();
 
       // patch
 
-      if (ich == 0) {x = -1; y = 1;}
-      if (ich == 1) {x = -1; y = -1;}
-      if (ich == 2) {x = 1; y = -1;}
-      if (ich == 3) {x = 1; y = 1;}
+//      if (ich == 1) {x = -1; y = 1;}
+//      if (ich == 2) {x = -1; y = -1;}
+//      if (ich == 3) {x = 1; y = -1;}
+//      if (ich == 4) {x = 1; y = 1;}
 
       // end patch
 
