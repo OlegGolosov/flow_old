@@ -4,8 +4,8 @@ set(CMAKE_MACOSX_RPATH 1)
 set(CMAKE_cpp_STANDARD 14)
 set(CMAKE_BUILD_TYPE debug)
 
-set(DATATREE /home/ogolosov/Desktop/Analysis/DataTree)
-set(CENTRALITY /home/ogolosov/Desktop/Analysis/CentralityFramework)
+set(DATATREE /home/ogolosov/Desktop/analysis/DataTree)
+set(CENTRALITY /home/ogolosov/Desktop/analysis/CentralityFramework)
 
 set(EXE_SOURCES
         SimpleTask.cpp
@@ -64,7 +64,7 @@ find_package(ROOT REQUIRED COMPONENTS Core MathCore MathMore RIO Hist Tree Net T
 include(${ROOT_USE_FILE})
 add_definitions(${ROOT_CXX_FLAGS})
 
-include_directories(${CMAKE_SOURCE_DIR} ${ROOT_INCLUDE_DIRS} ${DATATREE}/include  ${CENTRALITY}/include)
+include_directories(${CMAKE_SOURCE_DIR} ${ROOT_INCLUDE_DIRS} ${DATATREE}/src  ${CENTRALITY}/include)
 
 add_subdirectory(QnCorrections)
 # add_subdirectory(googletest)

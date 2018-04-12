@@ -42,20 +42,30 @@ void SimpleTask::Configure(Qn::CorrelationManager &a) {
   auto X2YY = [](const std::vector<Qn::QVector> &a) {
     return a[0].x(2)*a[1].y(1)* a[2].y(1);
   };
-  auto psiA_psiB = [](const std::vector<Qn::QVector> &a) {
-    return atan2 (a[0].y(1), a[0].x(1)) - atan2 (a[1].y(1), a[1].x(1));
-  };
-  auto psi2A_psi2B = [](const std::vector<Qn::QVector> &a) {
-    return atan2 (a[0].y(2), a[0].x(2)) - atan2 (a[1].y(2), a[1].x(2));
-  };
+//  auto psi1A_psi1B = [](const std::vector<Qn::QVector> &a) {
+//    return acos (cos (atan2 (a[0].y(1), a[0].x(1)) - atan2 (a[1].y(1), a[1].x(1))));
+//  };
+//  auto psi2A_psi2B = [](const std::vector<Qn::QVector> &a) {
+//    return acos (cos (0.5 * (atan2 (a[0].y(2), a[0].x(2)) - atan2 (a[1].y(2), a[1].x(2)))));
+//  };
 
   a.AddDataContainer("PSD1");
   a.AddDataContainer("PSD2");
   a.AddDataContainer("PSD3");
-  a.AddDataContainer("TPC_eta");
-  a.AddDataContainer("TPC_pT");
-  a.AddDataContainer("TPC_R1");
-  a.AddDataContainer("TPC_R2");
+  a.AddDataContainer("TPC_y");
+  a.AddDataContainer("TPC_pt");
+  a.AddDataContainer("TPC_a_1");
+  a.AddDataContainer("TPC_b_1");
+  a.AddDataContainer("TPC_a_2");
+  a.AddDataContainer("TPC_b_2");
+  a.AddDataContainer("TPC_y_a_1");
+  a.AddDataContainer("TPC_pt_a_1");
+  a.AddDataContainer("TPC_y_b_1");
+  a.AddDataContainer("TPC_pt_b_1");
+  a.AddDataContainer("TPC_y_a_2");
+  a.AddDataContainer("TPC_pt_a_2");
+  a.AddDataContainer("TPC_y_b_2");
+  a.AddDataContainer("TPC_pt_b_2");
 
   if (issim_)
   {
@@ -67,6 +77,9 @@ void SimpleTask::Configure(Qn::CorrelationManager &a) {
 
   //40 AGeV
   const float Ebeam = 8.32e3;
+  std::vector <float> deltaPsi2bins ({0., 0.5 * TMath::Pi(), TMath::Pi()});
+  std::vector <float> deltaPsi10bins ({0., 0.314, 0.628, 0.942, 1.256, 1.57, 1.884, 2.198, 2.512, 2.826, 3.14});
+	
   std::vector <float> eVetoBins ({0., 0.169 * Ebeam, 0.314 * Ebeam, 0.509 * Ebeam, 0.66 * Ebeam, 0.778 * Ebeam, 9.e3});
   std::vector <float> multBins5 ({0, 2.6, 4.4, 6.6, 9.9, 14.5, 20.4, 28.3, 38.1, 50.2, 64.7,
                                 81.9, 102.1, 125.0, 152.1, 183.1, 218.5, 259.9, 307.3, 364.2, 510});
@@ -81,10 +94,11 @@ void SimpleTask::Configure(Qn::CorrelationManager &a) {
 //  a.AddEventVariable({"Centrality", {0., 5., 10., 15., 20., 25., 30., 35., 40, 45., 50., 55., 60., 65., 70., 80, 90, 100}});
 
   a.AddEventVariable({"Eveto", eVetoBins});
+	
 //  a.AddEventVariable({"Multiplicity", multBins10});
 //  a.AddFunction("TPC", Rebin);
 
-  const std::string sDet[] = { "PSD1", "PSD2", "PSD3", "TPC_eta", "TPC_pT", "TPC_R1", "TPC_R2" };
+  const std::string sDet[] = { "PSD1", "PSD2", "PSD3", "TPC_pt", "TPC_y", "TPC_a_1", "TPC_b_1"};
   const std::string sMc[] = { "MC_pT", "MC_eta"};
 
   const std::string sTracks[] = { sDet[3], sDet[4], sDet[5], sDet[6] };
@@ -112,27 +126,49 @@ void SimpleTask::Configure(Qn::CorrelationManager &a) {
     }
  }
 
+// RS 2 harmonics
+  a.AddCorrelation( "TPC_a_1_TPC_b_1_XX", "TPC_a_1, TPC_b_1", XX);
+  a.AddCorrelation( "TPC_a_1_TPC_b_1_YY", "TPC_a_1, TPC_b_1", YY);
+  a.AddCorrelation( "TPC_a_1_TPC_b_1_XY", "TPC_a_1, TPC_b_1", XY);
+  a.AddCorrelation( "TPC_a_1_TPC_b_1_YX", "TPC_a_1, TPC_b_1", YX);
+//  a.AddCorrelation( "TPC_psi1A_psi1B", "TPC_a_1, TPC_b_1", psi1A_psi1B);
+  a.AddCorrelation( "TPC_y_a_1_TPC_a_1_XX", "TPC_y_a_1, TPC_a_1", XX);
+  a.AddCorrelation( "TPC_y_a_1_TPC_a_1_YY", "TPC_y_a_1, TPC_a_1", YY);
+  a.AddCorrelation( "TPC_y_a_1_TPC_a_1_XY", "TPC_y_a_1, TPC_a_1", XY);
+  a.AddCorrelation( "TPC_y_a_1_TPC_a_1_YX", "TPC_y_a_1, TPC_a_1", YX);
+  a.AddCorrelation( "TPC_pt_b_1_TPC_b_1_XX", "TPC_pt_b_1, TPC_b_1", XX);
+  a.AddCorrelation( "TPC_pt_b_1_TPC_b_1_YY", "TPC_pt_b_1, TPC_b_1", YY);
+  a.AddCorrelation( "TPC_pt_b_1_TPC_b_1_XY", "TPC_pt_b_1, TPC_b_1", XY);
+  a.AddCorrelation( "TPC_pt_b_1_TPC_b_1_YX", "TPC_pt_b_1, TPC_b_1", YX);
+  a.AddCorrelation( "TPC_y_b_1_TPC_b_1_XX", "TPC_y_b_1, TPC_b_1", XX);
+  a.AddCorrelation( "TPC_y_b_1_TPC_b_1_YY", "TPC_y_b_1, TPC_b_1", YY);
+  a.AddCorrelation( "TPC_y_b_1_TPC_b_1_XY", "TPC_y_b_1, TPC_b_1", XY);
+  a.AddCorrelation( "TPC_y_b_1_TPC_b_1_YX", "TPC_y_b_1, TPC_b_1", YX);
+	
+  a.AddCorrelation( "TPC_a_2_TPC_b_2_XX", "TPC_a_2, TPC_b_2", XX);
+  a.AddCorrelation( "TPC_a_2_TPC_b_2_YY", "TPC_a_2, TPC_b_2", YY);
+  a.AddCorrelation( "TPC_a_2_TPC_b_2_XY", "TPC_a_2, TPC_b_2", XY);
+  a.AddCorrelation( "TPC_a_2_TPC_b_2_YX", "TPC_a_2, TPC_b_2", YX);
+//  a.AddCorrelation( "TPC_psi2A_psi2B", "TPC_a_2, TPC_b_2", psi2A_psi2B);
+  a.AddCorrelation( "TPC_pt_a_2_TPC_a_2_XX", "TPC_pt_a_2, TPC_a_2", XX);
+  a.AddCorrelation( "TPC_pt_a_2_TPC_a_2_YY", "TPC_pt_a_2, TPC_a_2", YY);
+  a.AddCorrelation( "TPC_pt_a_2_TPC_a_2_XY", "TPC_pt_a_2, TPC_a_2", XY);
+  a.AddCorrelation( "TPC_pt_a_2_TPC_a_2_YX", "TPC_pt_a_2, TPC_a_2", YX);
+  a.AddCorrelation( "TPC_y_a_2_TPC_a_2_XX", "TPC_y_a_2, TPC_a_2", XX);
+  a.AddCorrelation( "TPC_y_a_2_TPC_a_2_YY", "TPC_y_a_2, TPC_a_2", YY);
+  a.AddCorrelation( "TPC_y_a_2_TPC_a_2_XY", "TPC_y_a_2, TPC_a_2", XY);
+  a.AddCorrelation( "TPC_y_a_2_TPC_a_2_YX", "TPC_y_a_2, TPC_a_2", YX);
+  a.AddCorrelation( "TPC_pt_b_2_TPC_b_2_XX", "TPC_pt_b_2, TPC_b_2", XX);
+  a.AddCorrelation( "TPC_pt_b_2_TPC_b_2_YY", "TPC_pt_b_2, TPC_b_2", YY);
+  a.AddCorrelation( "TPC_pt_b_2_TPC_b_2_XY", "TPC_pt_b_2, TPC_b_2", XY);
+  a.AddCorrelation( "TPC_pt_b_2_TPC_b_2_YX", "TPC_pt_b_2, TPC_b_2", YX);
+  a.AddCorrelation( "TPC_y_b_2_TPC_b_2_XX", "TPC_y_b_2, TPC_b_2", XX);
+  a.AddCorrelation( "TPC_y_b_2_TPC_b_2_YY", "TPC_y_b_2, TPC_b_2", YY);
+  a.AddCorrelation( "TPC_y_b_2_TPC_b_2_XY", "TPC_y_b_2, TPC_b_2", XY);
+  a.AddCorrelation( "TPC_y_b_2_TPC_b_2_YX", "TPC_y_b_2, TPC_b_2", YX);
+	
+// end RS 2 harmonics
 
-  a.AddCorrelation( "TPC_R1_TPC_R2_XX", "TPC_R1, TPC_R2", XX);
-  a.AddCorrelation( "TPC_R1_TPC_R2_YY", "TPC_R1, TPC_R2", YY);
-  a.AddCorrelation( "TPC_R1_TPC_R2_XY", "TPC_R1, TPC_R2", XY);
-  a.AddCorrelation( "TPC_R1_TPC_R2_YX", "TPC_R1, TPC_R2", YX);
-  a.AddCorrelation( "TPC_pT_TPC_R1_XX", "TPC_pT, TPC_R1", XX);
-  a.AddCorrelation( "TPC_pT_TPC_R1_YY", "TPC_pT, TPC_R1", YY);
-  a.AddCorrelation( "TPC_pT_TPC_R1_XY", "TPC_pT, TPC_R1", XY);
-  a.AddCorrelation( "TPC_pT_TPC_R1_YX", "TPC_pT, TPC_R1", YX);
-  a.AddCorrelation( "TPC_eta_TPC_R1_XX", "TPC_eta, TPC_R1", XX);
-  a.AddCorrelation( "TPC_eta_TPC_R1_YY", "TPC_eta, TPC_R1", YY);
-  a.AddCorrelation( "TPC_eta_TPC_R1_XY", "TPC_eta, TPC_R1", XY);
-  a.AddCorrelation( "TPC_eta_TPC_R1_YX", "TPC_eta, TPC_R1", YX);
-  a.AddCorrelation( "TPC_pT_TPC_R2_XX", "TPC_pT, TPC_R2", XX);
-  a.AddCorrelation( "TPC_pT_TPC_R2_YY", "TPC_pT, TPC_R2", YY);
-  a.AddCorrelation( "TPC_pT_TPC_R2_XY", "TPC_pT, TPC_R2", XY);
-  a.AddCorrelation( "TPC_pT_TPC_R2_YX", "TPC_pT, TPC_R2", YX);
-  a.AddCorrelation( "TPC_eta_TPC_R2_XX", "TPC_eta, TPC_R2", XX);
-  a.AddCorrelation( "TPC_eta_TPC_R2_YY", "TPC_eta, TPC_R2", YY);
-  a.AddCorrelation( "TPC_eta_TPC_R2_XY", "TPC_eta, TPC_R2", XY);
-  a.AddCorrelation( "TPC_eta_TPC_R2_YX", "TPC_eta, TPC_R2", YX);
 
 
   for (ushort iPsd=0; iPsd<3; ++iPsd)
@@ -151,20 +187,20 @@ void SimpleTask::Configure(Qn::CorrelationManager &a) {
     a.AddCorrelation(sPsdPsd[iDet] + "_XY", sPsdPsdName[iDet], XY);
     a.AddCorrelation(sPsdPsd[iDet] + "_YX", sPsdPsdName[iDet], YX);
 
-    a.AddCorrelation("TPC_R2_" + sPsdPsd[iDet] + "_X2XX", "TPC_R2, " + sPsdPsdName[iDet], X2XX);
-    a.AddCorrelation("TPC_R2_" + sPsdPsd[iDet] + "_X2YY", "TPC_R2, " + sPsdPsdName[iDet], X2YY);
-    a.AddCorrelation("TPC_R2_" + sPsdPsd[iDet] + "_Y2XY", "TPC_R2, " + sPsdPsdName[iDet], Y2XY);
-    a.AddCorrelation("TPC_R2_" + sPsdPsd[iDet] + "_Y2YX", "TPC_R2, " + sPsdPsdName[iDet], Y2YX);
-
-    a.AddCorrelation("TPC_eta_" + sPsdPsd[iDet] + "_X2XX", "TPC_eta, " + sPsdPsdName[iDet], X2XX);
-    a.AddCorrelation("TPC_eta_" + sPsdPsd[iDet] + "_X2YY", "TPC_eta, " + sPsdPsdName[iDet], X2YY);
-    a.AddCorrelation("TPC_eta_" + sPsdPsd[iDet] + "_Y2XY", "TPC_eta, " + sPsdPsdName[iDet], Y2XY);
-    a.AddCorrelation("TPC_eta_" + sPsdPsd[iDet] + "_Y2YX", "TPC_eta, " + sPsdPsdName[iDet], Y2YX);
-
-    a.AddCorrelation("TPC_pT_" + sPsdPsd[iDet] + "_X2XX", "TPC_pT, " + sPsdPsdName[iDet], X2XX);
-    a.AddCorrelation("TPC_pT_" + sPsdPsd[iDet] + "_X2YY", "TPC_pT, " + sPsdPsdName[iDet], X2YY);
-    a.AddCorrelation("TPC_pT_" + sPsdPsd[iDet] + "_Y2XY", "TPC_pT, " + sPsdPsdName[iDet], Y2XY);
-    a.AddCorrelation("TPC_pT_" + sPsdPsd[iDet] + "_Y2YX", "TPC_pT, " + sPsdPsdName[iDet], Y2YX);
+//    a.AddCorrelation("TPC_R2_" + sPsdPsd[iDet] + "_X2XX", "TPC_R2, " + sPsdPsdName[iDet], X2XX);
+//    a.AddCorrelation("TPC_R2_" + sPsdPsd[iDet] + "_X2YY", "TPC_R2, " + sPsdPsdName[iDet], X2YY);
+//    a.AddCorrelation("TPC_R2_" + sPsdPsd[iDet] + "_Y2XY", "TPC_R2, " + sPsdPsdName[iDet], Y2XY);
+//    a.AddCorrelation("TPC_R2_" + sPsdPsd[iDet] + "_Y2YX", "TPC_R2, " + sPsdPsdName[iDet], Y2YX);
+//
+//    a.AddCorrelation("TPC_y_" + sPsdPsd[iDet] + "_X2XX", "TPC_y, " + sPsdPsdName[iDet], X2XX);
+//    a.AddCorrelation("TPC_y_" + sPsdPsd[iDet] + "_X2YY", "TPC_y, " + sPsdPsdName[iDet], X2YY);
+//    a.AddCorrelation("TPC_y_" + sPsdPsd[iDet] + "_Y2XY", "TPC_y, " + sPsdPsdName[iDet], Y2XY);
+//    a.AddCorrelation("TPC_y_" + sPsdPsd[iDet] + "_Y2YX", "TPC_y, " + sPsdPsdName[iDet], Y2YX);
+//
+//    a.AddCorrelation("TPC_pT_" + sPsdPsd[iDet] + "_X2XX", "TPC_pT, " + sPsdPsdName[iDet], X2XX);
+//    a.AddCorrelation("TPC_pT_" + sPsdPsd[iDet] + "_X2YY", "TPC_pT, " + sPsdPsdName[iDet], X2YY);
+//    a.AddCorrelation("TPC_pT_" + sPsdPsd[iDet] + "_Y2XY", "TPC_pT, " + sPsdPsdName[iDet], Y2XY);
+//    a.AddCorrelation("TPC_pT_" + sPsdPsd[iDet] + "_Y2YX", "TPC_pT, " + sPsdPsdName[iDet], Y2YX);
   }
 }
 

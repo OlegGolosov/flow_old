@@ -40,7 +40,7 @@ class VarManager {
 
   static void FillTrackInfo(const DataTreeTrack &track, float *values) {
 
-    const double ybeam = 2.079; // TODO set as global variable
+    const double ybeam = 2.24; // TODO set as global variable
 
     const int pid = Cuts::GetTrackPid (track);
     double y = -999;
@@ -95,7 +95,7 @@ class VarManager {
      DataTreeTrack *track = new DataTreeTrack;
      for (u_short itrack = 0; itrack < ntracks; itrack++) {
        track = setup == "na61" ? event.GetVertexTrack(itrack) : event.GetTrack(itrack);
-       if ( isnan( track->GetPt() ) ) continue;
+       if ( std::isnan( track->GetPt() ) ) continue;
        if      ( ! Cuts::isGoodTrack(*track) && setup == "na61" ) continue;
        if      ( ! Cuts::isGoodTrack(*track) && setup == "na49" ) continue;
        else if ( ! Cuts::isGoodTrackCbm(*track) && (setup == "cbm" || setup == "cbmold" || setup == "cbm52" ) ) continue;
@@ -103,9 +103,15 @@ class VarManager {
      }
 
 //    values[kCentrality] = centr -> GetCentrality(m);
-    values[kCentrality] = event.GetImpactParameter(); // here NA49 centrality is stored
+//    values[kCentrality] = event.GetImpactParameter(); // here NA49 centrality is stored
     values[kEveto] = event.GetPSDEnergy ();
     values[kMultiplicity] = event.GetNVertexTracks();
+		float Ebeam = 8.32e3;
+		std::vector <float> eVetoBins ({0., 0.169 * Ebeam, 0.314 * Ebeam, 0.509 * Ebeam, 0.66 * Ebeam, 0.778 * Ebeam, 9.e3});
+		for (u_short i = 0; i < eVetoBins.size () - 1; i++) 
+		{
+			if (values[kEveto] > eVetoBins[i] && values[kEveto] < eVetoBins[i + 1]) values[kCentrality] = i + 0.5;
+		}
 }
 
 

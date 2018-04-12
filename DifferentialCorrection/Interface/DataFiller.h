@@ -18,15 +18,39 @@ namespace Qn {
 namespace Differential {
 namespace Interface {
 
+class QnCuts
+{
+  public:
+    QnCuts (std::vector<short> pid, double ptMin, double ptMax, double yMin, double yMax)
+    {
+      QnCuts::pid = pid;
+      QnCuts::ptMin = ptMin;
+      QnCuts::ptMax = ptMax;
+      QnCuts::yMin = yMin;
+      QnCuts::yMax = yMax;
+    }
+
+    std::vector<short> pid;
+    double ptMin;
+    double ptMax;
+    double yMin;
+    double yMax;
+};
+
 class DataFiller {
 
  public:
   explicit DataFiller() = default;
-  explicit DataFiller(DataTreeEvent* event) : event_(event) {}
+  explicit DataFiller(DataTreeEvent* event) : event_(event) 
+  {
+		Configure ();
+  }
 
-  void Fill(std::map<std::string, Detector> &detectors) const;
+  void Fill(std::map<std::string, Detector> &detectors) /*const*/;
 
-  void FillTrackingDetector(std::map<std::string, Detector> &detectors, const DataTreeEvent &event, std::string detectorName, const std::string subevent) const;
+  void Configure ();
+  void FillTrackIndex (std::map<std::string, Detector> &detectors, const DataTreeEvent &event, std::string detectorName) /*const*/;
+  void FillTrackingDetector(std::map<std::string, Detector> &detectors, const DataTreeEvent &event, std::string detectorName, u_short subevent = 0) const;
   void FillMCTrackingDetector(Qn::Detector &detector, const DataTreeEvent &event,  const bool isPidCut) const;
 
   void FillPSD(Qn::Detector &detector, const DataTreeEvent &event, u_short ipsd) const ;
@@ -42,6 +66,8 @@ private:
   DataTreeEvent* event_ {nullptr};
   std::string setup_ {"cbm"};
   bool issim_ {true};
+  std::map <std::string, Qn::Differential::Interface::QnCuts> qnCuts;
+  std::map <std::string, std::vector <u_short>> trackIndeces;
 
 //   CentralityManager *centr_;
 
@@ -77,4 +103,4 @@ private:
 }
 }
 }
-#endif //FLOW_DATAFILLER_H
+#endif //FLOW_DATAFILLER_HSetQnCuts

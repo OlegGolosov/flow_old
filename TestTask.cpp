@@ -69,6 +69,9 @@ void TestTask::Initialize() {
   std::vector <float> multBins5 ({0, 2.6, 4.4, 6.6, 9.9, 14.5, 20.4, 28.3, 38.1, 50.2, 64.7,
                                 81.9, 102.1, 125.0, 152.1, 183.1, 218.5, 259.9, 307.3, 364.2, 510});
   std::vector <float> multBins10 ({0, 4.4, 9.9, 20.4, 38.1, 64.7, 102.1, 152.1, 218.5, 307.3, 510});
+  std::vector <float> centAxis ({0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0});
+	
+	
   //40 AGeV
 
 //  //158 AGeV
@@ -85,13 +88,14 @@ void TestTask::Initialize() {
     config->AddCorrectionOnQnVector(new QnCorrectionsQnVectorRecentering());
     auto rescale = new QnCorrectionsQnVectorTwistAndRescale();
     rescale->SetApplyTwist(true);
-    rescale->SetApplyRescale(true);
+    rescale->SetApplyRescale(false);
     rescale->SetTwistAndRescaleMethod(QnCorrectionsQnVectorTwistAndRescale::TWRESCALE_doubleHarmonic);
     config->AddCorrectionOnQnVector(rescale);
   };
 
   auto confTracks = [](QnCorrectionsDetectorConfigurationBase *config) {
-    config->SetQVectorNormalizationMethod(QnCorrectionsQnVector::QVNORM_QoverM);
+//    config->SetQVectorNormalizationMethod(QnCorrectionsQnVector::QVNORM_QoverM); // SP
+    config->SetQVectorNormalizationMethod(QnCorrectionsQnVector::QVNORM_QoverQlength); // EP
     config->AddCorrectionOnQnVector(new QnCorrectionsQnVectorRecentering());
     auto rescale = new QnCorrectionsQnVectorTwistAndRescale();
     rescale->SetApplyTwist(true);
@@ -117,15 +121,25 @@ void TestTask::Initialize() {
   manager.AddVariable("Charge", VAR::Variables::kCharge);
 
   int psd_size[3];
-  if (setup_ == "na61" ) psd_size[0] = 16; psd_size[1] = 12; psd_size[2] = 16;
-  if (setup_ == "na49" ) psd_size[0] = 4; psd_size[1] = 120; psd_size[2] = 120;
-  if (setup_ == "cbm" ) psd_size[0] = 4; psd_size[1] = 12; psd_size[2] = 28;
-  if (setup_ == "cbm52" ) psd_size[0] = 12; psd_size[1] = 12; psd_size[2] = 28;
+  if (setup_ == "na61" ) {psd_size[0] = 16; psd_size[1] = 12; psd_size[2] = 16;}
+  if (setup_ == "na49" ) {psd_size[0] = 4; psd_size[1] = 120; psd_size[2] = 120;}
+  if (setup_ == "cbm" ) {psd_size[0] = 4; psd_size[1] = 12; psd_size[2] = 28;}
+  if (setup_ == "cbm52") {psd_size[0] = 12; psd_size[1] = 12; psd_size[2] = 28;}
 
-  manager.AddDetector("TPC_pT", DetectorType::Track, {ptaxis});
-  manager.AddDetector("TPC_eta", DetectorType::Track, {yaxis});
-  manager.AddDetector("TPC_R1", DetectorType::Track);
-  manager.AddDetector("TPC_R2", DetectorType::Track);
+  manager.AddDetector("TPC_pt", DetectorType::Track, {ptaxis});
+  manager.AddDetector("TPC_y", DetectorType::Track, {yaxis});
+  manager.AddDetector("TPC_pt_a_1", DetectorType::Track, {ptaxis});
+  manager.AddDetector("TPC_y_a_1", DetectorType::Track, {yaxis});
+  manager.AddDetector("TPC_pt_a_2", DetectorType::Track, {ptaxis});
+  manager.AddDetector("TPC_y_a_2", DetectorType::Track, {yaxis});
+  manager.AddDetector("TPC_pt_b_1", DetectorType::Track, {ptaxis});
+  manager.AddDetector("TPC_y_b_1", DetectorType::Track, {yaxis});
+  manager.AddDetector("TPC_pt_b_2", DetectorType::Track, {ptaxis});
+  manager.AddDetector("TPC_y_b_2", DetectorType::Track, {yaxis});
+  manager.AddDetector("TPC_a_1", DetectorType::Track);
+  manager.AddDetector("TPC_b_1", DetectorType::Track);
+  manager.AddDetector("TPC_a_2", DetectorType::Track);
+  manager.AddDetector("TPC_b_2", DetectorType::Track);
   manager.AddDetector("PSD1", DetectorType::Channel, psd_size[0]);
   manager.AddDetector("PSD2", DetectorType::Channel, psd_size[1]);
   manager.AddDetector("PSD3", DetectorType::Channel, psd_size[2]);
@@ -139,10 +153,20 @@ void TestTask::Initialize() {
   manager.SetCorrectionSteps("PSD1", confPsd);
   manager.SetCorrectionSteps("PSD2", confPsd);
   manager.SetCorrectionSteps("PSD3", confPsd);
-  manager.SetCorrectionSteps("TPC_pT", confTracks);
-  manager.SetCorrectionSteps("TPC_eta", confTracks);
-  manager.SetCorrectionSteps("TPC_R1", confTracks);
-  manager.SetCorrectionSteps("TPC_R2", confTracks);
+  manager.SetCorrectionSteps("TPC_pt", confTracks);
+  manager.SetCorrectionSteps("TPC_y", confTracks);
+  manager.SetCorrectionSteps("TPC_pt_a_1", confTracks);
+  manager.SetCorrectionSteps("TPC_y_a_1", confTracks);
+  manager.SetCorrectionSteps("TPC_pt_a_2", confTracks);
+  manager.SetCorrectionSteps("TPC_y_a_2", confTracks);
+  manager.SetCorrectionSteps("TPC_pt_b_1", confTracks);
+  manager.SetCorrectionSteps("TPC_y_b_1", confTracks);
+  manager.SetCorrectionSteps("TPC_pt_b_2", confTracks);
+  manager.SetCorrectionSteps("TPC_y_b_2", confTracks);
+  manager.SetCorrectionSteps("TPC_a_1", confTracks);
+  manager.SetCorrectionSteps("TPC_b_1", confTracks);
+  manager.SetCorrectionSteps("TPC_a_2", confTracks);
+  manager.SetCorrectionSteps("TPC_b_2", confTracks);
 
   if (issim_)
   {
@@ -151,9 +175,9 @@ void TestTask::Initialize() {
     manager.SetCorrectionSteps("MC_pT",  confMC);
   }
 
-  manager.AddCorrectionAxis(eVetoaxis);
-  manager.SetEventVariable("Eveto");
-  manager.AddHist1D("Eveto", eVetoBins);
+//  manager.AddCorrectionAxis(eVetoaxis);
+//  manager.SetEventVariable("Eveto");
+//  manager.AddHist1D("Eveto", eVetoBins);
 
 //  manager.AddCorrectionAxis(multaxis);
 //  manager.SetEventVariable("Multiplicity");
@@ -163,6 +187,9 @@ void TestTask::Initialize() {
 //  manager.SetEventVariable("Centrality");
 //  manager.AddHist1D("Centrality", 20,0.,100.);
 
+  manager.AddCorrectionAxis({"Centrality", 6, 0, 6});
+  manager.SetEventVariable("Centrality");
+  manager.AddHist1D("Centrality", 6, 0, 6);
 
   manager.SaveQVectorsToTree(*out_tree_);
   manager.SaveEventVariablesToTree(*out_tree_);
@@ -214,11 +241,5 @@ std::unique_ptr<TChain> TestTask::MakeChain(std::string filename, std::string tr
   std::cout << "Number of entries = " << chain->GetEntries() << std::endl;
   return chain;
 }
-
-
-
-
-
-
 
 }
