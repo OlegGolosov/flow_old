@@ -93,7 +93,8 @@ void SimpleTask::Configure(Qn::CorrelationManager &a) {
 
 //  a.AddEventVariable({"Centrality", {0., 5., 10., 15., 20., 25., 30., 35., 40, 45., 50., 55., 60., 65., 70., 80, 90, 100}});
 
-  a.AddEventVariable({"Eveto", eVetoBins});
+//  a.AddEventVariable({"Eveto", eVetoBins});
+  a.AddEventVariable({"Centrality", {0, 1, 2, 3, 4, 5, 6}});
 	
 //  a.AddEventVariable({"Multiplicity", multBins10});
 //  a.AddFunction("TPC", Rebin);
