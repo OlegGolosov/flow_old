@@ -10,6 +10,7 @@
 #include "TTree.h"
 #include "TFile.h"
 #include "TString.h"
+#include "TChain.h"
 #include "TH1.h"
 
 #include "DataTreeEvent.h"

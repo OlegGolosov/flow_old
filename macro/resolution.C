@@ -65,10 +65,9 @@ void calculate (TH2F *deltaPsi2bins, TString flowPath) {
     int nBins = deltaPsi2bins -> GetNbinsX ();
     float xMax = deltaPsi2bins -> GetXaxis () -> GetXmax ();
     float xMin = deltaPsi2bins -> GetXaxis () -> GetXmin ();
-    TString setName = deltaPsi2bins -> GetTitle ();
 
-    TH1F *hResolution = new TH1F ("hR_Oli_" + setName, "hR_Oli_" + setName, nBins, xMin, xMax);
-    TH1F *hChi = new TH1F ("hChi_" + setName, "hChi_" + setName, nBins, xMin, xMax);
+    TH1F *hResolution = new TH1F ("hR_Oli", "hR_Oli", nBins, xMin, xMax);
+    TH1F *hChi = new TH1F ("hChi", "hChi", nBins, xMin, xMax);
     cout << "Bin\tRatio\t\tChi\t\tResolution\n";
     for (int bin = 1; bin <= nBins; bin++) {
         Double_t ratio = deltaPsi2bins -> GetBinContent (bin, 2) / (deltaPsi2bins -> GetBinContent (bin, 2) + deltaPsi2bins -> GetBinContent (bin, 1));
@@ -92,9 +91,9 @@ void calculate (TH2F *deltaPsi2bins, TString flowPath) {
 
 void resolution (int harmonic = 1) {
     Float_t pi = TMath::Pi();
-    TString corrPath = "build/";
-    TString flowPath = "build/";
-    TString filename = "qn.root";
+    TString corrPath = "~/Desktop/analysis/NA49_flow/";
+    TString flowPath = "~/Desktop/analysis/NA49_flow/";
+    TString filename = "qn_1.root";
     TFile *resFile = new TFile (flowPath + "resolution.root", "recreate");
 
     TChain *ch = new TChain ("tree");
@@ -102,6 +101,7 @@ void resolution (int harmonic = 1) {
 
     TCanvas *c1 = new TCanvas ();
 		
+//    ch -> Draw (Form ("1.0 / %i * fabs (atan2 (TPC_a_1.data_.q_.y[][%i], TPC_a_1.data_.q_.x[][%i]) - atan2 (TPC_b_1.data_.q_.y[][%i], TPC_b_1.data_.q_.x[][%i])) : Centrality >> deltaPhi2bins(6, 0, 6, 2, 0, %f)", harmonic, harmonic, harmonic, harmonic, harmonic, pi), "", "colz");
     ch -> Draw (Form ("acos (cos (1.0 / %i * (atan2 (TPC_a_1.data_.q_.y[][%i], TPC_a_1.data_.q_.x[][%i]) - atan2 (TPC_b_1.data_.q_.y[][%i], TPC_b_1.data_.q_.x[][%i])))) : Centrality >> deltaPhi2bins(6, 0, 6, 2, 0, %f)", harmonic, harmonic, harmonic, harmonic, harmonic, pi), "", "colz");
 //    ch -> Draw ("acos (cos (1 * (atan2 (TPC_a_1.data_.q_.y[][1], TPC_a_1.data_.q_.x[][1]) - atan2 (TPC_b_1.data_.q_.y[][1], TPC_b_1.data_.q_.x[][1])))) : Eveto >> deltaPhi2bins(6, 0, 8000, 100, 0, 3.14)", "", "colz");
     TH2F *deltaPhi2bins = (TH2F*) c1 -> GetPrimitive ("deltaPhi2bins");

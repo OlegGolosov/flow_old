@@ -14,7 +14,7 @@ void flow_psi();
 void flow_mc_psi();
 void flow_psd();
 
-void draw_v1_psd(TString inputFileName = "../NA49_flow/corr_1.root")
+void draw_v1_psd(TString inputFileName = "../NA49_flow/graph_2.root")
 {
     gStyle->SetOptStat(0);
     fIn = TFile::Open(inputFileName);
@@ -70,7 +70,7 @@ void draw_v1_psd(TString inputFileName = "../NA49_flow/corr_1.root")
         plot_na49_pion_v1(iVar, iCentr, *leg[iXy][iCentr]);
 
         leg[iXy][iCentr]->Draw("same");
-        c[iXy][iCentr]->SaveAs( Form ("../NA49_flow/out_na61/centr_%d_%s.png", iCentr, name.Data()) );
+        c[iXy][iCentr]->SaveAs( Form ("../NA49_flow/centr_%d_%s.png", iCentr, name.Data()) );
         c[iXy][iCentr]->Close ();
     }
 }

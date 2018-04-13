@@ -14,7 +14,7 @@ void flow_psi();
 void flow_mc_psi();
 void flow_psd();
 
-void draw_v1(TString inputFileName = "../NA49_flow/corr_1.root")
+void draw_v1(TString inputFileName = "../NA49_flow/graph_2.root")
 {
     gStyle->SetOptStat(0);
     fIn = TFile::Open(inputFileName);

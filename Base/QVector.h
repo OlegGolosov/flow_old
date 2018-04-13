@@ -58,7 +58,7 @@ class QVector {
       n_(vector.GetN()),
       sum_weights_(vector.GetSumOfWeights()) {
     for (int i = 0; i < 4; i++) {
-      q_[i] = isnan(vector.Qx(i)) || isnan(vector.Qy(i)) ? QVec(0, 0) : QVec(vector.Qx(i), vector.Qy(i));
+      q_[i] = std::isnan(vector.Qx(i)) || std::isnan(vector.Qy(i)) ? QVec(0, 0) : QVec(vector.Qx(i), vector.Qy(i));
     }
   }
 

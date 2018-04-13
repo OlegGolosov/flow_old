@@ -1,5 +1,6 @@
 #include "names.h"
 
+
 void SaveResolution();
 void SaveGraphs();
 void SaveV1();
@@ -15,8 +16,8 @@ TFile *fIn {nullptr};
 TFile *fOut {nullptr};
 TDirectory *savdir;
 
-void save_profiles(TString inputFileName = "~/Desktop/Analysis/Lucas_flow/build/corr.root",
-                   TString outputFileName = "~/Desktop/Analysis/Lucas_flow/build/graph.root")
+void save_profiles(TString inputFileName = "~/Desktop/analysis/NA49_flow/corr_2.root",
+                   TString outputFileName = "~/Desktop/analysis/NA49_flow/graph_2.root")
 {
     gStyle->SetOptStat(0);
     fIn = TFile::Open(inputFileName);
@@ -170,6 +171,7 @@ void SaveGraphs()
         graphs.push_back ( DataToProfileGraph(*profile) );
 
         graphs.back()->SetName(iprofile);
+        graphs.back()->SetTitle(iprofile);
         graphs.back()->Write();
     }
 
@@ -190,6 +192,7 @@ void SaveGraphs()
         mgraphs.push_back ( DataToMultiGraph(*profile, "Eveto") );
 
         mgraphs.back()->SetName(iprofile);
+        mgraphs.back()->SetTitle(iprofile);
         mgraphs.back()->Write();
     }
 
@@ -214,6 +217,7 @@ void SaveResolution()
         pres.Write( sres[ires][3]);
         res[ires] = DataToProfileGraph (pres);
         res[ires] -> SetName(sres[ires][3]);
+        res[ires] -> SetTitle(sres[ires][4]);
     }
 
     if (issim)

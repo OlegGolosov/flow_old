@@ -10,7 +10,7 @@ TGraphErrors* v2_psd[2][3][4][ncentr];
 
 void flow_psd();
 
-void draw_v2(TString inputFileName = "../NA49_flow/corr_1.root")
+void draw_v2(TString inputFileName = "../NA49_flow/graph_2.root")
 {
     gStyle->SetOptStat(0);
     fIn = TFile::Open(inputFileName);

@@ -10,7 +10,7 @@ TFile *fOut {nullptr};
 std::vector <TGraphErrors*> graphs;
 
 
-void draw_profiles (TString inputFileName = "../NA49_flow/corr_1.root")
+void draw_profiles (TString inputFileName = "../NA49_flow/graph_2.root")
 {
     gStyle->SetOptStat(0);
     fIn = TFile::Open(inputFileName);

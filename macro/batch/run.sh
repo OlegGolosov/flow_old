@@ -4,15 +4,15 @@
 #MY_PATH=/lustre/nyx/cbm/users/ogolosov
 #ROOT_PATH=/lustre/nyx/cbm/users/klochkov/soft/root6/root-6.10.08/build/bin/thisroot.sh
 #ROOT_PATH=/home/ogolosov/root6/bin/thisroot.sh
-MY_PATH=/home/ogolosov/Desktop/Analysis
-BATCH_DIR=$MY_PATH/Lucas_flow/macro/batch
+MY_PATH=/home/ogolosov/Desktop/analysis
+BATCH_DIR=$MY_PATH/flow/macro/batch
 LOG_DIR=$MY_PATH/NA49_flow/log
-EXE_DIR=$MY_PATH/Lucas_flow/build
+EXE_DIR=$MY_PATH/flow/build
 OUT_DIR=$MY_PATH/NA49_flow
 FILE_LIST=$MY_PATH/NA49_data/fileList.txt
 CENTRALITY=$MY_PATH/tpc_centr.root
 MIN_STEP=0
-MAX_STEP=0
+MAX_STEP=2
 
 #split -n l/10 -d -a 3 filelist.txt filelist_
 
