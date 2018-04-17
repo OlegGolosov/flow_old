@@ -21,13 +21,14 @@ namespace Interface {
 class QnCuts
 {
   public:
-    QnCuts (std::vector<short> pid, double ptMin, double ptMax, double yMin, double yMax)
+    QnCuts (std::vector<short> pid, double ptMin, double ptMax, double yMin, double yMax, int weight = -999)
     {
       QnCuts::pid = pid;
       QnCuts::ptMin = ptMin;
       QnCuts::ptMax = ptMax;
       QnCuts::yMin = yMin;
       QnCuts::yMax = yMax;
+      QnCuts::weight = weight;
     }
 
     std::vector<short> pid;
@@ -35,6 +36,7 @@ class QnCuts
     double ptMax;
     double yMin;
     double yMax;
+    int weight;
 };
 
 class DataFiller {

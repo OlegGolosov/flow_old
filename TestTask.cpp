@@ -59,8 +59,7 @@ void TestTask::Run() {
 void TestTask::Initialize() {
   using Axes = std::vector<Qn::Axis>;
 
-  Axis etaaxis("Eta", 20, 1.4, 5.0);
-  Axis yaxis("Rapidity", 15, -0.6, 2.4);
+  Axis yaxis("Rapidity", 17, -1.0, 2.4);
   Axis ptaxis("Pt", { 0., .2, .4, .6, .8, 1., 1.2, 1.4, 1.8, 2.2, 2.6, 3.0 } );
 
   //40 AGeV
@@ -81,7 +80,7 @@ void TestTask::Initialize() {
 
   Axis multaxis("Multiplicity", multBins10);
   Axis eVetoaxis("Eveto", eVetoBins);
-  Axes tpcaxes = {ptaxis, etaaxis};
+  Axes tpcaxes = {ptaxis, yaxis};
 
   auto confPsd = [](QnCorrectionsDetectorConfigurationBase *config) {
     config->SetQVectorNormalizationMethod(QnCorrectionsQnVector::QVNORM_QoverM);
