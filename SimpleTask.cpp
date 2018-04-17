@@ -123,7 +123,7 @@ void SimpleTask::Configure(Qn::CorrelationManager &a) {
 //  a.AddEventVariable({"Multiplicity", multBins10});
 //  a.AddFunction("TPC", Rebin);
 
-  const std::string sDet[] = { "PSD1", "PSD2", "PSD3", "TPC_pt", "TPC_y", "TPC_a_1", "TPC_b_1"};
+  const std::string sDet[] = { "PSD1", "PSD2", "PSD3", "TPC_pt", "TPC_y", "TPC_a_1", "TPC_b_1", "TPC_1", "TPC_2"};
   const std::string sMc[] = { "MC_pT", "MC_eta"};
 
   const std::string sTracks[] = { sDet[3], sDet[4], sDet[5], sDet[6] };

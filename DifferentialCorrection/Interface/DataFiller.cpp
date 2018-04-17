@@ -30,6 +30,8 @@ namespace Interface {
 		trackIndeces.insert (std::make_pair ("TPC_y_b_1", index1));
 		trackIndeces.insert (std::make_pair ("TPC_y_b_2", index2));
 		
+    FillTrackingDetector(detectors, *event_, "TPC_1");
+    FillTrackingDetector(detectors, *event_, "TPC_2");
     FillTrackingDetector(detectors, *event_, "TPC_pt");
     FillTrackingDetector(detectors, *event_, "TPC_y");
     FillTrackingDetector(detectors, *event_, "TPC_a_1", 1);
@@ -84,9 +86,13 @@ namespace Interface {
     std::vector <short> Q_pid = {2212, -211, 211};
     Qn::Differential::Interface::QnCuts u_pt (u_pid, -999, 999, 0.0, 1.8);
     Qn::Differential::Interface::QnCuts u_y (u_pid, 0.0, 2.0, -999, 999);
+    Qn::Differential::Interface::QnCuts Q_fproton ({2212}, 0.0, 2.5, 0.0, 3.0);
+    Qn::Differential::Interface::QnCuts Q_fpiplus ({211}, 0.0, 2.5, 0.0, 3.0);
     Qn::Differential::Interface::QnCuts Q1 (Q_pid, 0.0, 1.0, 0.8, 2.8, VarManager::Variables::kRapidity);
     Qn::Differential::Interface::QnCuts Q2 (Q_pid, 0.0, 1.0, -0.4, 1.8, VarManager::Variables::kPt);
 	
+    qnCuts.insert(std::make_pair("TPC_1", Q_fproton));
+    qnCuts.insert(std::make_pair("TPC_2", Q_fpiplus));
     qnCuts.insert(std::make_pair("TPC_a_1", Q1));
     qnCuts.insert(std::make_pair("TPC_a_2", Q2));
     qnCuts.insert(std::make_pair("TPC_b_1", Q1));
@@ -232,18 +238,18 @@ namespace Interface {
 			{
 				datacontainer->CallOnElement
 				(	
-					trackparams, [phi, weight] (std::vector<DataVector> &vector) 
-					{
-						vector.emplace_back(phi, weight);
-					}
+//					trackparams, [phi, weight] (std::vector<DataVector> &vector) 
+//					{
+//						vector.emplace_back(phi, weight);
+//					}
 //					trackparams, [values, weight] (std::vector<DataVector> &vector) 
 //					{
 //						vector.emplace_back(values[VarManager::Variables::kPhi], weight);
 //					}
-//					trackparams, [values] (std::vector<DataVector> &vector) 
-//					{
-//						vector.emplace_back(values[VarManager::Variables::kPhi]);
-//					}
+					trackparams, [values] (std::vector<DataVector> &vector) 
+					{
+						vector.emplace_back(values[VarManager::Variables::kPhi]);
+					}
 				);
 			}
 			catch (std::exception & a) {

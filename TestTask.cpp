@@ -128,6 +128,8 @@ void TestTask::Initialize() {
   manager.AddDetector("PSD1", DetectorType::Channel, psd_size[0]);
   manager.AddDetector("PSD2", DetectorType::Channel, psd_size[1]);
   manager.AddDetector("PSD3", DetectorType::Channel, psd_size[2]);
+  manager.AddDetector("TPC_1", DetectorType::Track);
+  manager.AddDetector("TPC_2", DetectorType::Track);
   manager.AddDetector("TPC_a_1", DetectorType::Track);
   manager.AddDetector("TPC_b_1", DetectorType::Track);
   manager.AddDetector("TPC_a_2", DetectorType::Track);
@@ -152,6 +154,8 @@ void TestTask::Initialize() {
   manager.SetCorrectionSteps("PSD1", confPsd);
   manager.SetCorrectionSteps("PSD2", confPsd);
   manager.SetCorrectionSteps("PSD3", confPsd);
+  manager.SetCorrectionSteps("TPC_1", confTracks);
+  manager.SetCorrectionSteps("TPC_2", confTracks);
   manager.SetCorrectionSteps("TPC_a_1", confTracks);
   manager.SetCorrectionSteps("TPC_b_1", confTracks);
   manager.SetCorrectionSteps("TPC_a_2", confTracks);
