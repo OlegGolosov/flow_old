@@ -84,15 +84,13 @@ namespace Interface {
     std::vector <short> Q_pid = {2212, -211, 211};
     Qn::Differential::Interface::QnCuts u_pt (u_pid, -999, 999, 0.0, 1.8);
     Qn::Differential::Interface::QnCuts u_y (u_pid, 0.0, 2.0, -999, 999);
-    Qn::Differential::Interface::QnCuts Q1a (Q_pid, 0.0, 1.0, 0.8, 2.8, VarManager::Variables::kRapidity);
-    Qn::Differential::Interface::QnCuts Q2a (Q_pid, 0.0, 1.0, -0.4, 1.8, VarManager::Variables::kPt);
-    Qn::Differential::Interface::QnCuts Q1b (Q_pid, 0.0, 1.0, 0.8, 2.8);
-    Qn::Differential::Interface::QnCuts Q2b (Q_pid, 0.0, 1.0, -0.4, 1.8);
+    Qn::Differential::Interface::QnCuts Q1 (Q_pid, 0.0, 1.0, 0.8, 2.8, VarManager::Variables::kRapidity);
+    Qn::Differential::Interface::QnCuts Q2 (Q_pid, 0.0, 1.0, -0.4, 1.8, VarManager::Variables::kPt);
 	
-    qnCuts.insert(std::make_pair("TPC_a_1", Q1a));
-    qnCuts.insert(std::make_pair("TPC_a_2", Q2a));
-    qnCuts.insert(std::make_pair("TPC_b_1", Q1b));
-    qnCuts.insert(std::make_pair("TPC_b_2", Q2b));
+    qnCuts.insert(std::make_pair("TPC_a_1", Q1));
+    qnCuts.insert(std::make_pair("TPC_a_2", Q2));
+    qnCuts.insert(std::make_pair("TPC_b_1", Q1));
+    qnCuts.insert(std::make_pair("TPC_b_2", Q2));
     qnCuts.insert(std::make_pair("TPC_pt", u_pt));
     qnCuts.insert(std::make_pair("TPC_y", u_y));
     qnCuts.insert(std::make_pair("TPC_pt_a_1", u_pt));
@@ -171,7 +169,7 @@ namespace Interface {
     auto values = new float[VarManager::Variables::kNVars];
     DataTreeTrack *track = nullptr;
     short pid;
-    float pt, y, weight;
+    float pt, y, phi, weight;
     auto &datacontainer = detector.GetDataContainer();
     auto &axes = datacontainer->GetAxes();
     std::vector<float> trackparams;
@@ -204,6 +202,7 @@ namespace Interface {
 			pid = values[VarManager::Variables::kPid];
 			pt = values[VarManager::Variables::kPt];
 			y = values[VarManager::Variables::kRapidity];
+			phi = values[VarManager::Variables::kPhi];
 			if (qnCut.weight != -999) weight = values [qnCut.weight];
 			else weight = 1.0;
 
@@ -229,10 +228,23 @@ namespace Interface {
 			
 			for (const auto num : detector.GetEnums()) {trackparams.push_back(values[num]);}
 
-			try {
-				datacontainer->CallOnElement(trackparams, [values, weight] (std::vector<DataVector> &vector) {
-					vector.emplace_back(values[VarManager::Variables::kPhi], weight);
-				});
+			try 
+			{
+				datacontainer->CallOnElement
+				(	
+					trackparams, [phi, weight] (std::vector<DataVector> &vector) 
+					{
+						vector.emplace_back(phi, weight);
+					}
+//					trackparams, [values, weight] (std::vector<DataVector> &vector) 
+//					{
+//						vector.emplace_back(values[VarManager::Variables::kPhi], weight);
+//					}
+//					trackparams, [values] (std::vector<DataVector> &vector) 
+//					{
+//						vector.emplace_back(values[VarManager::Variables::kPhi]);
+//					}
+				);
 			}
 			catch (std::exception & a) {
 				trackparams.clear();

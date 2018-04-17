@@ -18,17 +18,41 @@ void SimpleTask::Configure(Qn::CorrelationManager &a) {
   auto scalar = [](const std::vector<Qn::QVector> &a) -> double {
     return a[0].x(2)*a[1].x(2) + a[0].y(2)*a[1].y(2);
   };
+  auto XX = [](const std::vector<Qn::QVector> &a) {
+    return 2*a[0].x(1)*a[1].x(1);
+  };
+  auto YY = [](const std::vector<Qn::QVector> &a) {
+    return 2*a[0].y(1)*a[1].y(1);
+  };
   auto XY = [](const std::vector<Qn::QVector> &a) {
     return 2*a[0].x(1)*a[1].y(1);
   };
   auto YX = [](const std::vector<Qn::QVector> &a) {
     return 2*a[0].y(1)*a[1].x(1);
   };
-  auto XX = [](const std::vector<Qn::QVector> &a) {
-    return 2*a[0].x(1)*a[1].x(1);
+  auto XX_EP = [](const std::vector<Qn::QVector> &a) {
+    return 2 * cos (atan2 (a[0].y(1), a[0].x(1))) * cos (atan2 (a[1].y(1), a[1].x(1)));
   };
-  auto YY = [](const std::vector<Qn::QVector> &a) {
-    return 2*a[0].y(1)*a[1].y(1);
+  auto YY_EP = [](const std::vector<Qn::QVector> &a) {
+    return 2 * sin (atan2 (a[0].y(1), a[0].x(1))) * sin (atan2 (a[1].y(1), a[1].x(1)));
+  };
+  auto XY_EP = [](const std::vector<Qn::QVector> &a) {
+    return 2 * cos (atan2 (a[0].y(1), a[0].x(1))) * sin (atan2 (a[1].y(1), a[1].x(1)));
+  };
+  auto YX_EP = [](const std::vector<Qn::QVector> &a) {
+    return 2 * sin (atan2 (a[0].y(1), a[0].x(1))) * cos (atan2 (a[1].y(1), a[1].x(1)));
+  };
+  auto X2X2_EP = [](const std::vector<Qn::QVector> &a) {
+    return 2 * cos (atan2 (a[0].y(2), a[0].x(2))) * cos (atan2 (a[1].y(2), a[1].x(2)));
+  };
+  auto Y2Y2_EP = [](const std::vector<Qn::QVector> &a) {
+    return 2 * sin (atan2 (a[0].y(2), a[0].x(2))) * sin (atan2 (a[1].y(2), a[1].x(2)));
+  };
+  auto X2Y2_EP = [](const std::vector<Qn::QVector> &a) {
+    return 2 * cos (atan2 (a[0].y(2), a[0].x(2))) * sin (atan2 (a[1].y(2), a[1].x(2)));
+  };
+  auto Y2X2_EP = [](const std::vector<Qn::QVector> &a) {
+    return 2 * sin (atan2 (a[0].y(2), a[0].x(2))) * cos (atan2 (a[1].y(2), a[1].x(2)));
   };
   auto Y2XY = [](const std::vector<Qn::QVector> &a) {
     return a[0].y(2)*a[1].x(1)* a[2].y(1);
@@ -128,49 +152,49 @@ void SimpleTask::Configure(Qn::CorrelationManager &a) {
  }
 
 // RS 2 harmonics
-  a.AddCorrelation( "TPC_a_1_TPC_b_1_XX", "TPC_a_1, TPC_b_1", XX);
-  a.AddCorrelation( "TPC_a_1_TPC_b_1_YY", "TPC_a_1, TPC_b_1", YY);
-  a.AddCorrelation( "TPC_a_1_TPC_b_1_XY", "TPC_a_1, TPC_b_1", XY);
-  a.AddCorrelation( "TPC_a_1_TPC_b_1_YX", "TPC_a_1, TPC_b_1", YX);
+  a.AddCorrelation( "TPC_a_1_TPC_b_1_XX", "TPC_a_1, TPC_b_1", XX_EP);
+  a.AddCorrelation( "TPC_a_1_TPC_b_1_YY", "TPC_a_1, TPC_b_1", YY_EP);
+  a.AddCorrelation( "TPC_a_1_TPC_b_1_XY", "TPC_a_1, TPC_b_1", XY_EP);
+  a.AddCorrelation( "TPC_a_1_TPC_b_1_YX", "TPC_a_1, TPC_b_1", YX_EP);
 //  a.AddCorrelation( "TPC_psi1A_psi1B", "TPC_a_1, TPC_b_1", psi1A_psi1B);
-  a.AddCorrelation( "TPC_pt_a_1_TPC_b_1_XX", "TPC_pt_a_1, TPC_b_1", XX);
-  a.AddCorrelation( "TPC_pt_a_1_TPC_b_1_YY", "TPC_pt_a_1, TPC_b_1", YY);
-  a.AddCorrelation( "TPC_pt_a_1_TPC_b_1_XY", "TPC_pt_a_1, TPC_b_1", XY);
-  a.AddCorrelation( "TPC_pt_a_1_TPC_b_1_YX", "TPC_pt_a_1, TPC_b_1", YX);
-  a.AddCorrelation( "TPC_y_a_1_TPC_b_1_XX", "TPC_y_a_1, TPC_b_1", XX);
-  a.AddCorrelation( "TPC_y_a_1_TPC_b_1_YY", "TPC_y_a_1, TPC_b_1", YY);
-  a.AddCorrelation( "TPC_y_a_1_TPC_b_1_XY", "TPC_y_a_1, TPC_b_1", XY);
-  a.AddCorrelation( "TPC_y_a_1_TPC_b_1_YX", "TPC_y_a_1, TPC_b_1", YX);
-  a.AddCorrelation( "TPC_pt_b_1_TPC_a_1_XX", "TPC_pt_b_1, TPC_a_1", XX);
-  a.AddCorrelation( "TPC_pt_b_1_TPC_a_1_YY", "TPC_pt_b_1, TPC_a_1", YY);
-  a.AddCorrelation( "TPC_pt_b_1_TPC_a_1_XY", "TPC_pt_b_1, TPC_a_1", XY);
-  a.AddCorrelation( "TPC_pt_b_1_TPC_a_1_YX", "TPC_pt_b_1, TPC_a_1", YX);
-  a.AddCorrelation( "TPC_y_b_1_TPC_a_1_XX", "TPC_y_b_1, TPC_a_1", XX);
-  a.AddCorrelation( "TPC_y_b_1_TPC_a_1_YY", "TPC_y_b_1, TPC_a_1", YY);
-  a.AddCorrelation( "TPC_y_b_1_TPC_a_1_XY", "TPC_y_b_1, TPC_a_1", XY);
-  a.AddCorrelation( "TPC_y_b_1_TPC_a_1_YX", "TPC_y_b_1, TPC_a_1", YX);
+  a.AddCorrelation( "TPC_pt_a_1_TPC_b_1_XX", "TPC_pt_a_1, TPC_b_1", XX_EP);
+  a.AddCorrelation( "TPC_pt_a_1_TPC_b_1_YY", "TPC_pt_a_1, TPC_b_1", YY_EP);
+  a.AddCorrelation( "TPC_pt_a_1_TPC_b_1_XY", "TPC_pt_a_1, TPC_b_1", XY_EP);
+  a.AddCorrelation( "TPC_pt_a_1_TPC_b_1_YX", "TPC_pt_a_1, TPC_b_1", YX_EP);
+  a.AddCorrelation( "TPC_y_a_1_TPC_b_1_XX", "TPC_y_a_1, TPC_b_1", XX_EP);
+  a.AddCorrelation( "TPC_y_a_1_TPC_b_1_YY", "TPC_y_a_1, TPC_b_1", YY_EP);
+  a.AddCorrelation( "TPC_y_a_1_TPC_b_1_XY", "TPC_y_a_1, TPC_b_1", XY_EP);
+  a.AddCorrelation( "TPC_y_a_1_TPC_b_1_YX", "TPC_y_a_1, TPC_b_1", YX_EP);
+  a.AddCorrelation( "TPC_pt_b_1_TPC_a_1_XX", "TPC_pt_b_1, TPC_a_1", XX_EP);
+  a.AddCorrelation( "TPC_pt_b_1_TPC_a_1_YY", "TPC_pt_b_1, TPC_a_1", YY_EP);
+  a.AddCorrelation( "TPC_pt_b_1_TPC_a_1_XY", "TPC_pt_b_1, TPC_a_1", XY_EP);
+  a.AddCorrelation( "TPC_pt_b_1_TPC_a_1_YX", "TPC_pt_b_1, TPC_a_1", YX_EP);
+  a.AddCorrelation( "TPC_y_b_1_TPC_a_1_XX", "TPC_y_b_1, TPC_a_1", XX_EP);
+  a.AddCorrelation( "TPC_y_b_1_TPC_a_1_YY", "TPC_y_b_1, TPC_a_1", YY_EP);
+  a.AddCorrelation( "TPC_y_b_1_TPC_a_1_XY", "TPC_y_b_1, TPC_a_1", XY_EP);
+  a.AddCorrelation( "TPC_y_b_1_TPC_a_1_YX", "TPC_y_b_1, TPC_a_1", YX_EP);
 	
-  a.AddCorrelation( "TPC_a_2_TPC_b_2_XX", "TPC_a_2, TPC_b_2", XX);
-  a.AddCorrelation( "TPC_a_2_TPC_b_2_YY", "TPC_a_2, TPC_b_2", YY);
-  a.AddCorrelation( "TPC_a_2_TPC_b_2_XY", "TPC_a_2, TPC_b_2", XY);
-  a.AddCorrelation( "TPC_a_2_TPC_b_2_YX", "TPC_a_2, TPC_b_2", YX);
+  a.AddCorrelation( "TPC_a_2_TPC_b_2_XX", "TPC_a_2, TPC_b_2", X2X2_EP);
+  a.AddCorrelation( "TPC_a_2_TPC_b_2_YY", "TPC_a_2, TPC_b_2", Y2Y2_EP);
+  a.AddCorrelation( "TPC_a_2_TPC_b_2_XY", "TPC_a_2, TPC_b_2", X2Y2_EP);
+  a.AddCorrelation( "TPC_a_2_TPC_b_2_YX", "TPC_a_2, TPC_b_2", Y2X2_EP);
 //  a.AddCorrelation( "TPC_psi2A_psi2B", "TPC_a_2, TPC_b_2", psi2A_psi2B);
-  a.AddCorrelation( "TPC_pt_a_2_TPC_b_2_XX", "TPC_pt_a_2, TPC_b_2", XX);
-  a.AddCorrelation( "TPC_pt_a_2_TPC_b_2_YY", "TPC_pt_a_2, TPC_b_2", YY);
-  a.AddCorrelation( "TPC_pt_a_2_TPC_b_2_XY", "TPC_pt_a_2, TPC_b_2", XY);
-  a.AddCorrelation( "TPC_pt_a_2_TPC_b_2_YX", "TPC_pt_a_2, TPC_b_2", YX);
-  a.AddCorrelation( "TPC_y_a_2_TPC_b_2_XX", "TPC_y_a_2, TPC_b_2", XX);
-  a.AddCorrelation( "TPC_y_a_2_TPC_b_2_YY", "TPC_y_a_2, TPC_b_2", YY);
-  a.AddCorrelation( "TPC_y_a_2_TPC_b_2_XY", "TPC_y_a_2, TPC_b_2", XY);
-  a.AddCorrelation( "TPC_y_a_2_TPC_b_2_YX", "TPC_y_a_2, TPC_b_2", YX);
-  a.AddCorrelation( "TPC_pt_b_2_TPC_a_2_XX", "TPC_pt_b_2, TPC_a_2", XX);
-  a.AddCorrelation( "TPC_pt_b_2_TPC_a_2_YY", "TPC_pt_b_2, TPC_a_2", YY);
-  a.AddCorrelation( "TPC_pt_b_2_TPC_a_2_XY", "TPC_pt_b_2, TPC_a_2", XY);
-  a.AddCorrelation( "TPC_pt_b_2_TPC_a_2_YX", "TPC_pt_b_2, TPC_a_2", YX);
-  a.AddCorrelation( "TPC_y_b_2_TPC_a_2_XX", "TPC_y_b_2, TPC_a_2", XX);
-  a.AddCorrelation( "TPC_y_b_2_TPC_a_2_YY", "TPC_y_b_2, TPC_a_2", YY);
-  a.AddCorrelation( "TPC_y_b_2_TPC_a_2_XY", "TPC_y_b_2, TPC_a_2", XY);
-  a.AddCorrelation( "TPC_y_b_2_TPC_a_2_YX", "TPC_y_b_2, TPC_a_2", YX);
+  a.AddCorrelation( "TPC_pt_a_2_TPC_b_2_XX", "TPC_pt_a_2, TPC_b_2", X2X2_EP);
+  a.AddCorrelation( "TPC_pt_a_2_TPC_b_2_YY", "TPC_pt_a_2, TPC_b_2", Y2Y2_EP);
+  a.AddCorrelation( "TPC_pt_a_2_TPC_b_2_XY", "TPC_pt_a_2, TPC_b_2", X2Y2_EP);
+  a.AddCorrelation( "TPC_pt_a_2_TPC_b_2_YX", "TPC_pt_a_2, TPC_b_2", Y2X2_EP);
+  a.AddCorrelation( "TPC_y_a_2_TPC_b_2_XX", "TPC_y_a_2, TPC_b_2", X2X2_EP);
+  a.AddCorrelation( "TPC_y_a_2_TPC_b_2_YY", "TPC_y_a_2, TPC_b_2", Y2Y2_EP);
+  a.AddCorrelation( "TPC_y_a_2_TPC_b_2_XY", "TPC_y_a_2, TPC_b_2", X2Y2_EP);
+  a.AddCorrelation( "TPC_y_a_2_TPC_b_2_YX", "TPC_y_a_2, TPC_b_2", Y2X2_EP);
+  a.AddCorrelation( "TPC_pt_b_2_TPC_a_2_XX", "TPC_pt_b_2, TPC_a_2", X2X2_EP);
+  a.AddCorrelation( "TPC_pt_b_2_TPC_a_2_YY", "TPC_pt_b_2, TPC_a_2", Y2Y2_EP);
+  a.AddCorrelation( "TPC_pt_b_2_TPC_a_2_XY", "TPC_pt_b_2, TPC_a_2", X2Y2_EP);
+  a.AddCorrelation( "TPC_pt_b_2_TPC_a_2_YX", "TPC_pt_b_2, TPC_a_2", Y2X2_EP);
+  a.AddCorrelation( "TPC_y_b_2_TPC_a_2_XX", "TPC_y_b_2, TPC_a_2", X2X2_EP);
+  a.AddCorrelation( "TPC_y_b_2_TPC_a_2_YY", "TPC_y_b_2, TPC_a_2", Y2Y2_EP);
+  a.AddCorrelation( "TPC_y_b_2_TPC_a_2_XY", "TPC_y_b_2, TPC_a_2", X2Y2_EP);
+  a.AddCorrelation( "TPC_y_b_2_TPC_a_2_YX", "TPC_y_b_2, TPC_a_2", Y2X2_EP);
 	
 // end RS 2 harmonics
 

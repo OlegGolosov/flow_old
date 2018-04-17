@@ -26,7 +26,7 @@ cp $EXE_DIR/main ./
     do
         CALIB=calib_$(($i-1)).root
         echo Step $i...
-        ./main correct $FILE_LIST $CALIB $CENTRALITY &> log_qn_$i.txt
+        #./main correct $FILE_LIST $CALIB $CENTRALITY &> log_qn_$i.txt
         mv calib.root calib_$i.root
         mv qn.root qn_$i.root
     done
@@ -38,7 +38,7 @@ cp $EXE_DIR/main ./
         QN_FILE=qn_$i.root
         CORR_FILE=corr_$i.root
 
-#        ./main analysis $QN_FILE &> log_corr_${i}.txt
+        ./main analysis $QN_FILE &> log_corr_${i}.txt
         mv corr.root $CORR_FILE
     done
 
@@ -52,7 +52,7 @@ rm main
         CORR_FILE=$OUT_DIR/corr_$i.root
         GRAPH_FILE=$OUT_DIR/graph_$i.root
         LOG_FILE=$OUT_DIR/log_graph_$i.log
-#        root -b -l -q 'macro/save_profiles.C ("'$CORR_FILE'","'$GRAPH_FILE'")' &> $LOG_FILE
+        root -b -l -q 'macro/save_graphs.C ("'$CORR_FILE'","'$GRAPH_FILE'")' &> $LOG_FILE
     done
 
 cd $BATCH_DIR

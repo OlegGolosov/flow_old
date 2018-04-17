@@ -87,25 +87,25 @@ void TestTask::Initialize() {
     config->AddCorrectionOnQnVector(new QnCorrectionsQnVectorRecentering());
     auto rescale = new QnCorrectionsQnVectorTwistAndRescale();
     rescale->SetApplyTwist(true);
-    rescale->SetApplyRescale(false);
+    rescale->SetApplyRescale(true);
     rescale->SetTwistAndRescaleMethod(QnCorrectionsQnVectorTwistAndRescale::TWRESCALE_doubleHarmonic);
-    config->AddCorrectionOnQnVector(rescale);
+//    config->AddCorrectionOnQnVector(rescale);
   };
 
   auto confTracks = [](QnCorrectionsDetectorConfigurationBase *config) {
-//    config->SetQVectorNormalizationMethod(QnCorrectionsQnVector::QVNORM_QoverM); // SP
-    config->SetQVectorNormalizationMethod(QnCorrectionsQnVector::QVNORM_QoverQlength); // EP
+    config->SetQVectorNormalizationMethod(QnCorrectionsQnVector::QVNORM_QoverM); // SP
+//    config->SetQVectorNormalizationMethod(QnCorrectionsQnVector::QVNORM_QoverQlength); // EP
     config->AddCorrectionOnQnVector(new QnCorrectionsQnVectorRecentering());
     auto rescale = new QnCorrectionsQnVectorTwistAndRescale();
     rescale->SetApplyTwist(true);
     rescale->SetApplyRescale(true);
     rescale->SetTwistAndRescaleMethod(QnCorrectionsQnVectorTwistAndRescale::TWRESCALE_doubleHarmonic);
     config->AddCorrectionOnQnVector(rescale);
-};
+	};
 
   auto confPsi = [](QnCorrectionsDetectorConfigurationBase *config) {
     config->SetQVectorNormalizationMethod(QnCorrectionsQnVector::QVNORM_QoverQlength);
-};
+	};
 
   auto confMC = [](QnCorrectionsDetectorConfigurationBase *config) {
     config->SetQVectorNormalizationMethod(QnCorrectionsQnVector::QVNORM_QoverM);
