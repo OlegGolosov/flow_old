@@ -131,7 +131,7 @@ void SimpleTask::Configure(Qn::CorrelationManager &a) {
   const std::string sDet[] = { "PSD1", "PSD2", "PSD3", "TPC_pt", "TPC_y", "TPC_a_1", "TPC_b_1", "TPC_1", "TPC_2", "TPC_3"};
   const std::string sMc[] = { "MC_pT", "MC_eta"};
 
-  const std::string sTracks[] = { sDet[3], sDet[4], sDet[5], sDet[6] };
+  const std::string sTracks[] = { sDet[3], sDet[4], sDet[5], sDet[6], sDet[7], sDet[8], sDet[9] };
   const std::string sPsd[] = { sDet[0], sDet[1], sDet[2]};
 
   const std::string sPsdPsdName[] = { "PSD1, PSD2", "PSD1, PSD3", "PSD2, PSD3" };
@@ -206,7 +206,7 @@ void SimpleTask::Configure(Qn::CorrelationManager &a) {
 
 
   for (ushort iPsd=0; iPsd<3; ++iPsd)
-  for (ushort iTrack=0; iTrack<4; ++iTrack)
+  for (ushort iTrack=0; iTrack<7; ++iTrack)
   {
     a.AddCorrelation( sTracks[iTrack] + "_" + sPsd[iPsd]+ "_XX", sTracks[iTrack] + ", " + sPsd[iPsd], XX);
     a.AddCorrelation( sTracks[iTrack] + "_" + sPsd[iPsd]+ "_YY", sTracks[iTrack] + ", " + sPsd[iPsd], YY);
