@@ -29,6 +29,7 @@ class VarManager {
     kCentrality = 0,
     kMultiplicity,
     kEveto,
+    kNRun,
     kPt,
     kEta,
     kRapidity,
@@ -109,7 +110,8 @@ class VarManager {
 //    values[kCentrality] = centr -> GetCentrality(m);
 //    values[kCentrality] = event.GetImpactParameter(); // here NA49 centrality is stored
     values[kEveto] = event.GetPSDEnergy ();
-    values[kMultiplicity] = event.GetNVertexTracks();
+    values[kMultiplicity] = event.GetNVertexTracks ();
+    values[kNRun] = event.GetRunId ();
 		float Ebeam = 8.32e3;
 		std::vector <float> eVetoBins ({0., 0.169 * Ebeam, 0.314 * Ebeam, 0.509 * Ebeam, 0.66 * Ebeam, 0.778 * Ebeam, 9.e3});
 		for (u_short i = 0; i < eVetoBins.size () - 1; i++) 

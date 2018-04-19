@@ -89,6 +89,8 @@ protected:
   TFile *qa_file_;
 	std::map <std::string, std::vector <TH1*>*> hist1;
 	std::map <std::string, std::vector <TH2*>*> hist2;
+	int minRunNumber;
+	int maxRunNumber;
 
   DataTreeEvent *event_;
   CentralityManager *centr_;

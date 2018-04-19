@@ -143,6 +143,7 @@ void TestTask::Initialize() {
   manager.AddVariable("Centrality", VAR::Variables::kCentrality);
   manager.AddVariable("Multiplicity", VAR::Variables::kMultiplicity);
   manager.AddVariable("Eveto", VAR::Variables::kEveto);
+  manager.AddVariable("RunNumber", VAR::Variables::kNRun);
   manager.AddVariable("Pt", VAR::Variables::kPt);
   manager.AddVariable("Eta", VAR::Variables::kEta);
   manager.AddVariable("Rapidity", VAR::Variables::kRapidity);
@@ -243,10 +244,14 @@ void TestTask::Initialize() {
 //  manager.AddCorrectionAxis({"Centrality", 10, 0, 100});
 //  manager.SetEventVariable("Centrality");
 //  manager.AddHist1D("Centrality", 20,0.,100.);
-
+	int numberOfRuns = maxRunNumber - minRunNumber + 1;
+	maxRunNumber += 1;
   manager.AddCorrectionAxis({"Centrality", 6, 0, 6});
+  manager.AddCorrectionAxis({"RunNumber", numberOfRuns, minRunNumber, maxRunNumber});
   manager.SetEventVariable("Centrality");
+  manager.SetEventVariable("RunNumber");
   manager.AddHist1D("Centrality", 6, 0, 6);
+//  manager.AddHist1D({"RunNumber", numberOfRuns, minRunNumber, maxRunNumber});
 
   manager.SaveQVectorsToTree(*out_tree_);
   manager.SaveEventVariablesToTree(*out_tree_);
@@ -280,14 +285,7 @@ void TestTask::Finalize() {
     out_file_->Write();
     std::cout << "Output file written." << std::endl;
   }
-	
-//	TDirectory *dir;
-//	for (auto const& mh2 : hist2)
-//	{
-//		qa_file_ -> cd (mh2.first.c_str ());
-		qa_file_ -> Write ();
-//		for (ushort i = 0; i < mh2.second -> size (); i++) mh2.second -> at (i) -> Write ();
-//	}
+	qa_file_ -> Write ();
 }
 
 std::unique_ptr<TChain> TestTask::MakeChain(std::string filename, std::string treename) {
@@ -302,7 +300,12 @@ std::unique_ptr<TChain> TestTask::MakeChain(std::string filename, std::string tr
       std::cout << line << std::endl;
     }
   }
+	minRunNumber = chain -> GetMinimum("fRunId");
+	maxRunNumber = chain -> GetMaximum("fRunId");
   std::cout << "Number of entries = " << chain->GetEntries() << std::endl;
+  std::cout << "Fist run = " << minRunNumber << std::endl;
+  std::cout << "Last run = " << maxRunNumber << std::endl;
+	
   return chain;
 }
 
