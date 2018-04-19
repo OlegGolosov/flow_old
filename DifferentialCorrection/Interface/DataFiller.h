@@ -14,6 +14,13 @@
 #include "DataTreeEvent.h"
 #include "CentralityManager.h"
 
+#include "TH1D.h"
+#include "TH2D.h"
+#include "TProfile.h"
+#include "TProfile2D.h"
+
+
+
 namespace Qn {
 namespace Differential {
 namespace Interface {
@@ -42,9 +49,17 @@ class QnCuts
 class DataFiller {
 
  public:
-  explicit DataFiller() = default;
-  explicit DataFiller(DataTreeEvent* event) : event_(event) 
+  explicit DataFiller() = default; 
+  explicit DataFiller(DataTreeEvent* event, 
+											float *values,
+											std::map <std::string, std::vector <TH1*>*> &hist1, 
+											std::map <std::string, std::vector <TH2*>*> &hist2) : event_(event) 
   {
+		DataFiller::hist1 = &hist1;
+		DataFiller::hist2 = &hist2;
+		DataFiller::values = values;
+		
+//		int size = DataFiller::hist2 -> at ("TPC_1") -> size ();
 		Configure ();
   }
 
@@ -55,7 +70,7 @@ class DataFiller {
   void FillTrackingDetector(std::map<std::string, Detector> &detectors, const DataTreeEvent &event, std::string detectorName, u_short subevent = 0) const;
   void FillMCTrackingDetector(Qn::Detector &detector, const DataTreeEvent &event,  const bool isPidCut) const;
 
-  void FillPSD(Qn::Detector &detector, const DataTreeEvent &event, u_short ipsd) const ;
+  void FillPSD(std::map<std::string, Detector> &detectors, const DataTreeEvent &event, std::string detectorName, u_short ipsd) const ;
   void FillPsi(Qn::Detector &detector, const DataTreeEvent &event) const;
 
   void SetSetup(std::string setup) { setup_ = setup; }
@@ -70,6 +85,9 @@ private:
   bool issim_ {true};
   std::map <std::string, Qn::Differential::Interface::QnCuts> qnCuts;
   std::map <std::string, std::vector <u_short>> trackIndeces;
+	std::map <std::string, std::vector <TH1*>*> *hist1;
+	std::map <std::string, std::vector <TH2*>*> *hist2;
+	float *values;
 
 //   CentralityManager *centr_;
 

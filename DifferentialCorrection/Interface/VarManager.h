@@ -35,6 +35,8 @@ class VarManager {
     kPhi,
     kPid,
     kCharge,
+		kP,
+		kdEdx,
     kNVars
   };
 
@@ -74,6 +76,8 @@ class VarManager {
     values[kPid] = pid;
     values[kCharge] = track.GetCharge();
     values[kEta] = track.GetEta();
+    values[kP] = track.GetP();
+    values[kdEdx] = track.GetdEdx(3) * 0.001;
   }
 
   static void FillMCTrackInfo(const DataTreeMCTrack &track, float *values) {

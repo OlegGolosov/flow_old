@@ -12,6 +12,7 @@
 #include "cuts/isGoodEvent.h"
 
 
+class qa_file_;
 namespace Qn {
 
 TestTask::TestTask(std::string filelist, std::string incalib, std::string centrality) :
@@ -35,6 +36,7 @@ TestTask::TestTask(std::string filelist, std::string incalib, std::string centra
   std::unique_ptr<TTree> tree(new TTree("tree", "tree"));
   out_tree_ = std::move(tree);
   out_tree_raw = std::move(treeraw);
+	qa_file_ = new TFile ("qa.root", "RECREATE");
 }
 
 void TestTask::Run() {
@@ -54,6 +56,33 @@ void TestTask::Run() {
   }
   std::cout << "\n" << nGoodEvents << " good events from " << nEntries << std::endl;
   Finalize();
+}
+
+
+void TestTask::InitializeQA(std::string detectorName, DetectorType type)
+{
+	TDirectory *dir = qa_file_ -> mkdir (detectorName.c_str ());
+	dir -> cd ();
+	std::vector <TH1*> *h1 = new std::vector <TH1*>;
+	std::vector <TH2*> *h2 = new std::vector <TH2*>;
+	
+	if (type == DetectorType::Track)
+	{
+		h2 -> push_back (new TH2F (Form ("h2ypt_%s", detectorName.c_str ()),  Form ("pt:y (%s);#it{y};p_{T}", detectorName.c_str ()), 500, -1., 3., 500, 0., 2.5));
+		h2 -> push_back (new TH2F (Form ("h2phipt_%s", detectorName.c_str ()),  Form ("pt:phi (%s);#phi;p_{T}", detectorName.c_str ()), 500, -3.15, 3.15, 500, 0., 2.5));
+		h2 -> push_back (new TH2F (Form ("h2phiy_%s", detectorName.c_str ()),  Form ("phi:y (%s);#phi;#it{y}", detectorName.c_str ()), 500, -3.15, 3.15, 500, -1., 3.));
+		h2 -> push_back (new TH2F (Form ("h2dEdx_%s", detectorName.c_str ()),  Form ("dEdx:log(10*p) (%s);log(10*p);dEdx", detectorName.c_str ()), 500, -10., 10., 500, 0., 4.));
+		h2 -> push_back (new TH2F (Form ("h2centMult%s", detectorName.c_str ()),  Form ("mult:cent (%s);centrality class;subevent multiplicity", detectorName.c_str ()), 6, 0, 6, 100, 0, 100));
+		
+	}
+	if (type == DetectorType::Channel)
+	{
+		h2 -> push_back (new TProfile2D (Form ("p2modPosEnergy_%s", detectorName.c_str ()), Form ("module position vs energy (%s);x;y", detectorName.c_str ()), 150, -150, 150, 300, -150, 150));
+		h2 -> push_back (new TH2F (Form ("h2centE_%s", detectorName.c_str ()), Form ("Energy sum vs centrality (%s);centrality class;#sum E", detectorName.c_str ()), 6, 0, 6, 900, 0, 18000));
+	}
+	
+	hist1.insert(std::make_pair (detectorName, h1));
+	hist2.insert(std::make_pair (detectorName, h2));
 }
 
 void TestTask::Initialize() {
@@ -130,6 +159,8 @@ void TestTask::Initialize() {
   manager.AddDetector("PSD3", DetectorType::Channel, psd_size[2]);
   manager.AddDetector("TPC_1", DetectorType::Track);
   manager.AddDetector("TPC_2", DetectorType::Track);
+  manager.AddDetector("TPC_3", DetectorType::Track);
+  manager.AddDetector("TPC_3", DetectorType::Track);
   manager.AddDetector("TPC_a_1", DetectorType::Track);
   manager.AddDetector("TPC_b_1", DetectorType::Track);
   manager.AddDetector("TPC_a_2", DetectorType::Track);
@@ -149,13 +180,14 @@ void TestTask::Initialize() {
   {
     manager.AddDetector("MC_pT", DetectorType::Track, {ptaxis});
     manager.AddDetector("MC_eta", DetectorType::Track, {yaxis});
-    manager.AddDetector("PSI", DetectorType::Track);
+    manager.AddDetector("PSI", DetectorType::Track); // check if the third argument is missing
   }
   manager.SetCorrectionSteps("PSD1", confPsd);
   manager.SetCorrectionSteps("PSD2", confPsd);
   manager.SetCorrectionSteps("PSD3", confPsd);
   manager.SetCorrectionSteps("TPC_1", confTracks);
   manager.SetCorrectionSteps("TPC_2", confTracks);
+  manager.SetCorrectionSteps("TPC_3", confTracks);
   manager.SetCorrectionSteps("TPC_a_1", confTracks);
   manager.SetCorrectionSteps("TPC_b_1", confTracks);
   manager.SetCorrectionSteps("TPC_a_2", confTracks);
@@ -170,6 +202,28 @@ void TestTask::Initialize() {
   manager.SetCorrectionSteps("TPC_y_b_1", confTracks);
   manager.SetCorrectionSteps("TPC_pt_b_2", confTracks);
   manager.SetCorrectionSteps("TPC_y_b_2", confTracks);
+	
+  InitializeQA("PSD1", DetectorType::Channel);
+  InitializeQA("PSD2", DetectorType::Channel);
+  InitializeQA("PSD3", DetectorType::Channel);
+  InitializeQA("TPC_1", DetectorType::Track);
+  InitializeQA("TPC_2", DetectorType::Track);
+  InitializeQA("TPC_3", DetectorType::Track);
+  InitializeQA("TPC_a_1", DetectorType::Track);
+  InitializeQA("TPC_b_1", DetectorType::Track);
+  InitializeQA("TPC_a_2", DetectorType::Track);
+  InitializeQA("TPC_b_2", DetectorType::Track);
+  InitializeQA("TPC_pt", DetectorType::Track);
+  InitializeQA("TPC_y", DetectorType::Track);
+  InitializeQA("TPC_pt_a_1", DetectorType::Track);
+  InitializeQA("TPC_y_a_1", DetectorType::Track);
+  InitializeQA("TPC_pt_a_2", DetectorType::Track);
+  InitializeQA("TPC_y_a_2", DetectorType::Track);
+  InitializeQA("TPC_pt_b_1", DetectorType::Track);
+  InitializeQA("TPC_y_b_1", DetectorType::Track);
+  InitializeQA("TPC_pt_b_2", DetectorType::Track);
+  InitializeQA("TPC_y_b_2", DetectorType::Track);
+	
 
   if (issim_)
   {
@@ -203,15 +257,14 @@ void TestTask::Initialize() {
 void TestTask::Process() {
   manager.Reset();
 
-  Differential::Interface::DataFiller filler ( event_ );
+	VarManager::FillEventInfo(*event_, manager.GetVariableContainer(), setup_, centr_);
+  Differential::Interface::DataFiller filler ( event_, manager.GetVariableContainer(), hist1, hist2);
 
 //  filler.SetCentrality(centr_);
   filler.SetSetup(setup_);
   filler.SetIsSim(issim_);
 
   manager.FillDataToFramework(filler);
-
-  VarManager::FillEventInfo(*event_, manager.GetVariableContainer(), setup_, centr_);
 
   manager.Process();
   out_tree_->Fill();
@@ -227,6 +280,14 @@ void TestTask::Finalize() {
     out_file_->Write();
     std::cout << "Output file written." << std::endl;
   }
+	
+//	TDirectory *dir;
+//	for (auto const& mh2 : hist2)
+//	{
+//		qa_file_ -> cd (mh2.first.c_str ());
+		qa_file_ -> Write ();
+//		for (ushort i = 0; i < mh2.second -> size (); i++) mh2.second -> at (i) -> Write ();
+//	}
 }
 
 std::unique_ptr<TChain> TestTask::MakeChain(std::string filename, std::string treename) {

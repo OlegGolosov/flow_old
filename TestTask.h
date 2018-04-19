@@ -40,6 +40,7 @@ namespace Qn {
  * Qn vector analysis TestTask. It is to be configured by the user.
  * @brief TestTask for analysing qn vectors
  */
+ 
 class TestTask {
  public:
   TestTask() = default;
@@ -60,6 +61,8 @@ private:
    * Initializes TestTask;
    */
   virtual void Initialize();
+	
+  void InitializeQA(std::string detectorName, DetectorType type);
   /**
    * Processes one event;
    */
@@ -68,6 +71,7 @@ private:
    * Finalizes TestTask. Called after processing is done.
    */
   virtual void Finalize();
+	
   /**
    * Make TChain from file list
    * @param filename name of file containing paths to root files containing the input trees
@@ -82,6 +86,9 @@ protected:
   std::shared_ptr<TFile> out_calibration_file_;
   std::unique_ptr<TTree> out_tree_;
   std::unique_ptr<TTree> out_tree_raw;
+  TFile *qa_file_;
+	std::map <std::string, std::vector <TH1*>*> hist1;
+	std::map <std::string, std::vector <TH2*>*> hist2;
 
   DataTreeEvent *event_;
   CentralityManager *centr_;
