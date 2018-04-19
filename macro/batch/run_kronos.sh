@@ -2,8 +2,8 @@
 #SBATCH -J Flow
 #SBATCH -o out/%j.out.log
 #SBATCH -e error/%j.err.log
-#SBATCH --time=02:00:00
-#SBATCH --array=0-199
+#SBATCH --time=08:00:00
+#SBATCH --array=0
 
 EXE_DIR=$1
 OUT_DIR=$2
@@ -26,7 +26,7 @@ cp $EXE_DIR/main ./
     do
         CALIB=calib_$(($i-1)).root
         echo Step $i...
-        #./main correct $FILE_LIST $CALIB $CENTRALITY &> log_qn_$i.txt
+        ./main correct $FILE_LIST $CALIB $CENTRALITY &> log_qn_$i.txt
         mv calib.root calib_$i.root
         mv qn.root qn_$i.root
     done
