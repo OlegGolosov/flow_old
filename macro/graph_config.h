@@ -7,6 +7,8 @@ const TString XY[] = {"X", "Y"};
 
 const int colors[6] = {kBlue, kRed, kGreen+2, kMagenta, kBlack, kOrange};
 const int markers[6] = { 20, 21, 22, 26, 27, 1};
+//const int colors[] = {1, 2, 3, 4, kGreen+2, 6, 7, 8};
+//const int markers[] = {20, 21, 22, 23, 24, 25, 26, 27};
 
 const std::vector <float> centrality_bins = {0,15,35,60,100};
 
@@ -46,38 +48,81 @@ std::vector <std::vector<TString>> QQ_names =
 		{"TPC_b_1_PSD2", "#LTQ_{1,%s}^{TPC,b}Q_{1,%s}^{RCAL1}#GT"},
 		{"TPC_a_1_PSD3", "#LTQ_{1,%s}^{TPC,a}Q_{1,%s}^{RCAL2}#GT"},
 		{"TPC_b_1_PSD3", "#LTQ_{1,%s}^{TPC,b}Q_{1,%s}^{RCAL2}#GT"},
+		{"TPC_1_PSD1", "#LTQ_{1,%s}^{TPC1}Q_{1,%s}^{VCAL}#GT"},
+		{"TPC_1_PSD2", "#LTQ_{1,%s}^{TPC1}Q_{1,%s}^{RCAL1}#GT"},
+		{"TPC_1_PSD3", "#LTQ_{1,%s}^{TPC1}Q_{1,%s}^{RCAL2}#GT"},
+		{"TPC_2_PSD1", "#LTQ_{1,%s}^{TPC2}Q_{1,%s}^{VCAL}#GT"},
+		{"TPC_2_PSD2", "#LTQ_{1,%s}^{TPC2}Q_{1,%s}^{RCAL1}#GT"},
+		{"TPC_2_PSD3", "#LTQ_{1,%s}^{TPC2}Q_{1,%s}^{RCAL2}#GT"},
+		{"TPC_3_PSD1", "#LTQ_{1,%s}^{TPC3}Q_{1,%s}^{VCAL}#GT"},
+		{"TPC_3_PSD2", "#LTQ_{1,%s}^{TPC3}Q_{1,%s}^{RCAL1}#GT"},
+		{"TPC_3_PSD3", "#LTQ_{1,%s}^{TPC3}Q_{1,%s}^{RCAL2}#GT"},
 		{"PSD1_PSD2", "#LTQ_{1,%s}^{VCAL}Q_{1,%s}^{RCAL1}#GT"},
 		{"PSD1_PSD3", "#LTQ_{1,%s}^{VCAL}Q_{1,%s}^{RCAL2}#GT"},
 		{"PSD2_PSD3", "#LTQ_{1,%s}^{RCAL1}Q_{1,%s}^{RCAL2}#GT"}
 };
 
+std::vector <std::vector<TString>> QQQ_names = 
+{
+		{"TPC_1_PSD1_PSD2", "#LTQ_{2,%s}^{TPC1}Q_{1,%s}^{VCAL}Q_{1,%s}^{RCAL1}#GT"},
+		{"TPC_1_PSD1_PSD3", "#LTQ_{2,%s}^{TPC1}Q_{1,%s}^{VCAL}Q_{1,%s}^{RCAL2}#GT"},
+		{"TPC_1_PSD2_PSD3", "#LTQ_{2,%s}^{TPC1}Q_{1,%s}^{RCAL1}Q_{1,%s}^{RCAL2}#GT"},
+		{"TPC_2_PSD1_PSD2", "#LTQ_{2,%s}^{TPC2}Q_{1,%s}^{VCAL}Q_{1,%s}^{RCAL1}#GT"},
+		{"TPC_2_PSD1_PSD3", "#LTQ_{2,%s}^{TPC2}Q_{1,%s}^{VCAL}Q_{1,%s}^{RCAL2}#GT"},
+		{"TPC_2_PSD2_PSD3", "#LTQ_{2,%s}^{TPC2}Q_{1,%s}^{RCAL1}Q_{1,%s}^{RCAL2}#GT"},
+		{"TPC_3_PSD1_PSD2", "#LTQ_{2,%s}^{TPC3}Q_{1,%s}^{VCAL}Q_{1,%s}^{RCAL1}#GT"},
+		{"TPC_3_PSD1_PSD3", "#LTQ_{2,%s}^{TPC3}Q_{1,%s}^{VCAL}Q_{1,%s}^{RCAL2}#GT"},
+		{"TPC_3_PSD2_PSD3", "#LTQ_{2,%s}^{TPC3}Q_{1,%s}^{RCAL1}Q_{1,%s}^{RCAL2}#GT"}
+};
+
 std::vector <std::vector<TString>> uQ_names = 
 {
 		{"TPC_%s_a_1_TPC_b_1", "#LTu_{1,%s}^{TPC,a}Q_{1,%s}^{TPC,b}#GT"},
-		{"TPC_%s_b_1_TPC_a_1", "#LTu_{2,%s}^{TPC,a}Q_{2,%s}^{TPC,b}#GT"},
+		{"TPC_%s_b_1_TPC_a_1", "#LTu_{1,%s}^{TPC,b}Q_{1,%s}^{TPC,a}#GT"},
+		{"TPC_%s_a_2_TPC_b_2", "#LTu_{2,%s}^{TPC,a}Q_{2,%s}^{TPC,b}#GT"},
+		{"TPC_%s_b_2_TPC_a_2", "#LTu_{2,%s}^{TPC,b}Q_{2,%s}^{TPC,a}#GT"},
 		{"TPC_%s_PSD1", "#LTu_{1,%s}^{TPC}Q_{1,%s}^{VCAL}#GT"},
 		{"TPC_%s_PSD2", "#LTu_{1,%s}^{TPC}Q_{1,%s}^{RCAL1}#GT"},
-		{"TPC_%s_PSD3", "#LTu_{1,%s}^{TPC}Q_{1,%s}^{RCAL2}#GT"}
+		{"TPC_%s_PSD3", "#LTu_{1,%s}^{TPC}Q_{1,%s}^{RCAL2}#GT"},
+};
+
+std::vector <std::vector<TString>> uQQ_names = 
+{
+		{"TPC_%s_PSD1_PSD2", "#LTu_{2,%s}^{TPC}Q_{1,%s}^{VCAL}Q_{1,%s}^{RCAL1}#GT"},
+		{"TPC_%s_PSD1_PSD3", "#LTu_{2,%s}^{TPC}Q_{1,%s}^{VCAL}Q_{1,%s}^{RCAL2}#GT"},
+		{"TPC_%s_PSD2_PSD2", "#LTu_{2,%s}^{TPC}Q_{1,%s}^{RCAL1}Q_{1,%s}^{RCAL2}#GT"},
 };
 
 std::vector <std::vector<TString>> res_names = 
 {
-		{"R1_TPC_RS", "TPC_a_1_TPC_b_1", "TPC_a_1_TPC_b_1", "TPC_a_1_TPC_b_1", "R_{1,%s}^{TPC,RS}"},
-		{"R2_TPC_RS", "TPC_a_2_TPC_b_2", "TPC_a_2_TPC_b_2", "TPC_a_2_TPC_b_2", "R_{2,%s}^{TPC,RS}"},
-		{"R1_PSD1_3S", "PSD1_PSD2", "PSD1_PSD3", "PSD2_PSD3", "R_{1,%s}^{VCAL,3S}(RCAL1, RCAL2)"},
-		{"R1_PSD2_3S", "PSD1_PSD2", "PSD2_PSD3", "PSD1_PSD3", "R_{1,%s}^{RCAL1,3S}(VCAL, RCAL2)"},
-		{"R1_PSD3_3S", "PSD1_PSD3", "PSD2_PSD3", "PSD1_PSD2", "R_{1,%s}^{RCAL2,3S}(VCAL, RCAL1)"}
+		{"R1_TPC_RS_", "TPC_a_1_TPC_b_1_", "TPC_a_1_TPC_b_1_", "TPC_a_1_TPC_b_1_", "R_{1,%s}^{TPC,RS}"},
+		{"R2_TPC_RS_", "TPC_a_2_TPC_b_2_", "TPC_a_2_TPC_b_2_", "TPC_a_2_TPC_b_2_", "R_{2,%s}^{TPC,RS}"},
+		{"R1_PSD1_3S_", "PSD1_PSD2_", "PSD1_PSD3_", "PSD2_PSD3_", "R_{1,%s}^{VCAL,3S}(RCAL1, RCAL2)"},
+		{"R1_PSD2_3S_", "PSD1_PSD2_", "PSD2_PSD3_", "PSD1_PSD3_", "R_{1,%s}^{RCAL1,3S}(VCAL, RCAL2)"},
+		{"R1_PSD3_3S_", "PSD1_PSD3_", "PSD2_PSD3_", "PSD1_PSD2_", "R_{1,%s}^{RCAL2,3S}(VCAL, RCAL1)"}
 };
 
-std::vector <std::vector<TString>> flow_names = 
+std::vector <std::vector<TString>> res_names_QQQ = 
+{
+		{"R2_PSD1_1_MH_", "TPC_1_PSD1_PSD2_X2", "PSD1_PSD3_", "TPC_3_PSD2_PSD3_X2", "R_{1,%s}^{VCAL,MH}(PSD2, PSD3, TPC2, TPC3)"},
+		{"R2_PSD1_2_MH_", "TPC_1_PSD1_PSD3_X2", "PSD1_PSD2_", "TPC_3_PSD2_PSD3_X2", "R_{1,%s}^{VCAL,MH}(PSD2, PSD3, TPC2, TPC3)"},
+		{"R2_PSD1_3_MH_", "TPC_1_PSD1_PSD2_X2", "PSD1_PSD3_", "TPC_3_PSD2_PSD3_X2", "R_{1,%s}^{VCAL,MH}(PSD2, PSD3, TPC2, TPC3)"},
+		{"R2_PSD1_4_MH_", "TPC_1_PSD1_PSD3_X2", "PSD1_PSD2_", "TPC_3_PSD2_PSD3_X2", "R_{1,%s}^{VCAL,MH}(PSD2, PSD3, TPC2, TPC3)"},
+};
+
+std::vector <std::vector<TString>> V1_names = 
 {
 		{"V1_%s_RS_TPC_a", "TPC_%s_a_1_TPC_b_1", "R1_TPC_RS", "v_{1,%s}^{RS, TPCa}(%s)"},
 		{"V1_%s_RS_TPC_b", "TPC_%s_b_1_TPC_a_1", "R1_TPC_RS", "v_{1,%s}^{RS, TPCb}(%s)"},
-		{"V2_%s_RS_TPC_a", "TPC_%s_a_2_TPC_b_2", "R2_TPC_RS", "v_{2,%s}^{RS, TPCa}(%s)"},
-		{"V2_%s_RS_TPC_b", "TPC_%s_b_2_TPC_a_2", "R2_TPC_RS", "v_{2,%s}^{RS, TPCb}(%s)"},
 		{"V1_%s_3S_PSD1", "TPC_%s_PSD1", "R1_PSD1_3S", "v_{1,%s}^{3S, VCAL}(%s)"},
 		{"V1_%s_3S_PSD2", "TPC_%s_PSD2", "R1_PSD2_3S", "v_{1,%s}^{3S, RCAL1}(%s)"},
-		{"V1_%s_3S_PSD3", "TPC_%s_PSD3", "R1_PSD3_3S", "v_{1,%s}^{3S, RCAL2}(%s)"},
+		{"V1_%s_3S_PSD3", "TPC_%s_PSD3", "R1_PSD3_3S", "v_{1,%s}^{3S, RCAL2}(%s)"}
+};
+
+std::vector <std::vector<TString>> V2_names = 
+{
+		{"V2_%s_RS_TPC_a", "TPC_%s_a_2_TPC_b_2", "R2_TPC_RS", "v_{2,%s}^{RS, TPCa}(%s)"},
+		{"V2_%s_RS_TPC_b", "TPC_%s_b_2_TPC_a_2", "R2_TPC_RS", "v_{2,%s}^{RS, TPCb}(%s)"}
 };
 
 const TString sres[][5] =
@@ -117,8 +162,6 @@ const TString sres[][5] =
     { "TPC_R2_PSD2_PSD3_X2YY", "PSD1_PSD3_YY", "TPC_R2_PSD1_PSD2_X2YY", "RES_PSD3_Y_2", "<Q^{PSD1}_{y}  Q^{PSD3}_{y}> <Q^{TPC}_{2,x} Q^{PSD2}_{y}  Q^{PSD3}_{y}> / < Q^{TPC}_{2,x} Q^{PSD1}_{y}  Q^{PSD2}_{y}>" }, //PSD3 Y
     { "TPC_R2_PSD1_PSD3_Y2XY", "PSD2_PSD3_YY", "TPC_R2_PSD1_PSD2_Y2XY", "RES_PSD3_Y_3", "<Q^{PSD2}_{y}  Q^{PSD3}_{y}> <Q^{TPC}_{2,y} Q^{PSD1}_{x}  Q^{PSD3}_{y}> / < Q^{TPC}_{2,y} Q^{PSD1}_{x}  Q^{PSD2}_{y}>"},  //PSD3 Y
     { "TPC_R2_PSD2_PSD3_Y2XY", "PSD1_PSD3_YY", "TPC_R2_PSD1_PSD2_Y2YX", "RES_PSD3_Y_4", "<Q^{PSD1}_{y}  Q^{PSD3}_{y}> <Q^{TPC}_{2,y} Q^{PSD2}_{x}  Q^{PSD3}_{y}> / < Q^{TPC}_{2,y} Q^{PSD2}_{x}  Q^{PSD1}_{y}>"}  //PSD3 Y
-
-
 };
 
 void plot_axis(const float xmin, const float xmax, const float ymin, const float ymax,
@@ -218,7 +261,7 @@ void plot_na49_pion_v1(Int_t iVar, Int_t iCentr, TLegend &legend)
     NA49_v1->SetFillStyle(3014);
     NA49_v1->SetFillColor(kGreen-2);
 
-    legend.AddEntry(NA49_v1,"NA49","f");
+//    legend.AddEntry(NA49_v1,"NA49","f");
 
     NA49_v1 -> Draw("samePLE3");
 
@@ -236,5 +279,4 @@ void plot_na49_pion_v2(Int_t iVar, Int_t iCentr, TLegend &legend)
     legend.AddEntry(NA49_v2,"NA49","f");
 
     NA49_v2 -> Draw("samePLE3");
-
 }
