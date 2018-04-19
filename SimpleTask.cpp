@@ -76,8 +76,13 @@ void SimpleTask::Configure(Qn::CorrelationManager &a) {
   a.AddDataContainer("PSD1");
   a.AddDataContainer("PSD2");
   a.AddDataContainer("PSD3");
-  a.AddDataContainer("TPC_y");
+  a.AddDataContainer("TPC_1");
+  a.AddDataContainer("TPC_2");
+  a.AddDataContainer("TPC_3");
+	a.AddDataContainer("TPC_y");
   a.AddDataContainer("TPC_pt");
+	
+	//RS
   a.AddDataContainer("TPC_a_1");
   a.AddDataContainer("TPC_b_1");
   a.AddDataContainer("TPC_a_2");
@@ -123,7 +128,7 @@ void SimpleTask::Configure(Qn::CorrelationManager &a) {
 //  a.AddEventVariable({"Multiplicity", multBins10});
 //  a.AddFunction("TPC", Rebin);
 
-  const std::string sDet[] = { "PSD1", "PSD2", "PSD3", "TPC_pt", "TPC_y", "TPC_a_1", "TPC_b_1", "TPC_1", "TPC_2"};
+  const std::string sDet[] = { "PSD1", "PSD2", "PSD3", "TPC_pt", "TPC_y", "TPC_a_1", "TPC_b_1", "TPC_1", "TPC_2", "TPC_3"};
   const std::string sMc[] = { "MC_pT", "MC_eta"};
 
   const std::string sTracks[] = { sDet[3], sDet[4], sDet[5], sDet[6] };
@@ -216,20 +221,30 @@ void SimpleTask::Configure(Qn::CorrelationManager &a) {
     a.AddCorrelation(sPsdPsd[iDet] + "_XY", sPsdPsdName[iDet], XY);
     a.AddCorrelation(sPsdPsd[iDet] + "_YX", sPsdPsdName[iDet], YX);
 
-//    a.AddCorrelation("TPC_R2_" + sPsdPsd[iDet] + "_X2XX", "TPC_R2, " + sPsdPsdName[iDet], X2XX);
-//    a.AddCorrelation("TPC_R2_" + sPsdPsd[iDet] + "_X2YY", "TPC_R2, " + sPsdPsdName[iDet], X2YY);
-//    a.AddCorrelation("TPC_R2_" + sPsdPsd[iDet] + "_Y2XY", "TPC_R2, " + sPsdPsdName[iDet], Y2XY);
-//    a.AddCorrelation("TPC_R2_" + sPsdPsd[iDet] + "_Y2YX", "TPC_R2, " + sPsdPsdName[iDet], Y2YX);
-//
-//    a.AddCorrelation("TPC_y_" + sPsdPsd[iDet] + "_X2XX", "TPC_y, " + sPsdPsdName[iDet], X2XX);
-//    a.AddCorrelation("TPC_y_" + sPsdPsd[iDet] + "_X2YY", "TPC_y, " + sPsdPsdName[iDet], X2YY);
-//    a.AddCorrelation("TPC_y_" + sPsdPsd[iDet] + "_Y2XY", "TPC_y, " + sPsdPsdName[iDet], Y2XY);
-//    a.AddCorrelation("TPC_y_" + sPsdPsd[iDet] + "_Y2YX", "TPC_y, " + sPsdPsdName[iDet], Y2YX);
-//
-//    a.AddCorrelation("TPC_pT_" + sPsdPsd[iDet] + "_X2XX", "TPC_pT, " + sPsdPsdName[iDet], X2XX);
-//    a.AddCorrelation("TPC_pT_" + sPsdPsd[iDet] + "_X2YY", "TPC_pT, " + sPsdPsdName[iDet], X2YY);
-//    a.AddCorrelation("TPC_pT_" + sPsdPsd[iDet] + "_Y2XY", "TPC_pT, " + sPsdPsdName[iDet], Y2XY);
-//    a.AddCorrelation("TPC_pT_" + sPsdPsd[iDet] + "_Y2YX", "TPC_pT, " + sPsdPsdName[iDet], Y2YX);
+    a.AddCorrelation("TPC_1_" + sPsdPsd[iDet] + "_X2XX", "TPC_1, " + sPsdPsdName[iDet], X2XX);
+    a.AddCorrelation("TPC_1_" + sPsdPsd[iDet] + "_X2YY", "TPC_1, " + sPsdPsdName[iDet], X2YY);
+    a.AddCorrelation("TPC_1_" + sPsdPsd[iDet] + "_Y2XY", "TPC_1, " + sPsdPsdName[iDet], Y2XY);
+    a.AddCorrelation("TPC_1_" + sPsdPsd[iDet] + "_Y2YX", "TPC_1, " + sPsdPsdName[iDet], Y2YX);
+		
+    a.AddCorrelation("TPC_2_" + sPsdPsd[iDet] + "_X2XX", "TPC_2, " + sPsdPsdName[iDet], X2XX);
+    a.AddCorrelation("TPC_2_" + sPsdPsd[iDet] + "_X2YY", "TPC_2, " + sPsdPsdName[iDet], X2YY);
+    a.AddCorrelation("TPC_2_" + sPsdPsd[iDet] + "_Y2XY", "TPC_2, " + sPsdPsdName[iDet], Y2XY);
+    a.AddCorrelation("TPC_2_" + sPsdPsd[iDet] + "_Y2YX", "TPC_2, " + sPsdPsdName[iDet], Y2YX);
+		
+    a.AddCorrelation("TPC_3_" + sPsdPsd[iDet] + "_X2XX", "TPC_3, " + sPsdPsdName[iDet], X2XX);
+    a.AddCorrelation("TPC_3_" + sPsdPsd[iDet] + "_X2YY", "TPC_3, " + sPsdPsdName[iDet], X2YY);
+    a.AddCorrelation("TPC_3_" + sPsdPsd[iDet] + "_Y2XY", "TPC_3, " + sPsdPsdName[iDet], Y2XY);
+    a.AddCorrelation("TPC_3_" + sPsdPsd[iDet] + "_Y2YX", "TPC_3, " + sPsdPsdName[iDet], Y2YX);
+
+    a.AddCorrelation("TPC_y_" + sPsdPsd[iDet] + "_X2XX", "TPC_y, " + sPsdPsdName[iDet], X2XX);
+    a.AddCorrelation("TPC_y_" + sPsdPsd[iDet] + "_X2YY", "TPC_y, " + sPsdPsdName[iDet], X2YY);
+    a.AddCorrelation("TPC_y_" + sPsdPsd[iDet] + "_Y2XY", "TPC_y, " + sPsdPsdName[iDet], Y2XY);
+    a.AddCorrelation("TPC_y_" + sPsdPsd[iDet] + "_Y2YX", "TPC_y, " + sPsdPsdName[iDet], Y2YX);
+
+    a.AddCorrelation("TPC_pt_" + sPsdPsd[iDet] + "_X2XX", "TPC_pt, " + sPsdPsdName[iDet], X2XX);
+    a.AddCorrelation("TPC_pt_" + sPsdPsd[iDet] + "_X2YY", "TPC_pt, " + sPsdPsdName[iDet], X2YY);
+    a.AddCorrelation("TPC_pt_" + sPsdPsd[iDet] + "_Y2XY", "TPC_pt, " + sPsdPsdName[iDet], Y2XY);
+    a.AddCorrelation("TPC_pt_" + sPsdPsd[iDet] + "_Y2YX", "TPC_pt, " + sPsdPsdName[iDet], Y2YX);
   }
 }
 

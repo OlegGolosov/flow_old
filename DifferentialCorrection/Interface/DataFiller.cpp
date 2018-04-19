@@ -13,6 +13,38 @@ namespace Differential {
 namespace Interface {
 
 
+  void DataFiller::Configure ()
+  {
+    std::vector <short> u_pid = {-211};
+    std::vector <short> Q_pid = {2212, -211, 211};
+    Qn::Differential::Interface::QnCuts u_pt (u_pid, -999, 999, 0.0, 1.8);
+    Qn::Differential::Interface::QnCuts u_y (u_pid, 0.0, 2.0, -999, 999);
+    Qn::Differential::Interface::QnCuts Q_fproton ({2212}, 0.0, 2.5, 0.0, 3.0);
+    Qn::Differential::Interface::QnCuts Q_fpiplus ({211}, 0.0, 2.5, 0.0, 3.0);
+    Qn::Differential::Interface::QnCuts Q_fpiminus ({-211}, 0.0, 2.5, 0.0, 3.0);
+    Qn::Differential::Interface::QnCuts Q1 (Q_pid, 0.0, 1.0, 0.8, 2.8, VarManager::Variables::kRapidity);
+    Qn::Differential::Interface::QnCuts Q2 (Q_pid, 0.0, 1.0, -0.4, 1.8, VarManager::Variables::kPt);
+	
+    qnCuts.insert(std::make_pair("TPC_1", Q_fproton));
+    qnCuts.insert(std::make_pair("TPC_2", Q_fpiplus));
+    qnCuts.insert(std::make_pair("TPC_3", Q_fpiminus));
+    qnCuts.insert(std::make_pair("TPC_a_1", Q1));
+    qnCuts.insert(std::make_pair("TPC_a_2", Q2));
+    qnCuts.insert(std::make_pair("TPC_b_1", Q1));
+    qnCuts.insert(std::make_pair("TPC_b_2", Q2));
+    qnCuts.insert(std::make_pair("TPC_pt", u_pt));
+    qnCuts.insert(std::make_pair("TPC_y", u_y));
+    qnCuts.insert(std::make_pair("TPC_pt_a_1", u_pt));
+    qnCuts.insert(std::make_pair("TPC_y_a_1", u_y));
+    qnCuts.insert(std::make_pair("TPC_pt_a_2", u_pt));
+    qnCuts.insert(std::make_pair("TPC_y_a_2", u_y));
+    qnCuts.insert(std::make_pair("TPC_pt_b_1", u_pt));
+    qnCuts.insert(std::make_pair("TPC_y_b_1", u_y));
+    qnCuts.insert(std::make_pair("TPC_pt_b_2", u_pt));
+    qnCuts.insert(std::make_pair("TPC_y_b_2", u_y));
+  }
+	
+	
 	void DataFiller::Fill(std::map<std::string, Detector> &detectors) //const
 	{
 		FillTrackIndex (detectors, *event_, "TPC_a_1");
@@ -32,6 +64,7 @@ namespace Interface {
 		
     FillTrackingDetector(detectors, *event_, "TPC_1");
     FillTrackingDetector(detectors, *event_, "TPC_2");
+    FillTrackingDetector(detectors, *event_, "TPC_3");
     FillTrackingDetector(detectors, *event_, "TPC_pt");
     FillTrackingDetector(detectors, *event_, "TPC_y");
     FillTrackingDetector(detectors, *event_, "TPC_a_1", 1);
@@ -47,30 +80,9 @@ namespace Interface {
     FillTrackingDetector(detectors, *event_, "TPC_pt_b_2", 2);
     FillTrackingDetector(detectors, *event_, "TPC_y_b_2", 2);
 
-    try { detectors.at("PSD1").GetNChannels(); }
-    catch (std::out_of_range &)
-    {
-//    throw std::out_of_range(
-    std::cout << "PSD1 was not found in the list of detectors. It needs to be created before it can be filled." << std::endl;//);
-    }
-
-    try { detectors.at("PSD2").GetNChannels(); }
-    catch (std::out_of_range &)
-    {
-//    throw std::out_of_range(
-    std::cout << "PSD2 was not found in the list of detectors. It needs to be created before it can be filled." << std::endl;//);
-    }
-
-    try { detectors.at("PSD3").GetNChannels(); }
-    catch (std::out_of_range &)
-    {
-//    throw std::out_of_range(
-    std::cout << "PSD3 was not found in the list of detectors. It needs to be created before it can be filled." << std::endl;//);
-    }
-
-    FillPSD(detectors.at("PSD1"), *event_, 0);
-    FillPSD(detectors.at("PSD2"), *event_, 1);
-    FillPSD(detectors.at("PSD3"), *event_, 2);
+    FillPSD(detectors, *event_, "PSD1", 0);
+    FillPSD(detectors, *event_, "PSD2", 1);
+    FillPSD(detectors, *event_, "PSD3", 2);
 
     if ( issim_ )
     {
@@ -78,35 +90,6 @@ namespace Interface {
         FillMCTrackingDetector(detectors.at("MC_pT"), *event_, true);
         FillMCTrackingDetector(detectors.at("MC_eta"), *event_, true);
     }
-  }
-
-  void DataFiller::Configure ()
-  {
-    std::vector <short> u_pid = {-211};
-    std::vector <short> Q_pid = {2212, -211, 211};
-    Qn::Differential::Interface::QnCuts u_pt (u_pid, -999, 999, 0.0, 1.8);
-    Qn::Differential::Interface::QnCuts u_y (u_pid, 0.0, 2.0, -999, 999);
-    Qn::Differential::Interface::QnCuts Q_fproton ({2212}, 0.0, 2.5, 0.0, 3.0);
-    Qn::Differential::Interface::QnCuts Q_fpiplus ({211}, 0.0, 2.5, 0.0, 3.0);
-    Qn::Differential::Interface::QnCuts Q1 (Q_pid, 0.0, 1.0, 0.8, 2.8, VarManager::Variables::kRapidity);
-    Qn::Differential::Interface::QnCuts Q2 (Q_pid, 0.0, 1.0, -0.4, 1.8, VarManager::Variables::kPt);
-	
-    qnCuts.insert(std::make_pair("TPC_1", Q_fproton));
-    qnCuts.insert(std::make_pair("TPC_2", Q_fpiplus));
-    qnCuts.insert(std::make_pair("TPC_a_1", Q1));
-    qnCuts.insert(std::make_pair("TPC_a_2", Q2));
-    qnCuts.insert(std::make_pair("TPC_b_1", Q1));
-    qnCuts.insert(std::make_pair("TPC_b_2", Q2));
-    qnCuts.insert(std::make_pair("TPC_pt", u_pt));
-    qnCuts.insert(std::make_pair("TPC_y", u_y));
-    qnCuts.insert(std::make_pair("TPC_pt_a_1", u_pt));
-    qnCuts.insert(std::make_pair("TPC_y_a_1", u_y));
-    qnCuts.insert(std::make_pair("TPC_pt_a_2", u_pt));
-    qnCuts.insert(std::make_pair("TPC_y_a_2", u_y));
-    qnCuts.insert(std::make_pair("TPC_pt_b_1", u_pt));
-    qnCuts.insert(std::make_pair("TPC_y_b_1", u_y));
-    qnCuts.insert(std::make_pair("TPC_pt_b_2", u_pt));
-    qnCuts.insert(std::make_pair("TPC_y_b_2", u_y));
   }
 
 
@@ -172,14 +155,17 @@ namespace Interface {
     Qn::Differential::Interface::QnCuts qnCut = qnCuts.at (detectorName);
 		std::vector <u_short> index;
 		if (subevent != 0) index = trackIndeces.at (detectorName);
-    auto values = new float[VarManager::Variables::kNVars];
+//    auto values = new float[VarManager::Variables::kNVars];
     DataTreeTrack *track = nullptr;
-    short pid;
-    float pt, y, phi, weight;
+    short pid, charge, mult = 0;
+    float pt, y, phi, p, dEdx, weight, cent = values [VarManager::Variables::kCentrality];
     auto &datacontainer = detector.GetDataContainer();
     auto &axes = datacontainer->GetAxes();
     std::vector<float> trackparams;
     trackparams.reserve(axes.size());
+		
+		std::vector <TH1*> *h1 = hist1 -> at (detectorName);
+		std::vector <TH2*> *h2 = hist2 -> at (detectorName);
 
     u_short ntracks;
     if (setup_ == "na61" || setup_ == "na49") ntracks = event.GetNVertexTracks();
@@ -190,8 +176,6 @@ namespace Interface {
                   [ntracks](std::vector<DataVector> &vector) { vector.reserve(ntracks); });
 
     bool skipFlag;
-		u_short size = index.size ();
-		size = index.size () / 2;
 		u_short indexMin = (index.size () / 2) * (subevent - 1);
 		u_short indexMax = indexMin + index.size () / 2;
     for (u_short itrack = 0; itrack < ntracks; itrack++) 
@@ -209,6 +193,9 @@ namespace Interface {
 			pt = values[VarManager::Variables::kPt];
 			y = values[VarManager::Variables::kRapidity];
 			phi = values[VarManager::Variables::kPhi];
+			p = values[VarManager::Variables::kP];
+			dEdx = values[VarManager::Variables::kdEdx];
+			charge = values[VarManager::Variables::kCharge];
 			if (qnCut.weight != -999) weight = values [qnCut.weight];
 			else weight = 1.0;
 
@@ -222,7 +209,6 @@ namespace Interface {
 			{
 				for (u_short i = indexMin; i < indexMax; i++)
 				{
-					u_short ind = index [i];
 					if (itrack == index [i]) 
 					{
 						skipFlag = true; 
@@ -232,24 +218,31 @@ namespace Interface {
 			}
 			if (skipFlag) continue;
 			
+			mult++;
+			h2 -> at (0) -> Fill (y, pt);
+			h2 -> at (1) -> Fill (phi, pt);
+			h2 -> at (2) -> Fill (phi, y);
+			h2 -> at (3) -> Fill (log (10 * p) * charge, dEdx);
+			
+			
 			for (const auto num : detector.GetEnums()) {trackparams.push_back(values[num]);}
 
 			try 
 			{
 				datacontainer->CallOnElement
 				(	
-//					trackparams, [phi, weight] (std::vector<DataVector> &vector) 
-//					{
-//						vector.emplace_back(phi, weight);
-//					}
+					trackparams, [phi, weight] (std::vector<DataVector> &vector) 
+					{
+						vector.emplace_back(phi, weight);
+					}
 //					trackparams, [values, weight] (std::vector<DataVector> &vector) 
 //					{
 //						vector.emplace_back(values[VarManager::Variables::kPhi], weight);
 //					}
-					trackparams, [values] (std::vector<DataVector> &vector) 
-					{
-						vector.emplace_back(values[VarManager::Variables::kPhi]);
-					}
+//					trackparams, [values] (std::vector<DataVector> &vector) 
+//					{
+//						vector.emplace_back(values[VarManager::Variables::kPhi]);
+//					}
 				);
 			}
 			catch (std::exception & a) {
@@ -258,12 +251,27 @@ namespace Interface {
 			}
 				trackparams.clear();
     }
-    delete[] values;
+		
+		h2 -> at (4) -> Fill (cent, mult);
+//    delete[] values;
 	}
 
-  void DataFiller::FillPSD(Qn::Detector &detector, const DataTreeEvent &event, u_short ipsd) const
+  void DataFiller::FillPSD(std::map<std::string, Detector> &detectors, const DataTreeEvent &event, std::string detectorName, u_short ipsd) const
   {
+		try { detectors.at(detectorName).GetNChannels();}
+    catch (std::out_of_range &)
+    {
+      std::string error = detectorName + " was not found in the list of detectors. It needs to be created before it can be filled.\n"; ;
+      throw std::out_of_range (error);
+      return;
+    }
+
+    Qn::Detector& detector = detectors.at (detectorName);
     auto &datacontainer = detector.GetDataContainer();
+		std::vector <TH1*> *h1 = hist1 -> at (detectorName);
+		std::vector <TH2*> *h2 = hist2 -> at (detectorName);
+		float sumW = 0;
+		float cent = values [VarManager::Variables::kCentrality];
 
     float psdxshift = 0.0;
     const std::vector<std::vector<int>> *psdpos;
@@ -303,24 +311,26 @@ namespace Interface {
       double x = module->GetPositionComponent(0) - psdxshift;
       double y = module->GetPositionComponent(1);
       const double weight = module->GetEnergy();
-
+			
       // patch
 
-      if (ich == 1) {x = -1; y = -1;}
-      if (ich == 2) {x = 1; y = -1;}
-      if (ich == 3) {x = 1; y = 1;}
-      if (ich == 4) {x = -1; y = 1;}
+      if (ich == 1) {x = -10; y = -10;}
+      if (ich == 2) {x = 10; y = -10;}
+      if (ich == 3) {x = 10; y = 10;}
+      if (ich == 4) {x = -10; y = 10;}
 
       // end patch
 
-//       std::cout << ipsd << " " << x << " " << y << " " << weight << std::endl;
-
-      if (weight > 0) {
+      if (weight > 0) 
+			{
+				sumW += weight;
+				h2 -> at (0) -> Fill (x, y, weight);
         datacontainer->CallOnElement([ich, y, x, weight](std::vector<DataVector> &vector) {
           vector.emplace_back(TMath::ATan2(y, x), weight);
         });
       }
     }
+		h2 -> at (1) -> Fill (cent, sumW);
   }
 
   void DataFiller::FillPsi(Qn::Detector &detector, const DataTreeEvent &event) const
