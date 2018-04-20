@@ -247,7 +247,7 @@ void TestTask::Initialize() {
 	int numberOfRuns = maxRunNumber - minRunNumber + 1;
 	maxRunNumber += 1;
   manager.AddCorrectionAxis({"Centrality", 6, 0, 6});
-  manager.AddCorrectionAxis({"RunNumber", numberOfRuns, minRunNumber, maxRunNumber});
+//  manager.AddCorrectionAxis({"RunNumber", numberOfRuns, minRunNumber, maxRunNumber});
   manager.SetEventVariable("Centrality");
   manager.SetEventVariable("RunNumber");
   manager.AddHist1D("Centrality", 6, 0, 6);
