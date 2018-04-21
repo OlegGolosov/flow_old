@@ -18,7 +18,9 @@ namespace Interface {
     std::vector <short> u_pid = {-211};
     std::vector <short> Q_pid = {2212, -211, 211};
     Qn::Differential::Interface::QnCuts u_pt (u_pid, -999, 999, 0.0, 1.8);
+//    Qn::Differential::Interface::QnCuts u_pt (u_pid, -999, 999, 0.8, 1.8); // forward Y configuration
     Qn::Differential::Interface::QnCuts u_y (u_pid, 0.0, 2.0, -999, 999);
+//    Qn::Differential::Interface::QnCuts u_y (u_pid, 0.05, 2.0, -999, 999); // victor_cuts
     Qn::Differential::Interface::QnCuts Q_fproton ({2212}, 0.0, 2.5, 0.0, 3.0);
     Qn::Differential::Interface::QnCuts Q_fpiplus ({211}, 0.0, 2.5, 0.0, 3.0);
     Qn::Differential::Interface::QnCuts Q_fpiminus ({-211}, 0.0, 2.5, 0.0, 3.0);
