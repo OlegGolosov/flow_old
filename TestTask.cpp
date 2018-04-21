@@ -78,7 +78,9 @@ void TestTask::InitializeQA(std::string detectorName, DetectorType type)
 	if (type == DetectorType::Channel)
 	{
 		h2 -> push_back (new TProfile2D (Form ("p2modPosEnergy_%s", detectorName.c_str ()), Form ("module position vs energy (%s);x;y", detectorName.c_str ()), 150, -150, 150, 300, -150, 150));
-		h2 -> push_back (new TH2F (Form ("h2centE_%s", detectorName.c_str ()), Form ("Energy sum vs centrality (%s);centrality class;#sum E", detectorName.c_str ()), 6, 0, 6, 900, 0, 18000));
+		h2 -> push_back (new TH2F (Form ("h2centEsum_%s", detectorName.c_str ()), Form ("Energy sum vs centrality (%s);centrality class;#sum E", detectorName.c_str ()), 6, 0, 6, 900, 0, 18000));
+		h2 -> push_back (new TH2F (Form ("h2centEveto_%s", detectorName.c_str ()), "Centrality vs Eveto;centrality class;E_{VCAL}", 6, 0, 6, 450, 0, 9000));
+		h2 -> push_back (new TH2F (Form ("h2EvetoEsum_%s", detectorName.c_str ()), Form ("Energy sum vs Eveto (%s);E_{VCAL};#sum E", detectorName.c_str ()), 450, 0, 9000, 900, 0, 18000));
 	}
 	
 	hist1.insert(std::make_pair (detectorName, h1));

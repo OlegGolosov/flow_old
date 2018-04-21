@@ -272,6 +272,7 @@ namespace Interface {
 		std::vector <TH2*> *h2 = hist2 -> at (detectorName);
 		float sumW = 0;
 		float cent = values [VarManager::Variables::kCentrality];
+		float Eveto = values [VarManager::Variables::kEveto];
 
     float psdxshift = 0.0;
     const std::vector<std::vector<int>> *psdpos;
@@ -314,10 +315,10 @@ namespace Interface {
 			
       // patch
 
-      if (ich == 1) {x = -10; y = -10;}
-      if (ich == 2) {x = 10; y = -10;}
-      if (ich == 3) {x = 10; y = 10;}
-      if (ich == 4) {x = -10; y = 10;}
+      if (ich == 1) {x = -18; y = -18;}
+      if (ich == 2) {x = 18; y = -18;}
+      if (ich == 3) {x = 18; y = 18;}
+      if (ich == 4) {x = -18; y = 18;}
 
       // end patch
 
@@ -331,6 +332,8 @@ namespace Interface {
       }
     }
 		h2 -> at (1) -> Fill (cent, sumW);
+		h2 -> at (2) -> Fill (cent, Eveto);
+		h2 -> at (3) -> Fill (Eveto, sumW);
   }
 
   void DataFiller::FillPsi(Qn::Detector &detector, const DataTreeEvent &event) const

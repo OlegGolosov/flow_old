@@ -20,13 +20,16 @@ TFile *fIn {nullptr};
 TFile *fOut {nullptr};
 TFile *fTemp {nullptr};
 
-void save_graphs(TString inputFileName = "~/Desktop/analysis/NA49_flow/corr_1.root",
-                   TString outputFileName = "~/Desktop/analysis/NA49_flow/graph_1.root")
+void save_graphs(TString inputFileName = "~/Desktop/analysis/NA49_flow/corr_2.root",
+                   TString outputFileName = "~/Desktop/analysis/NA49_flow/graph_2.root")
 {		
 //		inputFileName = "~/Desktop/analysis/flow/build/corr.root";
 //		outputFileName = "~/Desktop/analysis/flow/build/graph.root";
-		
-//    gStyle->SetOptStat(0);
+		inputFileName = "~/Desktop/analysis/NA49_flow/pipi_nw/corr_2.root";
+		outputFileName = "~/Desktop/analysis/NA49_flow/pipi_nw/graph_2.root";
+	
+		cout << inputFileName << endl;
+		cout << outputFileName << endl;
 		
     fIn = TFile::Open(inputFileName);
     fTemp = new TFile (outputFileName + "_", "recreate");
@@ -267,13 +270,16 @@ void Save_uQ ()
 	TString comp [5] = {"_XX", "_YY", "_XY", "_YX", "_QQ"}; 
 	TString comp1 [5] = {"x", "y", "x", "y", "x+y"}; 
 	TString comp2 [5] = {"x", "y", "y", "x", "x+y"}; 
+	TString centralities [3] = {"central", "midcentral", "peripheral"}; 
 	std::string objectName;
-	TGraphErrors *g;
-	TMultiGraph *mg;
+//	TGraphErrors *g;
+//	TMultiGraph *mg;
 	TList *glist;
 	std::vector <TGraphErrors*> graphs;
 	vector <TString> profileNames;
 	vector <Qn::DataContainer<Qn::Profile>*> profiles;
+	TGraphErrors *g, *gc;
+	TMultiGraph *mg, *mg2 [3][3], *mg3 [3][10];
 	
 	Qn::DataContainer<Qn::Profile> *profile [5];
 	profile [4] = new Qn::DataContainer<Qn::Profile>;
@@ -282,6 +288,15 @@ void Save_uQ ()
 	uQ_dir->cd();
 	for (int axis = 0; axis < xAxes.size (); axis++)
 	{
+//		for (int cent = 0; cent < 3; cent++) {
+//			for (int j = 0; j < 3; j++) {
+//				mg2 [cent][j] = new TMultiGraph ();
+////				mg2 [cent][j] -> SetTitle (Form ("V_{%d}^{%s} (%s) (%s);%s;V_{1}", harmonic, comp1 [j].Data(), xAxesTitles [axis].c_str(), centralities [cent].Data(), xAxes [axis].c_str()));
+//			}
+//			for (int name = 0; name < flow_names.size (); name++) {
+//				mg3 [cent][name] = new TMultiGraph ();
+//			}
+//		}
 		for (ushort i = 0; i < uQ_names.size (); i++)
 		{		
 			objectName = Form (uQ_names[i][0], xAxes [axis].c_str());
