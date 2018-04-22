@@ -17,10 +17,14 @@ namespace Interface {
   {
     std::vector <short> u_pid = {-211};
     std::vector <short> Q_pid = {2212, -211, 211};
-    Qn::Differential::Interface::QnCuts u_pt (u_pid, -999, 999, 0.0, 1.8);
+    Qn::Differential::Interface::QnCuts u_pt (u_pid, -999, 999, 0.0, 1.8); // default
 //    Qn::Differential::Interface::QnCuts u_pt (u_pid, -999, 999, 0.8, 1.8); // forward Y configuration
-    Qn::Differential::Interface::QnCuts u_y (u_pid, 0.0, 2.0, -999, 999);
+    Qn::Differential::Interface::QnCuts u_y (u_pid, 0.0, 2.0, -999, 999); // default
 //    Qn::Differential::Interface::QnCuts u_y (u_pid, 0.05, 2.0, -999, 999); // victor_cuts
+//    Qn::Differential::Interface::QnCuts u_y (u_pid, 0.4, 2.0, -999, 999); // STAR protons
+//    Qn::Differential::Interface::QnCuts u_y (u_pid, 0.2, 999, -999, 999); // STAR pions
+//		u_y.SetPcms(0.0, 1.6); // STAR pions
+//		u_y.SetEtacms(-1., 1.); // STAR protons and pions
     Qn::Differential::Interface::QnCuts Q_fproton ({2212}, 0.0, 2.5, 0.0, 3.0);
     Qn::Differential::Interface::QnCuts Q_fpiplus ({211}, 0.0, 2.5, 0.0, 3.0);
     Qn::Differential::Interface::QnCuts Q_fpiminus ({-211}, 0.0, 2.5, 0.0, 3.0);
@@ -129,11 +133,15 @@ namespace Interface {
       short pid = values[VarManager::Variables::kPid];
       float pt = values[VarManager::Variables::kPt];
       float y = values[VarManager::Variables::kRapidity];
+      float etacms = values[VarManager::Variables::kPcms];
+      float pcms = values[VarManager::Variables::kEtacms];
 
       for (u_short i = 0; i < qnCut.pid.size (); i++) if (pid == qnCut.pid.at (i)) skipFlag = false;
       if (skipFlag) continue;
       if (y < qnCut.yMin || y > qnCut.yMax) continue;
       if (pt < qnCut.ptMin || pt > qnCut.ptMax) continue;
+      if (etacms < qnCut.etacmsMin || etacms > qnCut.etacmsMax) continue;
+      if (pcms < qnCut.pcmsMin || pcms > qnCut.pcmsMax) continue;
 			index.push_back (itrack);
 		}
 	
@@ -160,7 +168,7 @@ namespace Interface {
 //    auto values = new float[VarManager::Variables::kNVars];
     DataTreeTrack *track = nullptr;
     short pid, charge, mult = 0;
-    float pt, y, phi, p, dEdx, weight, cent = values [VarManager::Variables::kCentrality];
+    float pt, y, phi, p, pcms, etacms, dEdx, weight, cent = values [VarManager::Variables::kCentrality];
     auto &datacontainer = detector.GetDataContainer();
     auto &axes = datacontainer->GetAxes();
     std::vector<float> trackparams;
@@ -198,6 +206,8 @@ namespace Interface {
 			p = values[VarManager::Variables::kP];
 			dEdx = values[VarManager::Variables::kdEdx];
 			charge = values[VarManager::Variables::kCharge];
+      etacms = values[VarManager::Variables::kPcms];
+      pcms = values[VarManager::Variables::kEtacms];
 			if (qnCut.weight != -999) weight = values [qnCut.weight];
 			else weight = 1.0;
 
@@ -206,6 +216,8 @@ namespace Interface {
 			if (skipFlag) continue;
 			if (y < qnCut.yMin || y > qnCut.yMax) continue;
 			if (pt < qnCut.ptMin || pt > qnCut.ptMax) continue;
+      if (etacms < qnCut.etacmsMin || etacms > qnCut.etacmsMax) continue;
+      if (pcms < qnCut.pcmsMin || pcms > qnCut.pcmsMax) continue;
 			
 			if (subevent != 0)
 			{
@@ -225,6 +237,8 @@ namespace Interface {
 			h2 -> at (1) -> Fill (phi, pt);
 			h2 -> at (2) -> Fill (phi, y);
 			h2 -> at (3) -> Fill (log (10 * p) * charge, dEdx);
+			h2 -> at (4) -> Fill (cent, mult);
+			h2 -> at (5) -> Fill (etacms, pcms);
 			
 			
 			for (const auto num : detector.GetEnums()) {trackparams.push_back(values[num]);}

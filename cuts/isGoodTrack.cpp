@@ -57,8 +57,6 @@ bool isGoodTrack(const DataTreeTrack& track)
 //     std::cout << "dEdx = " << dEdx << "   " << ratio << std::endl;
 
 //    if ( DCAx * DCAx / 4. + DCAy * DCAy > 1. )              return false;
-
-//    if ( eta < 1.4 || eta > 5.0  ) return false;
     
 		// publication
 		if ( pt < 0.0 || pt > 3.0 ) return false;

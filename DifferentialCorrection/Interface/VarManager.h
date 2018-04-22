@@ -37,47 +37,72 @@ class VarManager {
     kPid,
     kCharge,
 		kP,
+		kPcms,
+		kEtacms,
 		kdEdx,
     kNVars
   };
 
   static void FillTrackInfo(const DataTreeTrack &track, float *values) {
-
-    const double ybeam = 2.24; // TODO set as global variable
-
     const int pid = Cuts::GetTrackPid (track);
-    double y = -999;
+		
+		double pt, eta, phi, m, y, p, Pcms, Etacms;
+		double beta = sqrt (40. * 40. - 0.938 * 0.938) / (40. + 0.938);
+		TLorentzVector momentum = track.GetMomentum();
+		
+		pt = momentum.Pt();
+		eta = momentum.Eta();
+		phi = momentum.Phi();
+		m = momentum.M();
+		p = momentum.P();
+		
+		if (pid != 0) // boost to cms
+		{
+			if (abs (pid) == 2212) m = 0.938;
+			else if (abs (pid) == 11) m = 0.000511;
+			momentum.SetPtEtaPhiM (pt, eta, phi, m);
+			momentum.Boost (0, 0, -beta);
+			y = momentum.Rapidity ();
+			Pcms = momentum.P ();
+			Etacms = momentum.Eta ();
+		}
+		else {y = -999; Pcms = -999; Etacms = -999;}
 
-    if (abs (pid) == 211)
-    {
-        y = track.GetRapidity() - ybeam;
-    }
-
-    else if (abs (pid) == 2212)
-    {
-        const double p = track.GetP();
-        const double pz = track.GetPz();
-        const double e=sqrt( p*p + 0.938*0.938 );
-        y = 0.5*log( (e+pz)/(e-pz) ) - ybeam ;
-    }
-
-    else if (abs (pid) == 11)
-    {
-        const double p = track.GetP();
-        const double pz = track.GetPz();
-        const double e=sqrt( p*p + 0.000511*0.000511 );
-        y = 0.5*log( (e+pz)/(e-pz) ) - ybeam ;
-    }
+// old method
+//	const double ybeam = 2.24; // TODO set as global variable
+//	if (abs (pid) == 211)
+//	{
+//		y = track.GetRapidity() - ybeam;
+//	}
+//
+//  else if (abs (pid) == 2212)
+//	{
+//		const double p = track.GetP();
+//		const double pz = track.GetPz();
+//		const double e=sqrt( p*p + 0.938*0.938 );
+//		y = 0.5*log( (e+pz)/(e-pz) ) - ybeam ;
+//	}
+//
+//	else if (abs (pid) == 11)
+//	{
+//		const double p = track.GetP();
+//		const double pz = track.GetPz();
+//		const double e=sqrt( p*p + 0.000511*0.000511 );
+//		y = 0.5*log( (e+pz)/(e-pz) ) - ybeam ;
+//	}
+// end of old method
 
 //     std::cout << track.GetEta() << "     " << y << std::endl;
 
-    values[kPt] = track.GetPt();
+    values[kPt] = pt;
     values[kRapidity] = y;
-    values[kPhi] = track.GetPhi();
+    values[kPhi] = phi;
     values[kPid] = pid;
     values[kCharge] = track.GetCharge();
-    values[kEta] = track.GetEta();
-    values[kP] = track.GetP();
+    values[kEta] = eta;
+    values[kP] = p;
+    values[kPcms] = Pcms;
+    values[kEtacms] = Etacms;
     values[kdEdx] = track.GetdEdx(3) * 0.001;
   }
 

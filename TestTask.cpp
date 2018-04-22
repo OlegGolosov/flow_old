@@ -73,6 +73,7 @@ void TestTask::InitializeQA(std::string detectorName, DetectorType type)
 		h2 -> push_back (new TH2F (Form ("h2phiy_%s", detectorName.c_str ()),  Form ("phi:y (%s);#phi;#it{y}", detectorName.c_str ()), 500, -3.15, 3.15, 500, -1., 3.));
 		h2 -> push_back (new TH2F (Form ("h2dEdx_%s", detectorName.c_str ()),  Form ("dEdx:log(10*p) (%s);log(10*p);dEdx", detectorName.c_str ()), 500, -10., 10., 500, 0., 4.));
 		h2 -> push_back (new TH2F (Form ("h2centMult%s", detectorName.c_str ()),  Form ("mult:cent (%s);centrality class;subevent multiplicity", detectorName.c_str ()), 6, 0, 6, 100, 0, 100));
+		h2 -> push_back (new TH2F (Form ("h2etaPcms%s", detectorName.c_str ()),  Form ("P^{CMS}:#eta^{CMS} (%s);#eta^{CMS};P^{CMS}", detectorName.c_str ()), 500, -5, 5, 500, 0, 10));
 		
 	}
 	if (type == DetectorType::Channel)

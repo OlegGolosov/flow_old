@@ -37,12 +37,19 @@ class QnCuts
       QnCuts::yMax = yMax;
       QnCuts::weight = weight;
     }
+		
+		void SetEtacms (double etaMin, double etaMax) {QnCuts::etacmsMin = etaMin; QnCuts::etacmsMax = etaMax;}
+		void SetPcms (double pMin, double pMax) {QnCuts::pcmsMin = pMin; QnCuts::pcmsMax = pMax;}
 
     std::vector<short> pid;
     double ptMin;
     double ptMax;
     double yMin;
     double yMax;
+		double pcmsMin {-999};
+		double pcmsMax {999};
+		double etacmsMin {-999};
+		double etacmsMax {999};
     int weight;
 };
 
