@@ -2,8 +2,6 @@
 #SBATCH -J Flow
 #SBATCH -o out/%j.out.log
 #SBATCH -e error/%j.err.log
-#SBATCH --time=08:00:00
-#SBATCH --array=0
 
 EXE_DIR=$1
 OUT_DIR=$2
@@ -12,17 +10,21 @@ CENTRALITY=$4
 MIN_STEP=$5
 MAX_STEP=$6
 BATCH_DIR=$7
+STEP=$8
 
 INDEX=$(($SLURM_ARRAY_TASK_ID))
 INDEX=$(printf "%03d" "$INDEX")
 
-#mkdir -p $OUT_DIR/$INDEX
-#cd $OUT_DIR/$INDEX
-cd $OUT_DIR
+mkdir -p $OUT_DIR/$INDEX
+cd $OUT_DIR/$INDEX
+mv ../$(basename "$FILE_LIST")_$INDEX ./
+FILE_LIST=$(basename "$FILE_LIST")_$INDEX
+#cd $OUT_DIR
 
 cp $EXE_DIR/main ./
     echo Building Q-vectors:
     for ((i=0; i<=$MAX_STEP; i++))
+#    for ((i=$STEP; i<=$STEP; i++))
     do
         CALIB=calib_$(($i-1)).root
         echo Step $i...
@@ -44,16 +46,16 @@ cp $EXE_DIR/main ./
 
 rm main
 
-    echo Saving graphs:
-    cd $EXE_DIR/..
-    for ((i=$MIN_STEP; i<=$MAX_STEP; i++))
-    do
-        echo Step $i...
-        CORR_FILE=$OUT_DIR/corr_$i.root
-        GRAPH_FILE=$OUT_DIR/graph_$i.root
-        LOG_FILE=$OUT_DIR/log_graph_$i.log
-        root -b -l -q 'macro/save_graphs.C ("'$CORR_FILE'","'$GRAPH_FILE'")' &> $LOG_FILE
-    done
+    #echo Saving graphs:
+    #cd $EXE_DIR/..
+    #for ((i=$MIN_STEP; i<=$MAX_STEP; i++))
+    #do
+        #echo Step $i...
+        #CORR_FILE=$OUT_DIR/corr_$i.root
+        #GRAPH_FILE=$OUT_DIR/graph_$i.root
+        #LOG_FILE=$OUT_DIR/log_graph_$i.log
+        #root -b -l -q 'macro/save_graphs.C ("'$CORR_FILE'","'$GRAPH_FILE'")' &> $LOG_FILE
+    #done
 
 cd $BATCH_DIR
 

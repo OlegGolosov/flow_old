@@ -1,5 +1,7 @@
 #!/bin/bash
 
+STEP=$1
+
 #LOG_DIR=/lustre/nyx/cbm/users/$USER/log
 MY_PATH=/lustre/nyx/cbm/users/ogolosov
 #ROOT_PATH=/lustre/nyx/cbm/users/klochkov/soft/root6/root-6.10.08/build/bin/thisroot.sh
@@ -11,21 +13,25 @@ EXE_DIR=$MY_PATH/flow/build
 CENTRALITY=$MY_PATH/tpc_centr.root
 FLOW_DIR=$MY_PATH/NA49_flow
 #FILE_LIST=$MY_PATH/NA49_data/fileList.txt
-FILE_LISTS=$MY_PATH/NA49_data/fileLists/data
+FILE_LISTS=$MY_PATH/NA49_data/fileLists/data/01D-mb
+#FILE_LISTS=$MY_PATH/NA49_data/fileLists/debug
 
 
 FLOW_DIR=$FLOW_DIR/default_old_y/pimin
+NJOBS=1
 MIN_STEP=1
 MAX_STEP=2
 
+if [ $# == 0 ];then
+	echo input number of step!
+	exit
+fi
 
 for FILE_LIST in $FILE_LISTS/*
 do
   OUT_DIR=$FLOW_DIR/$(basename "$FILE_LIST")
 	echo $FILE_LIST
 	echo $OUT_DIR
-	
-  #split -n l/10 -d -a 3 filelist.txt filelist_
 
   #source $ROOT_PATH
 
@@ -33,8 +39,10 @@ do
   mkdir -p $LOG_DIR
   mkdir -p $LOG_DIR/out
   mkdir -p $LOG_DIR/error
+	
+  split -n l/$NJOBS -d -a 3 $FILE_LIST $OUT_DIR/$(basename "$FILE_LIST")_
 
-  sbatch --partition main -D $LOG_DIR --export=ALL $BATCH_DIR/run_kronos.sh $EXE_DIR $OUT_DIR $FILE_LIST $CENTRALITY $MIN_STEP $MAX_STEP $BATCH_DIR
+  sbatch --partition main --time=8:00:00 --array=0-$(expr $NJOBS - 1) -D $LOG_DIR --export=ALL $BATCH_DIR/run_kronos.sh $EXE_DIR $OUT_DIR $FILE_LIST $CENTRALITY $MIN_STEP $MAX_STEP $BATCH_DIR $STEP
 
 #  . $BATCH_DIR/run_kronos.sh $EXE_DIR $OUT_DIR $FILE_LIST $CENTRALITY $MIN_STEP $MAX_STEP $BATCH_DIR
 
