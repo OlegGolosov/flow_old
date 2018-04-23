@@ -23,8 +23,8 @@ TFile *fTemp {nullptr};
 void save_graphs(TString inputFileName = "~/Desktop/analysis/NA49_flow/corr_2.root",
                    TString outputFileName = "~/Desktop/analysis/NA49_flow/graph_2.root")
 {		
-		inputFileName = "~/Desktop/analysis/NA49_flow/default_new_y/pimin/corr_2.root";
-		outputFileName = "~/Desktop/analysis/NA49_flow/default_new_y/pimin/graph_2.root";
+//		inputFileName = "~/Desktop/analysis/NA49_flow/default_new_y/pimin/corr_2.root";
+//		outputFileName = "~/Desktop/analysis/NA49_flow/default_new_y/pimin/graph_2.root";
 	
 		cout << inputFileName << endl;
 		cout << outputFileName << endl;
@@ -509,17 +509,17 @@ void SaveFlow (int harmonic)
 	const float *(*pubE)[3];
 	
 	// pions
-	pubB = nBins;
-	pubX = NA49_pi_v1_bins;
-	pubY = NA49_pi_v1_value;
-	pubE = NA49_pi_v1_error;
+//	pubB = nBins;
+//	pubX = NA49_pi_v1_bins;
+//	pubY = NA49_pi_v1_value;
+//	pubE = NA49_pi_v1_error;
 	// pions
 		
 	// protons
-//	pubB = nBins;
-//	pubX = NA49_p_v1_bins;
-//	pubY = NA49_p_v1_value;
-//	pubE = NA49_p_v1_error;
+	pubB = nBins;
+	pubX = NA49_p_v1_bins;
+	pubY = NA49_p_v1_value;
+	pubE = NA49_p_v1_error;
 	// protons
 	
 	
@@ -551,7 +551,7 @@ void SaveFlow (int harmonic)
 			pub [cent] -> SetLineColor (kBlack);
 			pub [cent] -> SetMarkerColor (kBlack);
 			pub [cent] -> SetMarkerStyle (28);
-			pub [cent] -> SetMarkerStyle (1.5);
+			pub [cent] -> SetMarkerSize (1.5);
 			graphs.push_back(pub [cent]);
 			
 			for (int j = 0; j < 3; j++) {
