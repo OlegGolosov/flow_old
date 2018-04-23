@@ -502,6 +502,31 @@ void SaveFlow (int harmonic)
 	TString comp1 [3] = {"x", "y", "x+y"}; 
 	TString centralities [3] = {"central", "midcentral", "peripheral"}; 
 	TString space = "_"; 
+	
+	const int (*pubB)[3];
+	const float *(*pubX)[3];
+	const float *(*pubY)[3];
+	const float *(*pubE)[3];
+	
+	// pions
+	pubB = nBins;
+	pubX = NA49_pi_v1_bins;
+	pubY = NA49_pi_v1_value;
+	pubE = NA49_pi_v1_error;
+	// pions
+		
+	// protons
+//	pubB = nBins;
+//	pubX = NA49_p_v1_bins;
+//	pubY = NA49_p_v1_value;
+//	pubE = NA49_p_v1_error;
+	// protons
+	
+	
+	
+	
+	TGraphErrors* pub [3];
+	
 	std::vector <std::vector<TString>> flow_names;
 	if (harmonic == 1) flow_names = V1_names; 
 	if (harmonic == 2) flow_names = V2_names; 
@@ -509,7 +534,7 @@ void SaveFlow (int harmonic)
 	TGraphErrors *g, *gc;
 	TMultiGraph *mg, *mg2 [3][3], *mg3 [3][10];
 	TList *glist;
-	std::vector <TGraphErrors*> graphs1;
+	std::vector <TGraphErrors*> graphs;
 	Qn::DataContainer<Qn::Profile> *corr [3], *res [3], flow;
 	
 	TDirectory *flow_dir = fOut->mkdir( folderNames [harmonic - 1] );
@@ -521,11 +546,20 @@ void SaveFlow (int harmonic)
 	for (int axis = 0; axis < xAxes.size (); axis++)
 	{
 		for (int cent = 0; cent < 3; cent++) {
+			pub [cent] = new TGraphErrors (pubB [axis][cent], pubX [axis][cent], pubY [axis][cent], 0, pubE [axis][cent]);
+			pub [cent] -> SetTitle ("V_{1,x+y} published");
+			pub [cent] -> SetLineColor (kBlack);
+			pub [cent] -> SetMarkerColor (kBlack);
+			pub [cent] -> SetMarkerStyle (28);
+			pub [cent] -> SetMarkerStyle (1.5);
+			graphs.push_back(pub [cent]);
+			
 			for (int j = 0; j < 3; j++) {
 				mg2 [cent][j] = new TMultiGraph ();
 				mg2 [cent][j] -> SetTitle (Form ("V_{%d}^{%s} (%s) (%s);%s;V_{1}^{%s}", harmonic, comp1 [j].Data(), xAxesTitles [axis].c_str(), centralities [cent].Data(), xAxesTitles [axis].c_str(), comp1 [j].Data()));
 			}
-			for (int name = 0; name < flow_names.size (); name++) {
+			for (int name = 0; name < flow_names.size (); name++) 
+			{
 				mg3 [cent][name] = new TMultiGraph ();
 			}
 		}
@@ -557,12 +591,14 @@ void SaveFlow (int harmonic)
 					g -> SetMarkerColor (colors [i]);
 					g -> SetLineColor (colors [i]);
 					g -> SetName (flowName + comp [j] + "_" + centralities [cent]);
-					graphs1.push_back (g);
+					graphs.push_back (g);
+					if (i == 0) mg2 [cent][j] -> Add (pub [cent]);
 					mg2 [cent][j] -> Add (g);
 					gc = (TGraphErrors*) g -> Clone ();
 					gc -> SetMarkerStyle (markers [j]);
 					gc -> SetMarkerColor (colors [j]);
 					gc -> SetLineColor (colors [j]);
+					if (j == 0) mg3 [cent][i] -> Add (pub [cent]);
 					mg3 [cent][i] -> Add (gc);
 					mg3 [cent][i] -> SetTitle (Form (flow_names[i][3] + " (%s);%s;V_{1}", "", xAxesTitles [axis].c_str(), centralities [cent].Data(), xAxesTitles [axis].c_str()));
 				}
@@ -580,7 +616,7 @@ void SaveFlow (int harmonic)
 			}
 			for (int name = 0; name < flow_names.size (); name++) 
 			{
-				mg3 [cent][name] -> Write (Form (flow_names[name][0], xAxes [axis].c_str()) + space + centralities [cent]);
+				mg3 [cent][name] -> Write (Form (flow_names[name][0], xAxes [axis].c_str()));
 			}
 		}
 	}
@@ -588,8 +624,8 @@ void SaveFlow (int harmonic)
 	std::cout << std::endl;
 	
 	flow_dir -> cd ();
-	for (ushort i = 0; i < graphs1.size (); i++)
+	for (ushort i = 0; i < graphs.size (); i++)
 	{
-		graphs1 [i] -> Write ();
+		graphs [i] -> Write ();
 	}
 }

@@ -233,7 +233,10 @@ const float *NA49_p_v2_error[2][3] = {
     { NA49_v2_centr_p_40_pT_error, NA49_v2_mcentr_p_40_pT_error, NA49_v2_per_p_40_pT_error } ,
     { NA49_v2_centr_p_40_Y_error, NA49_v2_mcentr_p_40_Y_error, NA49_v2_per_p_40_Y_error}  };
 
-const int nBins[2] = {13,9};
+const int nBins[2][3] = {
+	{13, 12, 11} ,
+	{9, 9, 9}	};
+
 
 
 void plot_star_pion_v1(Int_t iVar, Int_t iCentr, TLegend &legend)
@@ -255,7 +258,7 @@ void plot_star_pion_v1(Int_t iVar, Int_t iCentr, TLegend &legend)
 void plot_na49_pion_v1(Int_t iVar, Int_t iCentr, TLegend &legend)
 {
 
-    TGraphErrors *NA49_v1  = new TGraphErrors(nBins[iVar], NA49_pi_v1_bins[iVar][iCentr], NA49_pi_v1_value[iVar][iCentr], 0, NA49_pi_v1_error[iVar][iCentr]);
+    TGraphErrors *NA49_v1  = new TGraphErrors(nBins[iVar][iCentr], NA49_pi_v1_bins[iVar][iCentr], NA49_pi_v1_value[iVar][iCentr], 0, NA49_pi_v1_error[iVar][iCentr]);
     NA49_v1 -> SetLineWidth(0);
 
     NA49_v1->SetFillStyle(3014);
@@ -270,7 +273,7 @@ void plot_na49_pion_v1(Int_t iVar, Int_t iCentr, TLegend &legend)
 void plot_na49_pion_v2(Int_t iVar, Int_t iCentr, TLegend &legend)
 {
 
-    TGraphErrors *NA49_v2  = new TGraphErrors(nBins[iVar], NA49_pi_v2_bins[iVar][iCentr], NA49_pi_v2_value[iVar][iCentr], 0, NA49_pi_v2_error[iVar][iCentr]);
+    TGraphErrors *NA49_v2  = new TGraphErrors(nBins[iVar][iCentr], NA49_pi_v2_bins[iVar][iCentr], NA49_pi_v2_value[iVar][iCentr], 0, NA49_pi_v2_error[iVar][iCentr]);
     NA49_v2 -> SetLineWidth(0);
 
     NA49_v2->SetFillStyle(3014);
