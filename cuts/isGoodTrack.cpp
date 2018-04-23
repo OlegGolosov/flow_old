@@ -41,6 +41,8 @@ bool isGoodTrack(const DataTreeTrack& track)
     const double NhitsPotVTPC1 = track.GetNumberOfHitsPotential(EnumTPC::kVTPC1);
     const double NhitsPotVTPC2 = track.GetNumberOfHitsPotential(EnumTPC::kVTPC2);
     const double NhitsPotMTPC = track.GetNumberOfHitsPotential(EnumTPC::kMTPC);
+    const double NhitsVTPC1 = track.GetNumberOfHits(EnumTPC::kVTPC1);
+    const double NhitsVTPC2 = track.GetNumberOfHits(EnumTPC::kVTPC2);
     const double DCAx = track.GetDCAComponent(0);
     const double DCAy = track.GetDCAComponent(1);
     const double pt = track.GetPt();
@@ -61,7 +63,7 @@ bool isGoodTrack(const DataTreeTrack& track)
 		// publication
 		if ( pt < 0.0 || pt > 3.0 ) return false;
     if ( TMath::Abs (DCAx) > 3. || TMath::Abs (DCAy) > .5 ) return false;
-    if ( (NhitsPotVTPC1 < 20 && NhitsPotVTPC2 < 20) || NhitsPotMTPC < 30)    return false;
+    if ( NhitsPotVTPC1 < 20 && NhitsPotVTPC2 < 20 && NhitsPotMTPC < 30)    return false;
     if ( dEdx <= 0 )                                        return false;
     if ( chi2 < 0. || chi2 > 10 )                           return false;
     if ( ratio_ < 0.55 || ratio_ > 1. )                     return false;
@@ -70,7 +72,7 @@ bool isGoodTrack(const DataTreeTrack& track)
 		// Victor
 //		if ( pt < 0.0 || pt > 3.0 ) return false;
 //    if ( TMath::Abs (DCAx) > 2. || TMath::Abs (DCAy) > 1. ) return false;
-//    if ( (NhitsPotVTPC1 + NhitsPotVTPC2 < 15) || NhitsPot < 30)    return false;
+//    if ( (NhitsVTPC1 + NhitsVTPC2 < 15) || NhitsPot < 30)    return false;
 //    if ( dEdx <= 0 )                                        return false;
 //    if ( ratio_ < 0.55 || ratio_ > 1. )                     return false;
 		// Victor
