@@ -112,11 +112,11 @@ std::vector <std::vector<TString>> res_names_QQQ =
 
 std::vector <std::vector<TString>> V1_names = 
 {
-		{"V1_%s_RS_TPC_a", "TPC_%s_a_1_TPC_b_1", "R1_TPC_RS", "v_{1,%s}^{RS, TPCa}(%s)"},
-		{"V1_%s_RS_TPC_b", "TPC_%s_b_1_TPC_a_1", "R1_TPC_RS", "v_{1,%s}^{RS, TPCb}(%s)"},
+//		{"V1_%s_RS_TPC_a", "TPC_%s_a_1_TPC_b_1", "R1_TPC_RS", "v_{1,%s}^{RS, TPCa}(%s)"},
+//		{"V1_%s_RS_TPC_b", "TPC_%s_b_1_TPC_a_1", "R1_TPC_RS", "v_{1,%s}^{RS, TPCb}(%s)"},
 		{"V1_%s_3S_PSD1", "TPC_%s_PSD1", "R1_PSD1_3S", "v_{1,%s}^{3S, VCAL}(%s)"},
 		{"V1_%s_3S_PSD2", "TPC_%s_PSD2", "R1_PSD2_3S", "v_{1,%s}^{3S, RCAL1}(%s)"},
-		{"V1_%s_3S_PSD3", "TPC_%s_PSD3", "R1_PSD3_3S", "v_{1,%s}^{3S, RCAL2}(%s)"}
+//		{"V1_%s_3S_PSD3", "TPC_%s_PSD3", "R1_PSD3_3S", "v_{1,%s}^{3S, RCAL2}(%s)"}
 };
 
 std::vector <std::vector<TString>> V2_names = 

@@ -23,10 +23,8 @@ TFile *fTemp {nullptr};
 void save_graphs(TString inputFileName = "~/Desktop/analysis/NA49_flow/corr_2.root",
                    TString outputFileName = "~/Desktop/analysis/NA49_flow/graph_2.root")
 {		
-//		inputFileName = "~/Desktop/analysis/flow/build/corr.root";
-//		outputFileName = "~/Desktop/analysis/flow/build/graph.root";
-		inputFileName = "~/Desktop/analysis/NA49_flow/pipi_nw/corr_2.root";
-		outputFileName = "~/Desktop/analysis/NA49_flow/pipi_nw/graph_2.root";
+		inputFileName = "~/Desktop/analysis/NA49_flow/default_new_y/pimin/corr_2.root";
+		outputFileName = "~/Desktop/analysis/NA49_flow/default_new_y/pimin/graph_2.root";
 	
 		cout << inputFileName << endl;
 		cout << outputFileName << endl;
@@ -282,7 +280,6 @@ void Save_uQ ()
 	TMultiGraph *mg, *mg2 [3][3], *mg3 [3][10];
 	
 	Qn::DataContainer<Qn::Profile> *profile [5];
-	profile [4] = new Qn::DataContainer<Qn::Profile>;
 	
 	TDirectory *uQ_dir = fOut->mkdir( "uQ" );
 	uQ_dir->cd();
@@ -299,6 +296,7 @@ void Save_uQ ()
 //		}
 		for (ushort i = 0; i < uQ_names.size (); i++)
 		{		
+			profile [4] = new Qn::DataContainer<Qn::Profile>;
 			objectName = Form (uQ_names[i][0], xAxes [axis].c_str());
 			std::cout << std::endl << objectName;
 			for (int j = 0; j < 5; j++) 
@@ -360,7 +358,6 @@ void Save_uQQ ()
 	vector <Qn::DataContainer<Qn::Profile>*> profiles;
 	
 	Qn::DataContainer<Qn::Profile> *profile [5];
-	profile [4] = new Qn::DataContainer<Qn::Profile>;
 	
 	TDirectory *uQQ_dir = fOut->mkdir( "uQQ" );
 	uQQ_dir->cd();
@@ -368,6 +365,7 @@ void Save_uQQ ()
 	{
 		for (ushort i = 0; i < uQQ_names.size (); i++)
 		{		
+			profile [4] = new Qn::DataContainer<Qn::Profile>;
 			objectName = Form (uQQ_names[i][0], xAxes [axis].c_str());
 			std::cout << std::endl << objectName;
 			for (int j = 0; j < 4; j++) // check: 4 or 5
@@ -413,7 +411,7 @@ void Save_uQQ ()
 
 void SaveResolution ()
 {
-	TString xAxisTitle = "Centrality, %";
+	TString xAxisTitle = "Centrality class";
 	TString comp [3] = {"XX", "YY", "QQ"}; 
 	TString comp1 [3] = {"x", "y", "x+y"}; 
 	TString comp2 [3] = {"x", "y", "x+y"}; 
@@ -425,7 +423,6 @@ void SaveResolution ()
 	vector <TString> profileNames;
 	TString resName;
 	TString resTitle;
-	
 	
 	profile [2][0] = new Qn::DataContainer<Qn::Profile>;
 	profile [2][1] = new Qn::DataContainer<Qn::Profile>;
@@ -476,6 +473,7 @@ void SaveResolution ()
 			graphs.push_back ((TGraphErrors*) g -> Clone ());
 			mg.Add (g);
 		}
+		mg.SetTitle(Form (res_names [i][4] + ";%s;" + res_names [i][4], "", xAxisTitle.Data(), ""));
 		mg.Write(res_names[i][0]);
 	}
 	std::cout << std::endl;
@@ -498,11 +496,12 @@ void SaveFlow (int harmonic)
 {
 	std::string profileVar = "Centrality";
 	std::vector <std::string> xAxes = {"pt", "y"};
-	std::vector <std::string> xAxesTitles = {"p_{T}", "#it{y}"};
+	std::vector <std::string> xAxesTitles = {"p_{T} [GeV/c]", "#it{y}"};
 	TString folderNames [2] = {"V1", "V2"};
 	TString comp [3] = {"_XX", "_YY", "_QQ"}; 
 	TString comp1 [3] = {"x", "y", "x+y"}; 
 	TString centralities [3] = {"central", "midcentral", "peripheral"}; 
+	TString space = "_"; 
 	std::vector <std::vector<TString>> flow_names;
 	if (harmonic == 1) flow_names = V1_names; 
 	if (harmonic == 2) flow_names = V2_names; 
@@ -515,13 +514,16 @@ void SaveFlow (int harmonic)
 	
 	TDirectory *flow_dir = fOut->mkdir( folderNames [harmonic - 1] );
 	flow_dir->cd();
+	TDirectory *cent_dir [3];
+	for (int cent = 0; cent < 3; cent++)
+		cent_dir [cent] = flow_dir -> mkdir (centralities [cent]);
 		
 	for (int axis = 0; axis < xAxes.size (); axis++)
 	{
 		for (int cent = 0; cent < 3; cent++) {
 			for (int j = 0; j < 3; j++) {
 				mg2 [cent][j] = new TMultiGraph ();
-				mg2 [cent][j] -> SetTitle (Form ("V_{%d}^{%s} (%s) (%s);%s;V_{1}", harmonic, comp1 [j].Data(), xAxesTitles [axis].c_str(), centralities [cent].Data(), xAxes [axis].c_str()));
+				mg2 [cent][j] -> SetTitle (Form ("V_{%d}^{%s} (%s) (%s);%s;V_{1}^{%s}", harmonic, comp1 [j].Data(), xAxesTitles [axis].c_str(), centralities [cent].Data(), xAxesTitles [axis].c_str(), comp1 [j].Data()));
 			}
 			for (int name = 0; name < flow_names.size (); name++) {
 				mg3 [cent][name] = new TMultiGraph ();
@@ -546,7 +548,7 @@ void SaveFlow (int harmonic)
 				mg -> SetTitle (Form (flow_names[i][3], comp1 [j].Data(), xAxesTitles [axis].c_str()));
 				glist = mg -> GetListOfGraphs ();
 				for (int cent = 0; cent < glist -> GetSize (); cent++) 
-				{	
+				{		
 					g = (TGraphErrors*) glist -> At(cent);
 					g -> SetTitle (Form (flow_names[i][3], comp1 [j].Data(), xAxesTitles [axis].c_str()));
 					g -> GetXaxis () -> SetTitle (xAxesTitles [axis].c_str());
@@ -554,7 +556,7 @@ void SaveFlow (int harmonic)
 					g -> SetMarkerStyle (markers [i]);
 					g -> SetMarkerColor (colors [i]);
 					g -> SetLineColor (colors [i]);
-					g -> SetName (flowName + comp [j] + centralities [cent]);
+					g -> SetName (flowName + comp [j] + "_" + centralities [cent]);
 					graphs1.push_back (g);
 					mg2 [cent][j] -> Add (g);
 					gc = (TGraphErrors*) g -> Clone ();
@@ -562,7 +564,7 @@ void SaveFlow (int harmonic)
 					gc -> SetMarkerColor (colors [j]);
 					gc -> SetLineColor (colors [j]);
 					mg3 [cent][i] -> Add (gc);
-					mg3 [cent][i] -> SetTitle (Form (flow_names[i][3], "", xAxesTitles [axis].c_str()) + centralities [cent]);
+					mg3 [cent][i] -> SetTitle (Form (flow_names[i][3] + " (%s);%s;V_{1}", "", xAxesTitles [axis].c_str(), centralities [cent].Data(), xAxesTitles [axis].c_str()));
 				}
 //				g = new TGraphErrors (NA49_pi_v1_bins[][].size(), NA49_pi_v1_bins[][], NA49_pi_v1_value[][], NA49_pi_v1_error[][]);
 //				mg -> Write(flowName + comp [j]);
@@ -571,19 +573,21 @@ void SaveFlow (int harmonic)
 		
 		for (int cent = 0; cent < 3; cent++) 
 		{
+			cent_dir [cent] -> cd ();
 			for (int j = 0; j < 3; j++) 
 			{
-				mg2 [cent][j] -> Write (Form ("V_1_%s_%s_%s", comp1 [j].Data(), xAxes [axis].c_str(), centralities [cent].Data()));
+				mg2 [cent][j] -> Write (Form ("V_1_%s_%s", comp1 [j].Data(), xAxes [axis].c_str()));
 			}
 			for (int name = 0; name < flow_names.size (); name++) 
 			{
-				mg3 [cent][name] -> Write (Form (flow_names[name][0], xAxes [axis].c_str()) + centralities [cent]);
+				mg3 [cent][name] -> Write (Form (flow_names[name][0], xAxes [axis].c_str()) + space + centralities [cent]);
 			}
 		}
 	}
 	
 	std::cout << std::endl;
 	
+	flow_dir -> cd ();
 	for (ushort i = 0; i < graphs1.size (); i++)
 	{
 		graphs1 [i] -> Write ();
