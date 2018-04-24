@@ -233,9 +233,13 @@ const float *NA49_p_v2_error[2][3] = {
     { NA49_v2_centr_p_40_pT_error, NA49_v2_mcentr_p_40_pT_error, NA49_v2_per_p_40_pT_error } ,
     { NA49_v2_centr_p_40_Y_error, NA49_v2_mcentr_p_40_Y_error, NA49_v2_per_p_40_Y_error}  };
 
-const int nBins[2][3] = {
+const int nBins_pi[2][3] = {
 	{13, 12, 11} ,
 	{9, 9, 9}	};
+	
+const int nBins_p[2][3] = {
+	{9, 9, 9} ,
+	{5, 5, 5}	};
 
 
 

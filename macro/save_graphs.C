@@ -509,14 +509,14 @@ void SaveFlow (int harmonic)
 	const float *(*pubE)[3];
 	
 	// pions
-//	pubB = nBins;
+//	pubB = nBins_pi;
 //	pubX = NA49_pi_v1_bins;
 //	pubY = NA49_pi_v1_value;
 //	pubE = NA49_pi_v1_error;
 	// pions
 		
 	// protons
-	pubB = nBins;
+	pubB = nBins_p;
 	pubX = NA49_p_v1_bins;
 	pubY = NA49_p_v1_value;
 	pubE = NA49_p_v1_error;
