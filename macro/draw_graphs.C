@@ -6,9 +6,9 @@ vector <TString> v1 = {"V_1_x_%s", "V_1_y_%s", "V_1_x+y_%s", "V1_%s_3S_PSD1", "V
 //float v1Lim [2][4] = {{0., 2., -0.06, 0.1},
 //											{0., 2., -0.1, 0.03}}; // pions
 float v1Lim [2][4] = {{0., 2., -0.06, 0.2},
-											{0., 2., -0.02, 0.15}}; // protons
+											{0., 2., -0.02, 0.2}}; // protons
 float legPos [2][4] = {{0.2, 0.7, 0.5, 0.9},
-											{0.2, 0.15, 0.5, 0.35}};
+											{0.2, 0.7, 0.5, 0.9}};
 
 TString centralities [3] = {"central", "midcentral", "peripheral"};
 TString xAxes [2] = {"pt", "y"};
