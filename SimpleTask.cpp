@@ -216,15 +216,15 @@ void SimpleTask::Configure(Qn::CorrelationManager &a) {
 
   for (ushort iDet=0; iDet<3; ++iDet)
   {
-    a.AddCorrelation(sPsdPsd[iDet] + "_XX", sPsdPsdName[iDet], XX);
-    a.AddCorrelation(sPsdPsd[iDet] + "_YY", sPsdPsdName[iDet], YY);
-    a.AddCorrelation(sPsdPsd[iDet] + "_XY", sPsdPsdName[iDet], XY);
-    a.AddCorrelation(sPsdPsd[iDet] + "_YX", sPsdPsdName[iDet], YX);
+    a.AddCorrelation(sPsdPsd[iDet] + "_SP_XX", sPsdPsdName[iDet], XX);
+    a.AddCorrelation(sPsdPsd[iDet] + "_SP_YY", sPsdPsdName[iDet], YY);
+    a.AddCorrelation(sPsdPsd[iDet] + "_SP_XY", sPsdPsdName[iDet], XY);
+    a.AddCorrelation(sPsdPsd[iDet] + "_SP_YX", sPsdPsdName[iDet], YX);
 		
-    a.AddCorrelation(sPsdPsd[iDet] + "_XX", sPsdPsdName[iDet], XX_EP);
-    a.AddCorrelation(sPsdPsd[iDet] + "_YY", sPsdPsdName[iDet], YY_EP);
-    a.AddCorrelation(sPsdPsd[iDet] + "_XY", sPsdPsdName[iDet], XY_EP);
-    a.AddCorrelation(sPsdPsd[iDet] + "_YX", sPsdPsdName[iDet], YX_EP);
+    a.AddCorrelation(sPsdPsd[iDet] + "_EP_XX", sPsdPsdName[iDet], XX_EP);
+    a.AddCorrelation(sPsdPsd[iDet] + "_EP_YY", sPsdPsdName[iDet], YY_EP);
+    a.AddCorrelation(sPsdPsd[iDet] + "_EP_XY", sPsdPsdName[iDet], XY_EP);
+    a.AddCorrelation(sPsdPsd[iDet] + "_EP_YX", sPsdPsdName[iDet], YX_EP);
 
     a.AddCorrelation("TPC_1_" + sPsdPsd[iDet] + "_X2XX", "TPC_1, " + sPsdPsdName[iDet], X2XX);
     a.AddCorrelation("TPC_1_" + sPsdPsd[iDet] + "_X2YY", "TPC_1, " + sPsdPsdName[iDet], X2YY);

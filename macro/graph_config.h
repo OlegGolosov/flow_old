@@ -57,9 +57,12 @@ std::vector <std::vector<TString>> QQ_names =
 		{"TPC_3_PSD1", "#LTQ_{1,%s}^{TPC3}Q_{1,%s}^{VCAL}#GT"},
 		{"TPC_3_PSD2", "#LTQ_{1,%s}^{TPC3}Q_{1,%s}^{RCAL1}#GT"},
 		{"TPC_3_PSD3", "#LTQ_{1,%s}^{TPC3}Q_{1,%s}^{RCAL2}#GT"},
-		{"PSD1_PSD2", "#LTQ_{1,%s}^{VCAL}Q_{1,%s}^{RCAL1}#GT"},
-		{"PSD1_PSD3", "#LTQ_{1,%s}^{VCAL}Q_{1,%s}^{RCAL2}#GT"},
-		{"PSD2_PSD3", "#LTQ_{1,%s}^{RCAL1}Q_{1,%s}^{RCAL2}#GT"}
+		{"PSD1_PSD2_SP", "#LTQ_{1,%s}^{VCAL}Q_{1,%s}^{RCAL1}#GT (SP)"},
+		{"PSD1_PSD3_SP", "#LTQ_{1,%s}^{VCAL}Q_{1,%s}^{RCAL2}#GT (SP)"},
+		{"PSD2_PSD3_SP", "#LTQ_{1,%s}^{RCAL1}Q_{1,%s}^{RCAL2}#GT (SP)"},
+		{"PSD1_PSD2_EP", "#LTQ_{1,%s}^{VCAL}Q_{1,%s}^{RCAL1}#GT (EP)"},
+		{"PSD1_PSD3_EP", "#LTQ_{1,%s}^{VCAL}Q_{1,%s}^{RCAL2}#GT (EP)"},
+		{"PSD2_PSD3_EP", "#LTQ_{1,%s}^{RCAL1}Q_{1,%s}^{RCAL2}#GT (EP)"}
 };
 
 std::vector <std::vector<TString>> QQQ_names = 
@@ -97,9 +100,12 @@ std::vector <std::vector<TString>> res_names =
 {
 		{"R1_TPC_RS_", "TPC_a_1_TPC_b_1_", "TPC_a_1_TPC_b_1_", "TPC_a_1_TPC_b_1_", "R_{1,%s}^{TPC,RS}"},
 		{"R2_TPC_RS_", "TPC_a_2_TPC_b_2_", "TPC_a_2_TPC_b_2_", "TPC_a_2_TPC_b_2_", "R_{2,%s}^{TPC,RS}"},
-		{"R1_PSD1_3S_", "PSD1_PSD2_", "PSD1_PSD3_", "PSD2_PSD3_", "R_{1,%s}^{VCAL,3S}(RCAL1, RCAL2)"},
-		{"R1_PSD2_3S_", "PSD1_PSD2_", "PSD2_PSD3_", "PSD1_PSD3_", "R_{1,%s}^{RCAL1,3S}(VCAL, RCAL2)"},
-		{"R1_PSD3_3S_", "PSD1_PSD3_", "PSD2_PSD3_", "PSD1_PSD2_", "R_{1,%s}^{RCAL2,3S}(VCAL, RCAL1)"}
+		{"R1_PSD1_3S_SP_", "PSD1_PSD2_SP_", "PSD1_PSD3_SP_", "PSD2_PSD3_SP_", "R_{1,%s}^{VCAL,3S}(RCAL1, RCAL2)"},
+		{"R1_PSD2_3S_SP_", "PSD1_PSD2_SP_", "PSD2_PSD3_SP_", "PSD1_PSD3_SP_", "R_{1,%s}^{RCAL1,3S}(VCAL, RCAL2)"},
+		{"R1_PSD3_3S_SP_", "PSD1_PSD3_SP_", "PSD2_PSD3_SP_", "PSD1_PSD2_SP_", "R_{1,%s}^{RCAL2,3S}(VCAL, RCAL1)"},
+		{"R1_PSD1_3S_EP_", "PSD1_PSD2_EP_", "PSD1_PSD3_EP_", "PSD2_PSD3_EP_", "R_{1,%s}^{VCAL,3S}(RCAL1, RCAL2)"},
+		{"R1_PSD2_3S_EP_", "PSD1_PSD2_EP_", "PSD2_PSD3_EP_", "PSD1_PSD3_EP_", "R_{1,%s}^{RCAL1,3S}(VCAL, RCAL2)"},
+		{"R1_PSD3_3S_EP_", "PSD1_PSD3_EP_", "PSD2_PSD3_EP_", "PSD1_PSD2_EP_", "R_{1,%s}^{RCAL2,3S}(VCAL, RCAL1)"}
 };
 
 std::vector <std::vector<TString>> res_names_QQQ = 
@@ -114,8 +120,8 @@ std::vector <std::vector<TString>> V1_names =
 {
 //		{"V1_%s_RS_TPC_a", "TPC_%s_a_1_TPC_b_1", "R1_TPC_RS", "v_{1,%s}^{RS, TPCa}(%s)"},
 //		{"V1_%s_RS_TPC_b", "TPC_%s_b_1_TPC_a_1", "R1_TPC_RS", "v_{1,%s}^{RS, TPCb}(%s)"},
-		{"V1_%s_3S_PSD1", "TPC_%s_PSD1", "R1_PSD1_3S", "v_{1,%s}^{3S, VCAL}(%s)"},
-		{"V1_%s_3S_PSD2", "TPC_%s_PSD2", "R1_PSD2_3S", "v_{1,%s}^{3S, RCAL1}(%s)"},
+		{"V1_%s_3S_PSD1", "TPC_%s_PSD1", "R1_PSD1_3S_SP", "v_{1,%s}^{3S, VCAL}(%s)"},
+		{"V1_%s_3S_PSD2", "TPC_%s_PSD2", "R1_PSD2_3S_SP", "v_{1,%s}^{3S, RCAL1}(%s)"},
 //		{"V1_%s_3S_PSD3", "TPC_%s_PSD3", "R1_PSD3_3S", "v_{1,%s}^{3S, RCAL2}(%s)"}
 };
 
