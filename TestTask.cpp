@@ -114,9 +114,23 @@ void TestTask::Initialize() {
   Axis eVetoaxis("Eveto", eVetoBins);
   Axes tpcaxes = {ptaxis, yaxis};
 
-  auto confPsd = [](QnCorrectionsDetectorConfigurationBase *config) {
+  auto confVcal = [](QnCorrectionsDetectorConfigurationBase *config) {
     config->SetQVectorNormalizationMethod(QnCorrectionsQnVector::QVNORM_QoverM);
     config->AddCorrectionOnQnVector(new QnCorrectionsQnVectorRecentering());
+    auto rescale = new QnCorrectionsQnVectorTwistAndRescale();
+    rescale->SetApplyTwist(true);
+    rescale->SetApplyRescale(true);
+    rescale->SetTwistAndRescaleMethod(QnCorrectionsQnVectorTwistAndRescale::TWRESCALE_doubleHarmonic);
+//    config->AddCorrectionOnQnVector(rescale);
+  };
+	
+	auto confRcal = [](QnCorrectionsDetectorConfigurationBase *config) {
+    config->SetQVectorNormalizationMethod(QnCorrectionsQnVector::QVNORM_QoverM);
+    config->AddCorrectionOnQnVector(new QnCorrectionsQnVectorRecentering());
+		auto align = new QnCorrectionsQnVectorAlignment();
+		align->SetReferenceConfigurationForAlignment("TPC_3");
+		align->SetHarmonicNumberForAlignment(1);
+		config->AddCorrectionOnQnVector(align);
     auto rescale = new QnCorrectionsQnVectorTwistAndRescale();
     rescale->SetApplyTwist(true);
     rescale->SetApplyRescale(true);
@@ -128,6 +142,10 @@ void TestTask::Initialize() {
     config->SetQVectorNormalizationMethod(QnCorrectionsQnVector::QVNORM_QoverM); // SP
 //    config->SetQVectorNormalizationMethod(QnCorrectionsQnVector::QVNORM_QoverQlength); // EP
     config->AddCorrectionOnQnVector(new QnCorrectionsQnVectorRecentering());
+		auto align = new QnCorrectionsQnVectorAlignment();
+		align->SetReferenceConfigurationForAlignment("TPC_3");
+		align->SetHarmonicNumberForAlignment(1);
+		config->AddCorrectionOnQnVector(align);
     auto rescale = new QnCorrectionsQnVectorTwistAndRescale();
     rescale->SetApplyTwist(true);
     rescale->SetApplyRescale(true);
@@ -164,7 +182,6 @@ void TestTask::Initialize() {
   manager.AddDetector("TPC_1", DetectorType::Track);
   manager.AddDetector("TPC_2", DetectorType::Track);
   manager.AddDetector("TPC_3", DetectorType::Track);
-  manager.AddDetector("TPC_3", DetectorType::Track);
   manager.AddDetector("TPC_a_1", DetectorType::Track);
   manager.AddDetector("TPC_b_1", DetectorType::Track);
   manager.AddDetector("TPC_a_2", DetectorType::Track);
@@ -186,9 +203,9 @@ void TestTask::Initialize() {
     manager.AddDetector("MC_eta", DetectorType::Track, {yaxis});
     manager.AddDetector("PSI", DetectorType::Track); // check if the third argument is missing
   }
-  manager.SetCorrectionSteps("PSD1", confPsd);
-  manager.SetCorrectionSteps("PSD2", confPsd);
-  manager.SetCorrectionSteps("PSD3", confPsd);
+  manager.SetCorrectionSteps("PSD1", confVcal);
+  manager.SetCorrectionSteps("PSD2", confRcal);
+  manager.SetCorrectionSteps("PSD3", confRcal);
   manager.SetCorrectionSteps("TPC_1", confTracks);
   manager.SetCorrectionSteps("TPC_2", confTracks);
   manager.SetCorrectionSteps("TPC_3", confTracks);

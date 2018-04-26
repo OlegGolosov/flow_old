@@ -1,6 +1,6 @@
 vector <TString> subevents = {"TPC_pt", "TPC_y"};
 vector <TString> qa = {"h2ypt_", "h2phipt_", "h2phiy_"};
-vector <TString> res = {"R1_PSD1_3S_", "R1_PSD2_3S_"};
+vector <TString> res = {"R1_PSD1_3S_SP_", "R1_PSD2_3S_SP_"};
 float resLim [4] = {0, 6, 0., .11};
 vector <TString> v1 = {"V_1_x_%s", "V_1_y_%s", "V_1_x+y_%s", "V1_%s_3S_PSD1", "V1_%s_3S_PSD2"};
 //float v1Lim [2][4] = {{0., 2., -0.06, 0.1},
