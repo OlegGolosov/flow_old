@@ -220,6 +220,11 @@ void SimpleTask::Configure(Qn::CorrelationManager &a) {
     a.AddCorrelation(sPsdPsd[iDet] + "_YY", sPsdPsdName[iDet], YY);
     a.AddCorrelation(sPsdPsd[iDet] + "_XY", sPsdPsdName[iDet], XY);
     a.AddCorrelation(sPsdPsd[iDet] + "_YX", sPsdPsdName[iDet], YX);
+		
+    a.AddCorrelation(sPsdPsd[iDet] + "_XX", sPsdPsdName[iDet], XX_EP);
+    a.AddCorrelation(sPsdPsd[iDet] + "_YY", sPsdPsdName[iDet], YY_EP);
+    a.AddCorrelation(sPsdPsd[iDet] + "_XY", sPsdPsdName[iDet], XY_EP);
+    a.AddCorrelation(sPsdPsd[iDet] + "_YX", sPsdPsdName[iDet], YX_EP);
 
     a.AddCorrelation("TPC_1_" + sPsdPsd[iDet] + "_X2XX", "TPC_1, " + sPsdPsdName[iDet], X2XX);
     a.AddCorrelation("TPC_1_" + sPsdPsd[iDet] + "_X2YY", "TPC_1, " + sPsdPsdName[iDet], X2YY);
