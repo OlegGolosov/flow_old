@@ -20,12 +20,9 @@ TFile *fIn {nullptr};
 TFile *fOut {nullptr};
 TFile *fTemp {nullptr};
 
-void save_graphs(TString inputFileName = "~/Desktop/analysis/NA49_flow/corr_2.root",
-                   TString outputFileName = "~/Desktop/analysis/NA49_flow/graph_2.root")
+void save_graphs(TString inputFileName = "~/Desktop/analysis/NA49_flow/lowY/piminus1/corr_2.root",
+                   TString outputFileName = "~/Desktop/analysis/NA49_flow/lowY/piminus1/graph_2.root")
 {		
-//		inputFileName = "~/Desktop/analysis/NA49_flow/default_new_y/pimin/corr_2.root";
-//		outputFileName = "~/Desktop/analysis/NA49_flow/default_new_y/pimin/graph_2.root";
-	
 		cout << inputFileName << endl;
 		cout << outputFileName << endl;
 		
@@ -39,7 +36,7 @@ void save_graphs(TString inputFileName = "~/Desktop/analysis/NA49_flow/corr_2.ro
     Save_uQQ ();
     SaveResolution ();
     SaveFlow(1);
-    SaveFlow(2);
+//    SaveFlow(2);
 	
     fTemp->Close();
     fOut->Close();
@@ -285,15 +282,6 @@ void Save_uQ ()
 	uQ_dir->cd();
 	for (int axis = 0; axis < xAxes.size (); axis++)
 	{
-//		for (int cent = 0; cent < 3; cent++) {
-//			for (int j = 0; j < 3; j++) {
-//				mg2 [cent][j] = new TMultiGraph ();
-////				mg2 [cent][j] -> SetTitle (Form ("V_{%d}^{%s} (%s) (%s);%s;V_{1}", harmonic, comp1 [j].Data(), xAxesTitles [axis].c_str(), centralities [cent].Data(), xAxes [axis].c_str()));
-//			}
-//			for (int name = 0; name < flow_names.size (); name++) {
-//				mg3 [cent][name] = new TMultiGraph ();
-//			}
-//		}
 		for (ushort i = 0; i < uQ_names.size (); i++)
 		{		
 			profile [4] = new Qn::DataContainer<Qn::Profile>;
@@ -311,7 +299,6 @@ void Save_uQ ()
 				mg = DataToMultiGraph (*profile [j], profileVar);
 				mg -> SetName (Form (uQ_names[i][0], xAxesTitles [axis].c_str()) + comp [j]);
 				mg -> SetTitle (Form (uQ_names[i][1], comp1 [j].Data(), comp2 [j].Data()));
-//				mg -> GetXaxis () -> SetTitle (xAxesTitles [axis].c_str());
 				glist = mg -> GetListOfGraphs ();
 				for (int k = 0; k < glist -> GetSize (); k++) 
 				{
@@ -380,7 +367,6 @@ void Save_uQQ ()
 				mg = DataToMultiGraph (*profile [j], profileVar);
 				mg -> SetName (Form (uQQ_names[i][0], xAxesTitles [axis].c_str()) + comp [j]);
 				mg -> SetTitle (Form (uQQ_names[i][1], comp1 [j].Data(), comp2 [j].Data(), comp3 [j].Data()));
-//				mg -> GetXaxis () -> SetTitle (xAxesTitles [axis].c_str());
 				glist = mg -> GetListOfGraphs ();
 				for (int k = 0; k < glist -> GetSize (); k++) 
 				{
@@ -509,21 +495,18 @@ void SaveFlow (int harmonic)
 	const float *(*pubE)[3];
 	
 	// pions
-//	pubB = nBins_pi;
-//	pubX = NA49_pi_v1_bins;
-//	pubY = NA49_pi_v1_value;
-//	pubE = NA49_pi_v1_error;
+	pubB = nBins_pi;
+	pubX = NA49_pi_v1_bins;
+	pubY = NA49_pi_v1_value;
+	pubE = NA49_pi_v1_error;
 	// pions
 		
 	// protons
-	pubB = nBins_p;
-	pubX = NA49_p_v1_bins;
-	pubY = NA49_p_v1_value;
-	pubE = NA49_p_v1_error;
+//	pubB = nBins_p;
+//	pubX = NA49_p_v1_bins;
+//	pubY = NA49_p_v1_value;
+//	pubE = NA49_p_v1_error;
 	// protons
-	
-	
-	
 	
 	TGraphErrors* pub [3];
 	
@@ -547,7 +530,8 @@ void SaveFlow (int harmonic)
 	{
 		for (int cent = 0; cent < 3; cent++) {
 			pub [cent] = new TGraphErrors (pubB [axis][cent], pubX [axis][cent], pubY [axis][cent], 0, pubE [axis][cent]);
-			pub [cent] -> SetTitle ("V_{1,x+y} published");
+			pub [cent] -> SetTitle ("v_{1,x+y}{#psi_{EP}^{pp}}");
+			pub [cent] -> SetName (Form("v1_%s_pub_%s", xAxes [axis].c_str(), centralities [cent].Data()));
 			pub [cent] -> SetLineColor (kBlack);
 			pub [cent] -> SetMarkerColor (kBlack);
 			pub [cent] -> SetMarkerStyle (28);
@@ -556,7 +540,7 @@ void SaveFlow (int harmonic)
 			
 			for (int j = 0; j < 3; j++) {
 				mg2 [cent][j] = new TMultiGraph ();
-				mg2 [cent][j] -> SetTitle (Form ("V_{%d}^{%s} (%s) (%s);%s;V_{1}^{%s}", harmonic, comp1 [j].Data(), xAxesTitles [axis].c_str(), centralities [cent].Data(), xAxesTitles [axis].c_str(), comp1 [j].Data()));
+				mg2 [cent][j] -> SetTitle (Form ("V_{%d}^{%s} (%s) (%s);%s;V_{1}^{%s}", harmonic, comp1 [j].Data(), xAxes [axis].c_str(), centralities [cent].Data(), xAxesTitles [axis].c_str(), comp1 [j].Data()));
 			}
 			for (int name = 0; name < flow_names.size (); name++) 
 			{
@@ -579,18 +563,18 @@ void SaveFlow (int harmonic)
 				flow = flow.Rebin( centralityAxis, [](Qn::Profile &a, Qn::Profile &b) { return  a+b; } );
 				mg = DataToMultiGraph (flow, profileVar);
 				mg -> SetName (flowName + comp [j]);
-				mg -> SetTitle (Form (flow_names[i][3], comp1 [j].Data(), xAxesTitles [axis].c_str()));
+				mg -> SetTitle (Form (flow_names[i][3], comp1 [j].Data()));
 				glist = mg -> GetListOfGraphs ();
 				for (int cent = 0; cent < glist -> GetSize (); cent++) 
 				{		
 					g = (TGraphErrors*) glist -> At(cent);
-					g -> SetTitle (Form (flow_names[i][3], comp1 [j].Data(), xAxesTitles [axis].c_str()));
+					g -> SetTitle (Form (flow_names[i][3], comp1 [j].Data()));
 					g -> GetXaxis () -> SetTitle (xAxesTitles [axis].c_str());
 					g -> SetMarkerSize (1.5);
 					g -> SetMarkerStyle (markers [i]);
 					g -> SetMarkerColor (colors [i]);
 					g -> SetLineColor (colors [i]);
-					g -> SetName (flowName + comp [j] + "_" + centralities [cent]);
+					g -> SetName (flowName + "_" + comp1 [j] + "_" + centralities [cent]);
 					graphs.push_back (g);
 					if (i == 0) mg2 [cent][j] -> Add (pub [cent]);
 					mg2 [cent][j] -> Add (g);
@@ -600,7 +584,7 @@ void SaveFlow (int harmonic)
 					gc -> SetLineColor (colors [j]);
 					if (j == 0) mg3 [cent][i] -> Add (pub [cent]);
 					mg3 [cent][i] -> Add (gc);
-					mg3 [cent][i] -> SetTitle (Form (flow_names[i][3] + " (%s);%s;V_{1}", "", xAxesTitles [axis].c_str(), centralities [cent].Data(), xAxesTitles [axis].c_str()));
+					mg3 [cent][i] -> SetTitle (Form (flow_names[i][3] + " (%s);%s;V_{1}", "", centralities [cent].Data(), xAxesTitles [axis].c_str()));
 				}
 //				g = new TGraphErrors (NA49_pi_v1_bins[][].size(), NA49_pi_v1_bins[][], NA49_pi_v1_value[][], NA49_pi_v1_error[][]);
 //				mg -> Write(flowName + comp [j]);

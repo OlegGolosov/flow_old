@@ -490,7 +490,7 @@ class DataContainer : public TObject {
       auto binmid = binlow + (binhigh - binlow)/2;
       auto rebinnedindex = rebinaxis.FindBin(binmid);
       indices[axisposition] = rebinnedindex;
-      rebinned.AddElement(indices, lambda, bin);
+      if (rebinnedindex != -1) rebinned.AddElement(indices, lambda, bin); // Oleg's patch
       ++ibin;
     }
     return rebinned;
