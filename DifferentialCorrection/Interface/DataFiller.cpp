@@ -17,8 +17,9 @@ namespace Interface {
   {
     std::vector <short> u_pid = {-211};
     std::vector <short> Q_pid = {2212, -211, 211};
-    Qn::Differential::Interface::QnCuts u_pt (u_pid, -999, 999, 0.0, 1.8); // default
-//    Qn::Differential::Interface::QnCuts u_pt (u_pid, -999, 999, 0.8, 1.8); // forward Y configuration
+//    Qn::Differential::Interface::QnCuts u_pt (u_pid, -999, 999, 0.0, 1.8); // default
+    Qn::Differential::Interface::QnCuts u_pt (u_pid, -999, 999, 0.0, 1.4); // new
+//    Qn::Differential::Interface::QnCuts u_pt (u_pid, -999, 999, 0.6, 1.2); // forward Y configuration
     Qn::Differential::Interface::QnCuts u_y (u_pid, 0.0, 2.0, -999, 999); // default
 //    Qn::Differential::Interface::QnCuts u_y (u_pid, 0.05, 2.0, -999, 999); // victor_cuts
 //    Qn::Differential::Interface::QnCuts u_y (u_pid, 0.4, 2.0, -999, 999); // STAR protons
@@ -343,7 +344,8 @@ namespace Interface {
 				sumW += weight;
 				h2 -> at (0) -> Fill (x, y, weight);
         datacontainer->CallOnElement([ich, y, x, weight](std::vector<DataVector> &vector) {
-          vector.emplace_back(TMath::ATan2(y, x), weight);
+          if (ich < 5) vector.emplace_back(TMath::ATan2(y, x), weight);
+          else vector.emplace_back(TMath::ATan2(y, x) - 0.1309, weight);
         });
       }
     }
