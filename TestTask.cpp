@@ -128,9 +128,9 @@ void TestTask::Initialize() {
     config->SetQVectorNormalizationMethod(QnCorrectionsQnVector::QVNORM_QoverM);
     config->AddCorrectionOnQnVector(new QnCorrectionsQnVectorRecentering());
 		auto align = new QnCorrectionsQnVectorAlignment();
-		align->SetReferenceConfigurationForAlignment("TPC_3");
+		align->SetReferenceConfigurationForAlignment("PSD1");
 		align->SetHarmonicNumberForAlignment(1);
-		config->AddCorrectionOnQnVector(align);
+//		config->AddCorrectionOnQnVector(align);
     auto rescale = new QnCorrectionsQnVectorTwistAndRescale();
     rescale->SetApplyTwist(true);
     rescale->SetApplyRescale(true);
@@ -142,10 +142,6 @@ void TestTask::Initialize() {
     config->SetQVectorNormalizationMethod(QnCorrectionsQnVector::QVNORM_QoverM); // SP
 //    config->SetQVectorNormalizationMethod(QnCorrectionsQnVector::QVNORM_QoverQlength); // EP
     config->AddCorrectionOnQnVector(new QnCorrectionsQnVectorRecentering());
-		auto align = new QnCorrectionsQnVectorAlignment();
-		align->SetReferenceConfigurationForAlignment("TPC_3");
-		align->SetHarmonicNumberForAlignment(1);
-		config->AddCorrectionOnQnVector(align);
     auto rescale = new QnCorrectionsQnVectorTwistAndRescale();
     rescale->SetApplyTwist(true);
     rescale->SetApplyRescale(true);
