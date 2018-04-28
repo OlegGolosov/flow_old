@@ -13,19 +13,26 @@ EXE_DIR=$MY_PATH/flow/build
 CENTRALITY=$MY_PATH/tpc_centr.root
 FLOW_DIR=$MY_PATH/NA49_flow
 #FILE_LIST=$MY_PATH/NA49_data/fileList.txt
-FILE_LISTS=$MY_PATH/NA49_data/fileLists/data/01D-mb
+FILE_LISTS=$MY_PATH/NA49_data/fileLists/40_all
+#FILE_LISTS=$MY_PATH/NA49_data/fileLists/40_central
+#FILE_LISTS=$MY_PATH/NA49_data/fileLists/40_minbias
 #FILE_LISTS=$MY_PATH/NA49_data/fileLists/debug
 
 
-FLOW_DIR=$FLOW_DIR/default_old_y/pimin
-NJOBS=1
+FLOW_DIR=$FLOW_DIR/lowY/piminus1
+NJOBS=50
 MIN_STEP=1
 MAX_STEP=2
+#PART=main
+#TIME=0:01:00
+PART=debug
+TIME=0:20:00
 
-if [ $# == 0 ];then
-	echo input number of step!
-	exit
-fi
+
+#if [ $# == 0 ];then
+#	echo input number of step!
+#	exit
+#fi
 
 for FILE_LIST in $FILE_LISTS/*
 do
@@ -42,7 +49,7 @@ do
 	
   split -n l/$NJOBS -d -a 3 $FILE_LIST $OUT_DIR/$(basename "$FILE_LIST")_
 
-  sbatch --partition main --time=8:00:00 --array=0-$(expr $NJOBS - 1) -D $LOG_DIR --export=ALL $BATCH_DIR/run_kronos.sh $EXE_DIR $OUT_DIR $FILE_LIST $CENTRALITY $MIN_STEP $MAX_STEP $BATCH_DIR $STEP
+  sbatch --partition $PART --time=$TIME --array=0-$(expr $NJOBS - 1) -D $LOG_DIR --export=ALL $BATCH_DIR/run_kronos.sh $EXE_DIR $OUT_DIR $FILE_LIST $CENTRALITY $MIN_STEP $MAX_STEP $BATCH_DIR $STEP
 
 #  . $BATCH_DIR/run_kronos.sh $EXE_DIR $OUT_DIR $FILE_LIST $CENTRALITY $MIN_STEP $MAX_STEP $BATCH_DIR
 
