@@ -238,7 +238,6 @@ namespace Interface {
 			h2 -> at (1) -> Fill (phi, pt);
 			h2 -> at (2) -> Fill (phi, y);
 			h2 -> at (3) -> Fill (log (10 * p) * charge, dEdx);
-			h2 -> at (4) -> Fill (cent, mult);
 			h2 -> at (5) -> Fill (etacms, pcms);
 			
 			
