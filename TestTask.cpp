@@ -68,6 +68,7 @@ void TestTask::InitializeQA(std::string detectorName, DetectorType type)
 	
 	if (type == DetectorType::Track)
 	{
+		h1 -> push_back (new TH1F (Form ("hWeight_%s", detectorName.c_str ()),  Form ("weight;weight", detectorName.c_str ()), 1000, 0., 100.));
 		h2 -> push_back (new TH2F (Form ("h2ypt_%s", detectorName.c_str ()),  Form ("pt:y (%s);#it{y};p_{T}", detectorName.c_str ()), 500, -1., 3., 500, 0., 2.5));
 		h2 -> push_back (new TH2F (Form ("h2phipt_%s", detectorName.c_str ()),  Form ("pt:phi (%s);#phi;p_{T}", detectorName.c_str ()), 500, -3.15, 3.15, 500, 0., 2.5));
 		h2 -> push_back (new TH2F (Form ("h2phiy_%s", detectorName.c_str ()),  Form ("phi:y (%s);#phi;#it{y}", detectorName.c_str ()), 500, -3.15, 3.15, 500, -1., 3.));

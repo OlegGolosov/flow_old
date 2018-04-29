@@ -238,6 +238,7 @@ namespace Interface {
 			if (skipFlag) continue;
 			
 			mult++;
+			h1 -> at (0) -> Fill (weight);
 			h2 -> at (0) -> Fill (y, pt, weight);
 			h2 -> at (1) -> Fill (phi, pt, weight);
 			h2 -> at (2) -> Fill (phi, y, weight);
