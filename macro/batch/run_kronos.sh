@@ -27,11 +27,11 @@ cp $EXE_DIR/main ./
     for ((i=0; i<=$MAX_STEP; i++))
 #    for ((i=$STEP; i<=$STEP; i++))
     do
-  #      CALIB=calib_$(($i-1)).root
-	 CALIB=calib.root
+        CALIB=calib_$(($i-1)).root	
+	#CALIB=calib.root
         echo Step $i...
         ./main correct $FILE_LIST $CALIB $CENTRALITY &> log_qn_$i.txt
- #       mv calib.root calib_$i.root
+        mv calib.root calib_$i.root
         mv qn.root qn_$i.root
     done
 
