@@ -208,13 +208,12 @@ namespace Interface {
 			charge = values[VarManager::Variables::kCharge];
       etacms = values[VarManager::Variables::kPcms];
       pcms = values[VarManager::Variables::kEtacms];
-			if (heff_ != nullptr && qnCut.weight == VarManager::Variables::kEfficiency)
+			if (heff_ != nullptr)
 			{
 				eff = heff_->GetBinContent( heff_->FindBin(pt, y) );
-//				values[VarManager::Variables::kEfficiency] = (eff > 0.05 && eff < 1.) ? 1. / eff : 0.4;
-				weight = (eff > 0.05 && eff < 1.) ? 1. / eff : 0.4;
+				values[VarManager::Variables::kEfficiency] = (eff > 0.05 && eff < 1.) ? 1. / eff : 0.4;
 			}
-			else if (qnCut.weight != -999) weight = values [qnCut.weight];
+			if (qnCut.weight != -999) weight = values [qnCut.weight];
 			else weight = 1.0;
 
 			skipFlag = true;
