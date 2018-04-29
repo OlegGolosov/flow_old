@@ -23,6 +23,7 @@
 #include "TTree.h"
 #include "TChain.h"
 #include "TTreeReader.h"
+#include "TH2F.h"
 
 #include "QnCorrections/QnCorrectionsManager.h"
 #include "Base/DataContainer.h"
@@ -42,18 +43,19 @@ namespace Qn {
  */
  
 class TestTask {
- public:
+public:
   TestTask() = default;
   TestTask(std::string filelist, std::string incalib, std::string centrality);
   TestTask(std::array<std::shared_ptr<TFile>, 4> files);
   ~TestTask() = default;
   void Run();
 
- void SetIsSim(bool is=true) { issim_ = is; }
- void SetSetup(std::string setup) { setup_ = setup; }
+	void SetIsSim(bool is=true) { issim_ = is; }
+	void SetSetup(std::string setup) { setup_ = setup; }
 
- std::string GetSetup() const { return setup_; }
- bool GetIsSim() const { return issim_; }
+	std::string GetSetup() const { return setup_; }
+	bool GetIsSim() const { return issim_; }
+	void SetEff(TH2D *h) { heff_ = h; }
 
 
 private:
@@ -77,7 +79,7 @@ private:
    * @param filename name of file containing paths to root files containing the input trees
    * @return Pointer to the TChain
    */
- virtual std::unique_ptr<TChain> MakeChain(std::string filename, std::string treename);
+	virtual std::unique_ptr<TChain> MakeChain(std::string filename, std::string treename);
 
 protected:
   std::unique_ptr<TTree> in_tree_;
@@ -91,6 +93,7 @@ protected:
 	std::map <std::string, std::vector <TH2*>*> hist2;
 	int minRunNumber;
 	int maxRunNumber;
+	TH2D *heff_{nullptr};
 
   DataTreeEvent *event_;
   CentralityManager *centr_;

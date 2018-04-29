@@ -40,6 +40,7 @@ class VarManager {
 		kPcms,
 		kEtacms,
 		kdEdx,
+		kEfficiency,
     kNVars
   };
 
@@ -137,8 +138,8 @@ class VarManager {
     values[kEveto] = event.GetPSDEnergy ();
     values[kMultiplicity] = event.GetNVertexTracks ();
     values[kNRun] = event.GetRunId ();
-		float Ebeam = 8.32e3;
-		std::vector <float> eVetoBins ({0., 0.169 * Ebeam, 0.314 * Ebeam, 0.509 * Ebeam, 0.66 * Ebeam, 0.778 * Ebeam, 9.e3});
+		double Ebeam = 8.32e3;
+		std::vector <double> eVetoBins ({0., 0.169 * Ebeam, 0.314 * Ebeam, 0.509 * Ebeam, 0.66 * Ebeam, 0.778 * Ebeam, 9.e3});
 		for (u_short i = 0; i < eVetoBins.size () - 1; i++) 
 		{
 			if (values[kEveto] > eVetoBins[i] && values[kEveto] < eVetoBins[i + 1]) values[kCentrality] = i + 0.5;

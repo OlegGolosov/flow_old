@@ -17,10 +17,9 @@ namespace Interface {
   {
     std::vector <short> u_pid = {-211};
     std::vector <short> Q_pid = {2212, -211, 211};
-//    Qn::Differential::Interface::QnCuts u_pt (u_pid, -999, 999, 0.0, 1.8); // default
-    Qn::Differential::Interface::QnCuts u_pt (u_pid, -999, 999, 0.0, 1.4); // new
-//    Qn::Differential::Interface::QnCuts u_pt (u_pid, -999, 999, 0.6, 1.2); // forward Y configuration
-    Qn::Differential::Interface::QnCuts u_y (u_pid, 0.0, 2.0, -999, 999); // default
+//    Qn::Differential::Interface::QnCuts u_pt (u_pid, -999, 999, 0.0, 1.8, VarManager::Variables::kEfficiency); // default
+    Qn::Differential::Interface::QnCuts u_pt (u_pid, -999, 999, 0.0, 1.4, VarManager::Variables::kEfficiency); // low Y configuration
+    Qn::Differential::Interface::QnCuts u_y (u_pid, 0.0, 2.0, -999, 999, VarManager::Variables::kEfficiency); // default
 //    Qn::Differential::Interface::QnCuts u_y (u_pid, 0.05, 2.0, -999, 999); // victor_cuts
 //    Qn::Differential::Interface::QnCuts u_y (u_pid, 0.4, 2.0, -999, 999); // STAR protons
 //    Qn::Differential::Interface::QnCuts u_y (u_pid, 0.2, 999, -999, 999); // STAR pions
@@ -169,7 +168,7 @@ namespace Interface {
 //    auto values = new float[VarManager::Variables::kNVars];
     DataTreeTrack *track = nullptr;
     short pid, charge, mult = 0;
-    float pt, y, phi, p, pcms, etacms, dEdx, weight, cent = values [VarManager::Variables::kCentrality];
+    float pt, y, phi, p, pcms, etacms, dEdx, eff, weight, cent = values [VarManager::Variables::kCentrality];
     auto &datacontainer = detector.GetDataContainer();
     auto &axes = datacontainer->GetAxes();
     std::vector<float> trackparams;
@@ -209,6 +208,11 @@ namespace Interface {
 			charge = values[VarManager::Variables::kCharge];
       etacms = values[VarManager::Variables::kPcms];
       pcms = values[VarManager::Variables::kEtacms];
+			if (heff_ != nullptr)
+			{
+				eff = heff_->GetBinContent( heff_->FindBin(pt, y) );
+				values[VarManager::Variables::kEfficiency] = (eff > 0.05 && eff < 1.) ? 1. / eff : 0.4;
+			}
 			if (qnCut.weight != -999) weight = values [qnCut.weight];
 			else weight = 1.0;
 
@@ -234,11 +238,11 @@ namespace Interface {
 			if (skipFlag) continue;
 			
 			mult++;
-			h2 -> at (0) -> Fill (y, pt);
-			h2 -> at (1) -> Fill (phi, pt);
-			h2 -> at (2) -> Fill (phi, y);
-			h2 -> at (3) -> Fill (log (10 * p) * charge, dEdx);
-			h2 -> at (5) -> Fill (etacms, pcms);
+			h2 -> at (0) -> Fill (y, pt, weight);
+			h2 -> at (1) -> Fill (phi, pt, weight);
+			h2 -> at (2) -> Fill (phi, y, weight);
+			h2 -> at (3) -> Fill (log (10 * p) * charge, dEdx, weight);
+			h2 -> at (5) -> Fill (etacms, pcms, weight);
 			
 			
 			for (const auto num : detector.GetEnums()) {trackparams.push_back(values[num]);}
@@ -344,7 +348,7 @@ namespace Interface {
 				h2 -> at (0) -> Fill (x, y, weight);
         datacontainer->CallOnElement([ich, y, x, weight](std::vector<DataVector> &vector) {
           if (ich < 5) vector.emplace_back(TMath::ATan2(y, x), weight);
-          else vector.emplace_back(TMath::ATan2(y, x) - 0.1309, weight);
+          else vector.emplace_back(TMath::ATan2(y, x) - TMath::Pi() / 24., weight);
         });
       }
     }

@@ -284,6 +284,7 @@ void TestTask::Process() {
 //  filler.SetCentrality(centr_);
   filler.SetSetup(setup_);
   filler.SetIsSim(issim_);
+	filler.SetEff(heff_);
 
   manager.FillDataToFramework(filler);
 

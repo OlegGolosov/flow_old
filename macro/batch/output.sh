@@ -3,7 +3,7 @@
 INDIR=$1
 MERGE=$2
 
-. set_path.sh
+#. set_path.sh
 
 for (( step=1; step<=2; step++ ))
 do  

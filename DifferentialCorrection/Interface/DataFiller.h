@@ -82,6 +82,7 @@ class DataFiller {
 
   void SetSetup(std::string setup) { setup_ = setup; }
   void SetIsSim(bool is=true) { issim_ = is; }
+	void SetEff(TH2D *h) { heff_ = h; }
 
 //   void SetCentrality(CentralityManager *c) { centr_ = c; }
 
@@ -95,6 +96,7 @@ private:
 	std::map <std::string, std::vector <TH1*>*> *hist1;
 	std::map <std::string, std::vector <TH2*>*> *hist2;
 	float *values;
+	TH2D *heff_{nullptr};
 
 //   CentralityManager *centr_;
 
