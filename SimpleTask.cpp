@@ -19,40 +19,40 @@ void SimpleTask::Configure(Qn::CorrelationManager &a) {
     return a[0].x(2)*a[1].x(2) + a[0].y(2)*a[1].y(2);
   };
   auto XX = [](const std::vector<Qn::QVector> &a) {
-    return 2*a[0].x(1)*a[1].x(1);
+    return a[0].x(1)*a[1].x(1);
   };
   auto YY = [](const std::vector<Qn::QVector> &a) {
-    return 2*a[0].y(1)*a[1].y(1);
+    return a[0].y(1)*a[1].y(1);
   };
   auto XY = [](const std::vector<Qn::QVector> &a) {
-    return 2*a[0].x(1)*a[1].y(1);
+    return a[0].x(1)*a[1].y(1);
   };
   auto YX = [](const std::vector<Qn::QVector> &a) {
-    return 2*a[0].y(1)*a[1].x(1);
+    return a[0].y(1)*a[1].x(1);
   };
   auto XX_EP = [](const std::vector<Qn::QVector> &a) {
-    return 2 * cos (atan2 (a[0].y(1), a[0].x(1))) * cos (atan2 (a[1].y(1), a[1].x(1)));
+    return cos (atan2 (a[0].y(1), a[0].x(1))) * cos (atan2 (a[1].y(1), a[1].x(1)));
   };
   auto YY_EP = [](const std::vector<Qn::QVector> &a) {
-    return 2 * sin (atan2 (a[0].y(1), a[0].x(1))) * sin (atan2 (a[1].y(1), a[1].x(1)));
+    return sin (atan2 (a[0].y(1), a[0].x(1))) * sin (atan2 (a[1].y(1), a[1].x(1)));
   };
   auto XY_EP = [](const std::vector<Qn::QVector> &a) {
-    return 2 * cos (atan2 (a[0].y(1), a[0].x(1))) * sin (atan2 (a[1].y(1), a[1].x(1)));
+    return cos (atan2 (a[0].y(1), a[0].x(1))) * sin (atan2 (a[1].y(1), a[1].x(1)));
   };
   auto YX_EP = [](const std::vector<Qn::QVector> &a) {
-    return 2 * sin (atan2 (a[0].y(1), a[0].x(1))) * cos (atan2 (a[1].y(1), a[1].x(1)));
+    return sin (atan2 (a[0].y(1), a[0].x(1))) * cos (atan2 (a[1].y(1), a[1].x(1)));
   };
   auto X2X2_EP = [](const std::vector<Qn::QVector> &a) {
-    return 2 * cos (atan2 (a[0].y(2), a[0].x(2))) * cos (atan2 (a[1].y(2), a[1].x(2)));
+    return cos (atan2 (a[0].y(2), a[0].x(2))) * cos (atan2 (a[1].y(2), a[1].x(2)));
   };
   auto Y2Y2_EP = [](const std::vector<Qn::QVector> &a) {
-    return 2 * sin (atan2 (a[0].y(2), a[0].x(2))) * sin (atan2 (a[1].y(2), a[1].x(2)));
+    return sin (atan2 (a[0].y(2), a[0].x(2))) * sin (atan2 (a[1].y(2), a[1].x(2)));
   };
   auto X2Y2_EP = [](const std::vector<Qn::QVector> &a) {
-    return 2 * cos (atan2 (a[0].y(2), a[0].x(2))) * sin (atan2 (a[1].y(2), a[1].x(2)));
+    return cos (atan2 (a[0].y(2), a[0].x(2))) * sin (atan2 (a[1].y(2), a[1].x(2)));
   };
   auto Y2X2_EP = [](const std::vector<Qn::QVector> &a) {
-    return 2 * sin (atan2 (a[0].y(2), a[0].x(2))) * cos (atan2 (a[1].y(2), a[1].x(2)));
+    return sin (atan2 (a[0].y(2), a[0].x(2))) * cos (atan2 (a[1].y(2), a[1].x(2)));
   };
   auto Y2XY = [](const std::vector<Qn::QVector> &a) {
     return a[0].y(2)*a[1].x(1)* a[2].y(1);

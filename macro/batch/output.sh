@@ -1,7 +1,7 @@
 #!/bin/bash
 
 INDIR=$1
-MERGE=$2
+MERGE=${2:-0}
 
 #. set_path.sh
 
