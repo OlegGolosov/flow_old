@@ -20,8 +20,8 @@ TFile *fIn {nullptr};
 TFile *fOut {nullptr};
 TFile *fTemp {nullptr};
 
-void save_graphs(TString inputFileName = "~/Desktop/analysis/NA49_flow/lowY/piminus1/corr_2.root",
-                   TString outputFileName = "~/Desktop/analysis/NA49_flow/lowY/piminus1/graph_2.root")
+void save_graphs(TString inputFileName = "~/Desktop/analysis/NA49_flow/lowY_eff/piminus/centr+mb/corr_2.root",
+                   TString outputFileName = "~/Desktop/analysis/NA49_flow/lowY_eff/piminus/centr+mb/graph_2.root")
 {		
 		cout << inputFileName << endl;
 		cout << outputFileName << endl;
@@ -163,14 +163,14 @@ TMultiGraph* GetV2(const TString corr, const TString res1, const TString res2, c
 void Save_QQ ()
 {
 	TString xAxisTitle = "Centrality class";
-	std::string comp [5] = {"_XX", "_YY", "_XY", "_YX", "_QQ"}; 
-	std::string comp1 [5] = {"x", "y", "x", "y", "x+y"}; 
-	std::string comp2 [5] = {"x", "y", "y", "x", "x+y"}; 
+	TString comp [5] = {"_XX", "_YY", "_QQ", "_XY", "_YX"}; 
+	TString comp1 [5] = {"x", "y", "x+y", "x", "y"}; 
+	TString comp2 [5] = {"x", "y", "x+y", "y", "x"};  
 	
 	TGraphErrors *corr;
 	vector <TGraphErrors*> graphs;
 	Qn::DataContainer<Qn::Profile> *profile [5];
-	profile [4] = new Qn::DataContainer<Qn::Profile>;
+	profile [2] = new Qn::DataContainer<Qn::Profile>;
 	TDirectory *QQ_dir = fOut->mkdir( "QQ" );
 	QQ_dir->cd();
 
@@ -182,13 +182,13 @@ void Save_QQ ()
 		std::cout << std::endl << QQ_names[i][0];
 		for (int j = 0; j < 5; j++) 
 		{
-			if (j < 4) fIn -> GetObject(QQ_names[i][0] + comp [j].c_str(), profile [j]);
-			else if (profile [0] && profile [1]) *profile [4] = *profile [0] + *profile [1];
+			if (j != 2) fIn -> GetObject(QQ_names[i][0] + comp [j].Data(), profile [j]);
+			else if (profile [0] && profile [1]) *profile [2] = (*profile [0] + *profile [1]) * 2.;
 			if (profile [j]) std::cout << "\t" << comp [j];
 			else continue;
 			corr = DataToProfileGraph (*profile [j]);
-			corr -> SetName (QQ_names[i][0] + comp [j].c_str());
-			corr -> SetTitle (Form (QQ_names[i][1], comp1 [j].c_str(), comp2 [j].c_str()));
+			corr -> SetName (QQ_names[i][0] + comp [j].Data());
+			corr -> SetTitle (Form (QQ_names[i][1], comp1 [j].Data(), comp2 [j].Data()));
 			corr -> GetXaxis () -> SetTitle (xAxisTitle);
 			corr -> SetMarkerStyle (markers [j]);//    fOut->Write();
 
@@ -262,9 +262,9 @@ void Save_uQ ()
 	std::string profileVar = "Centrality";
 	std::vector <std::string> xAxes = {"pt", "y"};
 	std::vector <std::string> xAxesTitles = {"p_{T}", "#it{y}"};
-	TString comp [5] = {"_XX", "_YY", "_XY", "_YX", "_QQ"}; 
-	TString comp1 [5] = {"x", "y", "x", "y", "x+y"}; 
-	TString comp2 [5] = {"x", "y", "y", "x", "x+y"}; 
+	TString comp [5] = {"_XX", "_YY", "_QQ", "_XY", "_YX"}; 
+	TString comp1 [5] = {"x", "y", "x+y", "x", "y"}; 
+	TString comp2 [5] = {"x", "y", "x+y", "y", "x"}; 
 	TString centralities [3] = {"central", "midcentral", "peripheral"}; 
 	std::string objectName;
 //	TGraphErrors *g;
@@ -284,13 +284,13 @@ void Save_uQ ()
 	{
 		for (ushort i = 0; i < uQ_names.size (); i++)
 		{		
-			profile [4] = new Qn::DataContainer<Qn::Profile>;
+			profile [2] = new Qn::DataContainer<Qn::Profile>;
 			objectName = Form (uQ_names[i][0], xAxes [axis].c_str());
 			std::cout << std::endl << objectName;
 			for (int j = 0; j < 5; j++) 
 			{
-				if (j != 4) fIn -> GetObject(objectName + comp [j], profile [j]);
-				else if (profile [0] && profile [1]) *profile [4] = *profile [0] + *profile [1];
+				if (j != 2) fIn -> GetObject(objectName + comp [j], profile [j]);
+				else if (profile [0] && profile [1]) *profile [2] = (*profile [0] + *profile [1]) * 2.;
 				if (profile [j]) std::cout << "\t" << comp [j];
 				else continue;
 				*profile [j] = profile [j] -> Rebin( centralityAxis, [](Qn::Profile &a, Qn::Profile &b) { return  a+b; } );
@@ -410,7 +410,7 @@ void SaveResolution ()
 	TString resName;
 	TString resTitle;
 	
-	profile [2][0] = new Qn::DataContainer<Qn::Profile>;
+	profile [2][0] = new Qn::DataContainer<Qn::Profile>; // [comp][ab-ac-bc]
 	profile [2][1] = new Qn::DataContainer<Qn::Profile>;
 	profile [2][2] = new Qn::DataContainer<Qn::Profile>;
 	
@@ -432,9 +432,9 @@ void SaveResolution ()
 			else if (profile [0][0] && profile [0][1] &&  profile [0][2] &&
 							 profile [1][0] && profile [1][1] &&  profile [1][2]) 
 			{
-				*profile [2][0] = *profile [0][0] + *profile [1][0];
-				*profile [2][1] = *profile [0][1] + *profile [1][1];
-				*profile [2][2] = *profile [0][2] + *profile [1][2];
+				*profile [2][0] = (*profile [0][0] + *profile [1][0]) * 2.;
+				*profile [2][1] = (*profile [0][1] + *profile [1][1]) * 2.;
+				*profile [2][2] = (*profile [0][2] + *profile [1][2]) * 2.;
 			}
 			if (profile [j][0] && profile [j][1] && profile [j][2]) 
 			{
@@ -459,7 +459,7 @@ void SaveResolution ()
 			graphs.push_back ((TGraphErrors*) g -> Clone ());
 			mg.Add (g);
 		}
-		mg.SetTitle(Form (res_names [i][4] + ";%s;" + res_names [i][4], "", xAxisTitle.Data(), ""));
+		mg.SetTitle(Form (res_names [i][4] + ";%s;R_{1}", "", xAxisTitle.Data()));
 		mg.Write(res_names[i][0]);
 	}
 	std::cout << std::endl;
@@ -486,8 +486,7 @@ void SaveFlow (int harmonic)
 	TString folderNames [2] = {"V1", "V2"};
 	TString comp [3] = {"_XX", "_YY", "_QQ"}; 
 	TString comp1 [3] = {"x", "y", "x+y"}; 
-	TString centralities [3] = {"central", "midcentral", "peripheral"}; 
-	TString space = "_"; 
+	TString centralities [3] = {"central", "midcentral", "peripheral"};
 	
 	const int (*pubB)[3];
 	const float *(*pubX)[3];
@@ -518,7 +517,7 @@ void SaveFlow (int harmonic)
 	TMultiGraph *mg, *mg2 [3][3], *mg3 [3][10];
 	TList *glist;
 	std::vector <TGraphErrors*> graphs;
-	Qn::DataContainer<Qn::Profile> *corr [3], *res [3], flow;
+	Qn::DataContainer<Qn::Profile> *corr [3], *res [3], flow [3];
 	
 	TDirectory *flow_dir = fOut->mkdir( folderNames [harmonic - 1] );
 	flow_dir->cd();
@@ -530,7 +529,7 @@ void SaveFlow (int harmonic)
 	{
 		for (int cent = 0; cent < 3; cent++) {
 			pub [cent] = new TGraphErrors (pubB [axis][cent], pubX [axis][cent], pubY [axis][cent], 0, pubE [axis][cent]);
-			pub [cent] -> SetTitle ("v_{1,x+y}{#psi_{EP}^{pp}}");
+			pub [cent] -> SetTitle ("v_{1,x+y}{#psi_{p}^{PP}}");
 			pub [cent] -> SetName (Form("v1_%s_pub_%s", xAxes [axis].c_str(), centralities [cent].Data()));
 			pub [cent] -> SetLineColor (kBlack);
 			pub [cent] -> SetMarkerColor (kBlack);
@@ -559,9 +558,12 @@ void SaveFlow (int harmonic)
 				fTemp -> GetObject (resName + comp [j], res [j]);
 				if (corr [j] && res [j]) std::cout << "\t" << comp [j];
 				else continue;
-				flow = *corr [j] / *res [j];
-				flow = flow.Rebin( centralityAxis, [](Qn::Profile &a, Qn::Profile &b) { return  a+b; } );
-				mg = DataToMultiGraph (flow, profileVar);
+				if (j == 2) flow [j] = *corr [j] / (*res [j]);
+//				if (j == 2) flow [j] = ((*corr [0] / (*res [0])) + (*corr [1] / (*res [1]))); // alice-like 1
+				else flow [j] = *corr [j] * sqrt (2.) / (*res [j]);
+				flow [j] = flow [j].Rebin( centralityAxis, [](Qn::Profile &a, Qn::Profile &b) { return  a+b; } );
+//				if (j == 2) flow [j] = flow [0] + flow [1]; // alice-like 2
+				mg = DataToMultiGraph (flow [j], profileVar);
 				mg -> SetName (flowName + comp [j]);
 				mg -> SetTitle (Form (flow_names[i][3], comp1 [j].Data()));
 				glist = mg -> GetListOfGraphs ();

@@ -58,12 +58,12 @@ std::vector <std::vector<TString>> QQ_names =
 		{"TPC_3_PSD1", "#LTQ_{1,%s}^{TPC3}Q_{1,%s}^{VCAL}#GT"},
 		{"TPC_3_PSD2", "#LTQ_{1,%s}^{TPC3}Q_{1,%s}^{RCAL1}#GT"},
 		{"TPC_3_PSD3", "#LTQ_{1,%s}^{TPC3}Q_{1,%s}^{RCAL2}#GT"},
-		{"PSD1_PSD2_SP", "#LTQ_{1,%s}^{VCAL}Q_{1,%s}^{RCAL1}#GT (SP)"},
-		{"PSD1_PSD3_SP", "#LTQ_{1,%s}^{VCAL}Q_{1,%s}^{RCAL2}#GT (SP)"},
-		{"PSD2_PSD3_SP", "#LTQ_{1,%s}^{RCAL1}Q_{1,%s}^{RCAL2}#GT (SP)"},
-		{"PSD1_PSD2_EP", "#LTQ_{1,%s}^{VCAL}Q_{1,%s}^{RCAL1}#GT (EP)"},
-		{"PSD1_PSD3_EP", "#LTQ_{1,%s}^{VCAL}Q_{1,%s}^{RCAL2}#GT (EP)"},
-		{"PSD2_PSD3_EP", "#LTQ_{1,%s}^{RCAL1}Q_{1,%s}^{RCAL2}#GT (EP)"}
+		{"PSD1_PSD2_SP", "#LTQ_{1,%s}^{VCAL}Q_{1,%s}^{RCAL1}#GT"},
+		{"PSD1_PSD3_SP", "#LTQ_{1,%s}^{VCAL}Q_{1,%s}^{RCAL2}#GT"},
+		{"PSD2_PSD3_SP", "#LTQ_{1,%s}^{RCAL1}Q_{1,%s}^{RCAL2}#GT"},
+		{"PSD1_PSD2_EP", "#LTQ_{1,%s}^{VCAL}Q_{1,%s}^{RCAL1}#GT"},
+		{"PSD1_PSD3_EP", "#LTQ_{1,%s}^{VCAL}Q_{1,%s}^{RCAL2}#GT"},
+		{"PSD2_PSD3_EP", "#LTQ_{1,%s}^{RCAL1}Q_{1,%s}^{RCAL2}#GT"}
 };
 
 std::vector <std::vector<TString>> QQQ_names = 
