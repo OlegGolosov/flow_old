@@ -26,14 +26,14 @@ void save_graphs(TString inputFileName = "~/Desktop/analysis/NA49_flow/lowY_eff/
 		cout << inputFileName << endl;
 		cout << outputFileName << endl;
 		
-    fIn = TFile::Open(inputFileName);
+    fIn = TFile::Open (inputFileName);
     fTemp = new TFile (outputFileName + "_", "recreate");
     fOut = new TFile (outputFileName, "recreate");
 
     Save_QQ ();
-    Save_QQQ ();
+//    Save_QQQ ();
     Save_uQ ();
-    Save_uQQ ();
+//    Save_uQQ ();
     SaveResolution ();
     SaveFlow(1);
 //    SaveFlow(2);
@@ -558,11 +558,12 @@ void SaveFlow (int harmonic)
 				fTemp -> GetObject (resName + comp [j], res [j]);
 				if (corr [j] && res [j]) std::cout << "\t" << comp [j];
 				else continue;
-				if (j == 2) flow [j] = *corr [j] / (*res [j]);
-//				if (j == 2) flow [j] = ((*corr [0] / (*res [0])) + (*corr [1] / (*res [1]))); // alice-like 1
-				else flow [j] = *corr [j] * sqrt (2.) / (*res [j]);
+//				if (j == 2) flow [j] = *corr [j] / (*res [j]); // like I like)
+				if (j == 2) flow [j] = ((*corr [0] / (*res [0])) + (*corr [1] / (*res [1]))) * sqrt (2.); // alice-like 1 - average before centrality rebin
+//				flow [j] = (*corr [j]) * sqrt (2.) / (*res [j]); // alice-like 2
+				else flow [j] = (*corr [j]) * sqrt (2.) / (*res [j]); // everything besides alice-like 2
 				flow [j] = flow [j].Rebin( centralityAxis, [](Qn::Profile &a, Qn::Profile &b) { return  a+b; } );
-//				if (j == 2) flow [j] = flow [0] + flow [1]; // alice-like 2
+//				if (j == 2) flow [j] = (flow [0] + flow [1]); // alice-like 2 - average after centrality rebin
 				mg = DataToMultiGraph (flow [j], profileVar);
 				mg -> SetName (flowName + comp [j]);
 				mg -> SetTitle (Form (flow_names[i][3], comp1 [j].Data()));

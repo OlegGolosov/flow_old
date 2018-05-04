@@ -1,22 +1,28 @@
+bool saveMacro = 0;
+TString fCompName = "~/victor/v1_pi_neg.root";
 vector <TString> subevents = {"TPC_pt", "TPC_y"};
 //vector <TString> qa = {"h2ypt_", "h2phipt_", "h2phiy_"};
 vector <TString> qa = {};
 vector <TString> QQ = {"PSD1_PSD2_SP", "PSD1_PSD3_SP", "PSD2_PSD3_SP",};
 vector <TString> res = {"R1_PSD1_3S_EP_", "R1_PSD2_3S_EP_"};
-vector <TString> resComp = {"x-direction", "y-direction", "full"};
-vector <TString> flowComp = {"x", "y", "x+y"};
+vector <TString> resComp = {"x-direction", "y-direction", "full", "x-direction", "y-direction", "full"};
+vector <TString> flowComp = {"x", "y", "x+y", "x", "y", "x+y"};
 //float resLim [4] = {0, 6, 0., .11};
 float resLim [4] = {0, 6, 0., 0.8};
 float QQLim [4] = {0, 6, -0.0003, 0.0045};
 //vector <TString> v1 = {"V_1_x_%s", "V_1_y_%s", "V_1_x+y_%s", "V1_%s_3S_PSD1", "V1_%s_3S_PSD2"};
 //vector <TString> v1 = {"V1_%s_3S_PSD1", "V1_%s_3S_PSD2"};
 vector <TString> v1 = {"V1_%s_3S_PSD1"};
-vector <TString> v1_all = {"V1_%s_3S_PSD1_x_%s", "V1_%s_3S_PSD1_y_%s", "V1_%s_3S_PSD1_x+y_%s",
-													 "V1_%s_3S_PSD2_x_%s", "V1_%s_3S_PSD2_y_%s", "V1_%s_3S_PSD2_x+y_%s"};
+//vector <TString> v1_all = {"V1_%s_3S_PSD1_x_%s", "V1_%s_3S_PSD1_y_%s", "V1_%s_3S_PSD1_x+y_%s",
+//													 "V1_%s_3S_PSD2_x_%s", "V1_%s_3S_PSD2_y_%s", "V1_%s_3S_PSD2_x+y_%s"};
+vector <TString> v1_all = {"V1_%s_3S_PSD1_x_%s", "V1_%s_3S_PSD1_y_%s", "V1_%s_3S_PSD1_x+y_%s"};
+vector <TString> compNames = {"v1_0%s_Combined_X_%d", "v1_0%s_Combined_Y_%d", "null"};
+vector <TString> compAxes = {"Pt", "Rapidity"};
+
 TString v1_pub = "v1_%s_pub_%s";
 
 TString particle = "#pi-";
-TString particle = "p";
+//TString particle = "p";
 float v1Lim [2][4] = {{0., 1.8, -0.06, 0.1},
 											{0., 1.4, -0.1, 0.01}}; // pions
 //float v1Lim [2][4] = {{0., 2., -0.06, 0.2},
@@ -26,14 +32,14 @@ float legPos [2][4] = {{0.12, 0.54, 0.45, 0.89},
 //int imin = 0; // show published
 int imin = 1; // do not show published
 TString centralities [3] = {"central", "midcentral", "peripheral"};
-TString centRange [3] = {"0-12.5%", "12.5-33.5%", "33.5-100%"};
+TString centRange [3] = {"0-12.5%", "12.5-33.5%", "33.5-60%"};
 TString xAxes [2] = {"pt", "y"};
 TString xAxesTitles [2] = {"p_{T} [GeV/c]", "#it{y}"};
-TString integration [2] = {"0 < #it{y} < 1.4", "0 < p_{T} <2.0 GeV/c"};
+TString integration [2] = {"0 < #it{y} < 1.4", "0 < p_{T} < 2.0 GeV/c"};
 TString steps [2] = {"rec", "twr"};
 TString stepNames [2] = {"recentring", "twist and rescale"};
 TString expName = "Pb-Pb @ 40A GeV";
-const int colors[6] = {kBlue, kRed, kGreen+4, kMagenta, kBlack, kOrange};
+const int colors[6] = {kBlue, kRed, kGreen+3, kMagenta, kBlack, kOrange};
 const int markers[6] = { 20, 21, 22, 26, 27, 1};
 
 											
@@ -47,7 +53,6 @@ void draw_graphs (TString inFolder = "/home/ogolosov/Desktop/analysis/NA49_flow/
 	TGraphErrors *g [5], *g_pub [3];
 	TMultiGraph *mg, *mg_all, *mg_all_pub;
 	TH2F *h2;
-	TFile *fIn;
 	gStyle -> SetLegendBorderSize (0);
 	gStyle -> SetLegendTextSize (0.035);
 	TCanvas *c = new TCanvas ("c","c", 800, 600);
@@ -71,7 +76,9 @@ void draw_graphs (TString inFolder = "/home/ogolosov/Desktop/analysis/NA49_flow/
 	hAxis->GetXaxis()->SetTitleOffset(0.9);
 	hAxis->GetYaxis()->SetTitleOffset(0.9);
 	
-	fIn = new TFile (inFolder + "/qa.root", "read");
+	TFile *fIn = new TFile (inFolder + "/qa.root", "read");
+	TFile *fComp = new TFile (fCompName, "read");
+	
 	for (int sub = 0; sub < subevents.size (); sub++)
 	{ 
 		for (int iqa = 0; iqa < qa.size (); iqa++) 
@@ -116,7 +123,7 @@ void draw_graphs (TString inFolder = "/home/ogolosov/Desktop/analysis/NA49_flow/
 				gPad->Print(outFolder + "/output.pdf","pdf");
 //				gPad -> SaveAs (outFolder + "/" + QQ [ires] + ".png");
 //				gPad -> SaveAs (outFolder + "/" + QQ [ires] + ".C");
-				gPad -> SaveAs (outFolder + Form ("/c%i.C", counter++));
+				if (saveMacro) gPad -> SaveAs (outFolder + Form ("/c%i.C", counter++));
 			}
 			for (int ires = 0; ires < res.size (); ires++) 
 			{
@@ -139,7 +146,7 @@ void draw_graphs (TString inFolder = "/home/ogolosov/Desktop/analysis/NA49_flow/
 				gPad->Print(outFolder + "/output.pdf","pdf");
 //				gPad -> SaveAs (outFolder + "/" + res [ires] + ".png");
 //				gPad -> SaveAs (outFolder + "/" + res [ires] + ".C");
-				gPad -> SaveAs (outFolder + Form ("/c%i.C", counter++));
+				if (saveMacro) gPad -> SaveAs (outFolder + Form ("/c%i.C", counter++));
 			}
 		}
 	
@@ -180,11 +187,12 @@ void draw_graphs (TString inFolder = "/home/ogolosov/Desktop/analysis/NA49_flow/
 
 //					gPad -> SaveAs (outFolder + "/" + Form (v1 [iname], xAxes [axis].Data()) + "_" + steps [step] + ".png");
 //					gPad -> SaveAs (outFolder + "/" + Form (v1 [iname], xAxes [axis].Data()) + "_" + steps [step] + ".C");
-					gPad -> SaveAs (outFolder + Form ("/c%i.C", counter++));
+					if (saveMacro) gPad -> SaveAs (outFolder + Form ("/c%i.C", counter++));
 
 				}
 			}
 			
+			// NA49 comparison
 			for (int iname = 0; iname < v1_all.size (); iname++) 
 			{	
 				hAxis->SetTitle(Form ("%s", stepNames [step].Data()));
@@ -192,11 +200,11 @@ void draw_graphs (TString inFolder = "/home/ogolosov/Desktop/analysis/NA49_flow/
 				hAxis->GetXaxis() -> SetRangeUser (v1Lim[axis][0], v1Lim[axis][1]);
 				hAxis->GetYaxis() -> SetRangeUser (v1Lim[axis][2], v1Lim[axis][3]);
 				hAxis->Draw();
-				l = new TLegend (legPos[axis][0], legPos[axis][1], legPos[axis][2], legPos[axis][3]);
-				l -> SetHeader(integration [axis], "C");
-				l->SetNColumns(2);
+				l = new TLegend (legPos[axis][0], legPos[axis][1], legPos[axis][2], legPos[axis][3]);   
+				l -> SetHeader(particle + ", " + integration [axis] + ", " + resComp [iname], "C");
+				l -> SetNColumns(2);
+				l -> AddEntry ("", "v_{1}{#psi_{PP}}; Q_{TPC}^{RNDM-sub}", "");
 				l -> AddEntry ("", "v_{1}{#psi^{p}_{SP}}; Q_{VCAL}^{3-sub}", "");
-				l -> AddEntry ("", "v_{1}{#psi^{p}_{PP}}; Q_{TPC}^{RNDM-sub}", "");
 				for (int cent = 0; cent < 3; cent++) 
 				{
 					objectName = Form ("V1/" + v1_pub, xAxes [axis].Data(), centralities [cent].Data());
@@ -231,63 +239,64 @@ void draw_graphs (TString inFolder = "/home/ogolosov/Desktop/analysis/NA49_flow/
 //				gPad -> BuildLegend (legPos[axis][0], legPos[axis][1], legPos[axis][2], legPos[axis][3]);
 				
 //					gPad -> SaveAs (outFolder + "/" + Form (v1_all [iname], xAxes [axis].Data(), "all") + "_" + steps [step] + ".png");
-				if (step == 1 && iname < 3) gPad -> SaveAs (outFolder + "/" + Form (v1_all [iname], xAxes [axis].Data(), "all") + "_" + steps [step] + ".C");
-					gPad -> SaveAs (outFolder + Form ("/c%i.C", counter++));
-
+				if (saveMacro) if (step == 1 && iname < 3) gPad -> SaveAs (outFolder + "/" + Form (v1_all [iname], xAxes [axis].Data(), "all") + "_" + steps [step] + ".C");
+				if (saveMacro) gPad -> SaveAs (outFolder + Form ("/c%i.C", counter++));
 				gPad -> Print(outFolder + "/output.pdf","pdf");
 			}
 			
-//			for (int iname = 0; iname < v1_all.size (); iname++) 
-//			{	
-//				hAxis->SetTitle(Form ("%s", stepNames [step].Data()));
-//				hAxis->GetXaxis()->SetTitle(xAxesTitles [axis]);
-//				hAxis->GetXaxis() -> SetRangeUser (v1Lim[axis][0], v1Lim[axis][1]);
-//				hAxis->GetYaxis() -> SetRangeUser (v1Lim[axis][2], v1Lim[axis][3]);
-//				hAxis->Draw();
-//				l = new TLegend (legPos[axis][0], legPos[axis][1], legPos[axis][2], legPos[axis][3]);
-//				l -> SetHeader(integration [axis], "C");
-//				l->SetNColumns(2);
-//				l -> AddEntry ("", "v_{1}{#psi^{p}_{SP}}; Q_{VCAL}^{3-sub}", "");
-//				l -> AddEntry ("", "v_{1}{#psi^{p}_{PP}}; Q_{TPC}^{RNDM-sub}", "");
-//				for (int cent = 0; cent < 3; cent++) 
-//				{
-//					objectName = Form ("V1/" + v1_pub, xAxes [axis].Data(), centralities [cent].Data());
-//					cout << objectName << endl;
-//					g_pub [cent] = (TGraphErrors*) fIn -> Get (objectName);
-//					g_pub [cent] -> SetFillColorAlpha(colors [cent] - 7, 0.35);   
-//					g_pub [cent] -> SetFillStyle(3244);
-//					g_pub [cent] -> Draw ("3");
-//					l -> AddEntry (g_pub [cent] -> GetName (), Form ("%s", centRange [cent].Data()), "f");
-////					l -> AddEntry (g_pub [cent] -> GetName (), Form ("%s, %s", g_pub [cent] -> GetTitle (), centRange [cent].Data()), "f");
-//
-//
-//					objectName = Form ("V1/" + v1_all [iname], xAxes [axis].Data(), centralities [cent].Data());
-//					cout << objectName << endl;
-//					g [cent] = (TGraphErrors*) fIn -> Get (objectName);
-//					g [cent] -> SetLineColor (colors [cent]);   
-//					g [cent] -> SetMarkerColor (colors [cent]);   
-//					g [cent] -> SetMarkerStyle(markers [cent]);
-//					g [cent] -> Draw ("P");
-//					l -> AddEntry (g [cent] -> GetName (), Form ("%s", centRange [cent].Data()), "p");
-//				}
-//				
-//				for (int cent = 0; cent < 3; cent++)
-//				{
-////					l -> AddEntry (g [cent] -> GetName (), Form ("%s, %s", g [cent] -> GetTitle (), centRange [cent].Data()), "p");
-//				}
-//								
-//				text -> DrawText(0.65, 0.85, "NA49 preliminary");
-//				text -> DrawText(0.65, 0.8, expName);
-//				text -> DrawText(0.65, 0.75, "Centrality: EVETO");
-//				l -> Draw ();
-////				gPad -> BuildLegend (legPos[axis][0], legPos[axis][1], legPos[axis][2], legPos[axis][3]);
-//				
-////					gPad -> SaveAs (outFolder + "/" + Form (v1_all [iname], xAxes [axis].Data(), "all") + "_" + steps [step] + ".png");
-//				if (step == 1 && iname < 3) gPad -> SaveAs (outFolder + "/" + Form (v1_all [iname], xAxes [axis].Data(), "all") + "_" + steps [step] + ".C");
-////					gPad -> SaveAs (outFolder + Form ("/%i.pdf", counter++));
-//
-//				gPad -> Print(outFolder + "/output.pdf","pdf");
-//			}
+			
+			// NA61 comparison
+			for (int iname = 0; iname < v1_all.size (); iname++) 
+			{	
+				if (compNames [iname] == "null") continue;
+				hAxis->SetTitle(Form ("%s", stepNames [step].Data()));
+				hAxis->GetXaxis()->SetTitle(xAxesTitles [axis]);
+				hAxis->GetXaxis() -> SetRangeUser (v1Lim[axis][0], v1Lim[axis][1]);
+				hAxis->GetYaxis() -> SetRangeUser (v1Lim[axis][2], v1Lim[axis][3]);
+				hAxis->Draw();
+				l = new TLegend (legPos[axis][0], legPos[axis][1], legPos[axis][2], legPos[axis][3]);   
+				l -> SetHeader(particle + ", " + integration [axis] + ", " + resComp [iname], "C");
+				l -> SetNColumns(2);
+				l -> AddEntry ("", "v_{1}{#psi^{p}_{SP}}; Q_{PSD}^{3-sub}", "");
+				l -> AddEntry ("", "v_{1}{#psi^{p}_{SP}}; Q_{VCAL}^{3-sub}", "");
+				for (int cent = 0; cent < 3; cent++) 
+				{
+					objectName = Form (compNames [iname], compAxes [axis].Data(), cent);
+					cout << objectName << endl;
+					g_pub [cent] = (TGraphErrors*) fComp -> Get (objectName);
+					g_pub [cent] -> SetName (objectName);
+					g_pub [cent] -> SetFillColorAlpha(colors [cent] - 7, 0.35);   
+					g_pub [cent] -> SetFillStyle(3244);
+					g_pub [cent] -> Draw ("3");
+					l -> AddEntry (g_pub [cent] -> GetName (), Form ("%s", centRange [cent].Data()), "f");
+//				l -> AddEntry (g_pub [cent] -> GetName (), Form ("%s, %s", g_pub [cent] -> GetTitle (), centRange [cent].Data()), "f");
+					
+					objectName = Form ("V1/" + v1_all [iname], xAxes [axis].Data(), centralities [cent].Data());
+					cout << objectName << endl;
+					g [cent] = (TGraphErrors*) fIn -> Get (objectName);
+					g [cent] -> SetLineColor (colors [cent]);   
+					g [cent] -> SetMarkerColor (colors [cent]);   
+					g [cent] -> SetMarkerStyle(markers [cent]);
+					g [cent] -> Draw ("P");
+					l -> AddEntry (g [cent] -> GetName (), Form ("%s", centRange [cent].Data()), "p");
+				}
+				
+				for (int cent = 0; cent < 3; cent++)
+				{
+//					l -> AddEntry (g [cent] -> GetName (), Form ("%s, %s", g [cent] -> GetTitle (), centRange [cent].Data()), "p");
+				}
+								
+				text -> DrawText(0.65, 0.85, "NA49 preliminary");
+				text -> DrawText(0.65, 0.8, expName);
+				text -> DrawText(0.65, 0.75, "Centrality: EVETO");
+				l -> Draw ();
+//				gPad -> BuildLegend (legPos[axis][0], legPos[axis][1], legPos[axis][2], legPos[axis][3]);
+				
+//					gPad -> SaveAs (outFolder + "/" + Form (v1_all [iname], xAxes [axis].Data(), "all") + "_" + steps [step] + ".png");
+				if (saveMacro) if (step == 1 && iname < 3) gPad -> SaveAs (outFolder + "/" + Form (v1_all [iname], xAxes [axis].Data(), "all") + "_" + steps [step] + ".C");
+				if (saveMacro) gPad -> SaveAs (outFolder + Form ("/c%i.C", counter++));
+				gPad -> Print(outFolder + "/output.pdf","pdf");
+			}
 		}
 	}
 	c -> Clear();
