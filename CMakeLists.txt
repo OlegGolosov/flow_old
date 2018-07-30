@@ -8,8 +8,8 @@ set(DATATREE /home/ogolosov/Desktop/analysis/DataTree)
 set(CENTRALITY /home/ogolosov/Desktop/analysis/CentralityFramework)
 
 set(EXE_SOURCES
-        SimpleTask.cpp
-        TestTask.cpp
+        CorrectionTask.cpp
+        CorrelationTask.cpp
         main.cpp)
 
 set(CORR_SOURCES

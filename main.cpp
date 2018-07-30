@@ -4,15 +4,15 @@
 #include <TSystem.h>
 #include <TROOT.h>
 #include <array>
-#include "Base/DataContainer.h"
-#include "TTree.h"
-#include "TTreeReader.h"
-#include "Correlation/Correlation.h"
-#include "SimpleTask.h"
-#include "Base/Stats.h"
-#include "TestTask.h"
-#include <iomanip>
 #include <chrono>
+#include <iomanip>
+#include "Base/DataContainer.h"
+#include <TTree.h>
+#include <TTreeReader.h>
+#include "Correlation/Correlation.h"
+#include "Base/Stats.h"
+#include "CorrectionTask.h"
+#include "CorrelationTask.h"
 
 
 int main(int argc, char **argv) {
@@ -31,21 +31,22 @@ int main(int argc, char **argv) {
 //  const std::string setup = "na61";
   const std::string setup = "na49";
 	TString partname = "piminus";	
+//	TString efficiencyPath = "/home/ogolosov/Desktop/analysis/NA49_data/efficiency/pbpb40_eff.root";
+	TString efficiencyPath = "/lustre/nyx/cbm/users/ogolosov/NA49_data/efficiency/pbpb40_eff.root";
 
   if (strcmp(argv[1], "correct")==0) {
-//		TH2D *eff = (TH2D*) ( TFile::Open("/home/ogolosov/Desktop/analysis/NA49_data/efficiency/pbpb40_eff.root")->Get(partname + "/hCorrectionMapPtY_Integral") );
-		TH2D *eff = (TH2D*) ( TFile::Open("/lustre/nyx/cbm/users/ogolosov/NA49_data/efficiency/pbpb40_eff.root")->Get(partname + "/hCorrectionMapPtY_Integral") );
-    Qn::TestTask task(argv[2], argv[3], argv[4]);
+		TH2D *eff = (TH2D*) (TFile::Open(efficiencyPath) -> Get (partname + "/hCorrectionMapPtY_Integral"));
+    Qn::CorrectionTask task (argv[2], argv[3], argv[4]);
     task.SetSetup(setup);
 		task.SetEff(eff);
     task.SetIsSim(issim);
     task.Run();
   }
   if (strcmp(argv[1], "analysis")==0) {
-    SimpleTask st(argv[2], "tree");
-    st.SetSetup(setup);
-    st.SetIsSim(issim);
-    st.Run();
+    CorrelationTask task (argv[2], "tree");
+    task.SetSetup(setup);
+    task.SetIsSim(issim);
+    task.Run();
   }
   auto end = std::chrono::system_clock::now();
   std::chrono::duration<double> elapsed_seconds = end - start;
