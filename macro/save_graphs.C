@@ -20,8 +20,8 @@ TFile *fIn {nullptr};
 TFile *fOut {nullptr};
 TFile *fTemp {nullptr};
 
-void save_graphs(TString inputFileName = "~/Desktop/analysis/NA49_flow/lowY_eff/piminus/centr+mb/corr_2.root",
-                   TString outputFileName = "~/Desktop/analysis/NA49_flow/lowY_eff/piminus/centr+mb/graph_2.root")
+void save_graphs(TString inputFileName = "~/Desktop/analysis/NA49_flow/lowY_3+3_rings/piminus/corr_2.root",
+                   TString outputFileName = "~/Desktop/analysis/NA49_flow/lowY_3+3_rings/piminus/graph_2.root")
 {		
 		cout << inputFileName << endl;
 		cout << outputFileName << endl;

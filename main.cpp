@@ -18,12 +18,12 @@
 int main(int argc, char **argv) {
   auto start = std::chrono::system_clock::now();
 //   ROOT::EnableImplicitMT(20);
-//    argv [1] = "correct";
-//    argv [2] = "/home/ogolosov/Desktop/analysis/NA49_data/fileList.txt";
+    argv [1] = "correct";
+    argv [2] = "/home/ogolosov/Desktop/analysis/NA49_data/fileList.txt";
 //    argv [2] = "/home/ogolosov/Desktop/analysis/NA49_data/shortList.txt";
-//    argv [3] = "dfdf";
+    argv [3] = "dfdf";
 //    argv [3] = "calib.root";
-//    argv [4] = "/home/ogolosov/Desktop/analysis/tpc_centr.root";
+    argv [4] = "/home/ogolosov/Desktop/analysis/tpc_centr.root";
 //    argv [1] = "analysis";
 //    argv [2] = "qn.root";
 
@@ -31,8 +31,8 @@ int main(int argc, char **argv) {
 //  const std::string setup = "na61";
   const std::string setup = "na49";
 	TString partname = "piminus";	
-//	TString efficiencyPath = "/home/ogolosov/Desktop/analysis/NA49_data/efficiency/pbpb40_eff.root";
-	TString efficiencyPath = "/lustre/nyx/cbm/users/ogolosov/NA49_data/efficiency/pbpb40_eff.root";
+	TString efficiencyPath = "/home/ogolosov/Desktop/analysis/NA49_data/efficiency/pbpb40_eff.root";
+//	TString efficiencyPath = "/lustre/nyx/cbm/users/ogolosov/NA49_data/efficiency/pbpb40_eff.root";
 
   if (strcmp(argv[1], "correct")==0) {
 		TH2D *eff = (TH2D*) (TFile::Open(efficiencyPath) -> Get (partname + "/hCorrectionMapPtY_Integral"));

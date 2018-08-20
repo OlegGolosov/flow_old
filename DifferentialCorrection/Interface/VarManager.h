@@ -105,6 +105,7 @@ class VarManager {
     values[kPcms] = Pcms;
     values[kEtacms] = Etacms;
     values[kdEdx] = track.GetdEdx(3) * 0.001;
+    values[kEfficiency] = 1.;
   }
 
   static void FillMCTrackInfo(const DataTreeMCTrack &track, float *values) {

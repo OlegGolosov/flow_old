@@ -280,7 +280,7 @@ void CorrectionTask::Process() {
   manager.Reset();
 
 	VarManager::FillEventInfo(*event_, manager.GetVariableContainer(), setup_, centr_);
-  Differential::Interface::DataFiller filler ( event_, manager.GetVariableContainer(), hist1, hist2);
+  Differential::Interface::DataFiller filler (event_, manager.GetVariableContainer(), hist1, hist2);
 
 //  filler.SetCentrality(centr_);
   filler.SetSetup(setup_);

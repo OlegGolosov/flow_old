@@ -123,7 +123,7 @@ std::vector <std::vector<TString>> V1_names =
 //		{"V1_%s_RS_TPC_b", "TPC_%s_b_1_TPC_a_1", "R1_TPC_RS", "v_{1,%s}^{RS, TPCb}(%s)"},
 		{"V1_%s_3S_PSD1", "TPC_%s_PSD1", "R1_PSD1_3S_SP", "v_{1,%s}{#psi_{SP}^{p, VCAL}}"},
 		{"V1_%s_3S_PSD2", "TPC_%s_PSD2", "R1_PSD2_3S_SP", "v_{1,%s}{#psi_{SP}^{p, RCAL1}}"},
-//		{"V1_%s_3S_PSD3", "TPC_%s_PSD3", "R1_PSD3_3S", "v_{1,%s}{#psi_{SP}^{p, RCAL2}}"}
+		{"V1_%s_3S_PSD3", "TPC_%s_PSD3", "R1_PSD3_3S_SP", "v_{1,%s}{#psi_{SP}^{p, RCAL2}}"}
 };
 
 std::vector <std::vector<TString>> V2_names = 

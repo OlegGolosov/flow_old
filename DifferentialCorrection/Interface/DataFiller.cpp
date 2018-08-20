@@ -133,8 +133,8 @@ namespace Interface {
       short pid = values[VarManager::Variables::kPid];
       float pt = values[VarManager::Variables::kPt];
       float y = values[VarManager::Variables::kRapidity];
-      float etacms = values[VarManager::Variables::kPcms];
-      float pcms = values[VarManager::Variables::kEtacms];
+      float etacms = values[VarManager::Variables::kEtacms];
+      float pcms = values[VarManager::Variables::kPcms];
 
       for (u_short i = 0; i < qnCut.pid.size (); i++) if (pid == qnCut.pid.at (i)) skipFlag = false;
       if (skipFlag) continue;
@@ -206,8 +206,8 @@ namespace Interface {
 			p = values[VarManager::Variables::kP];
 			dEdx = values[VarManager::Variables::kdEdx];
 			charge = values[VarManager::Variables::kCharge];
-      etacms = values[VarManager::Variables::kPcms];
-      pcms = values[VarManager::Variables::kEtacms];
+      etacms = values[VarManager::Variables::kEtacms];
+      pcms = values[VarManager::Variables::kPcms];
 			if (heff_ != nullptr)
 			{
 				eff = heff_->GetBinContent( heff_->FindBin(pt, y) );

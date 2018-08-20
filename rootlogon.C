@@ -1,5 +1,5 @@
 {
-    TString dir="build/";
+    TString dir="/home/ogolosov/Desktop/analysis/flow/build/";
 
      gSystem->Load( dir + "libBaseFlow.so");
      gSystem->Load( dir + "libdiffflow.so");
