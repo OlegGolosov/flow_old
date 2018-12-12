@@ -31,7 +31,7 @@
 #include "DifferentialCorrection/CorrectionManager.h"
 
 #include "DataTreeEvent.h"
-#include "CentralityManager.h"
+#include "Getter.h"
 
 
 #define VAR VarManager
@@ -45,7 +45,7 @@ namespace Qn {
 class CorrectionTask {
 public:
   CorrectionTask() = default;
-  CorrectionTask(std::string filelist, std::string incalib, std::string centrality);
+  CorrectionTask(std::string filelist, std::string incalib, TString centrality_file, TString pid_file);
   CorrectionTask(std::array<std::shared_ptr<TFile>, 4> files);
   ~CorrectionTask() = default;
   void Run();
@@ -96,7 +96,10 @@ protected:
 	TH2D *heff_{nullptr};
 
   DataTreeEvent *event_;
-  CentralityManager *centr_;
+  Centrality::Getter *centrality_getter1d;
+  Pid::Getter *pid_getter;
+  TFile *centralityFile;
+  TFile *pidFile;
 
   Qn::CorrectionManager manager;
   bool write_tree_;

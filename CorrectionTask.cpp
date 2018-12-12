@@ -15,7 +15,7 @@
 class qa_file_;
 namespace Qn {
 
-CorrectionTask::CorrectionTask(std::string filelist, std::string incalib, std::string centrality) :
+CorrectionTask::CorrectionTask(std::string filelist, std::string incalib, TString centrality_file, TString pid_file) :
     in_tree_(this->MakeChain(filelist, "DataTree")),
     out_file_(new TFile("qn.root", "RECREATE")),
     in_calibration_file_(new TFile(incalib.data(), "READ")),
@@ -25,8 +25,11 @@ CorrectionTask::CorrectionTask(std::string filelist, std::string incalib, std::s
     event_(nullptr),
     write_tree_(true)
 {
-  centr_ = new CentralityManager;
-  centr_->LoadCentalityDataFile(centrality);
+  centralityFile = new TFile (centrality_file, "read");
+  centrality_getter1d = (Centrality::Getter*) centralityFile -> Get("centr_getter_1d");
+  
+  pidFile = new TFile (pid_file, "read");
+  pid_getter = (Pid::Getter*) pidFile -> Get("pid_getter"); 
 
   event_ = new DataTreeEvent();
   in_tree_->SetBranchAddress("DTEvent", &event_);
@@ -47,10 +50,11 @@ void CorrectionTask::Run() {
   int nGoodEvents = 0;
   for (int i = 0; i < nEntries; i++)
   {
-//    std::cout << "\rEvent " << i + 1 << " from " << nEntries << "\tGood: " << nGoodEvents;
+    std::cout << "\rEvent " << i + 1 << " from " << nEntries << "\tGood: " << nGoodEvents;
     in_tree_->GetEntry(i);
-    if ( setup_ == "na61" && !Cuts::isGoodEvent (*event_) ) continue;
-    if ( setup_ == "na49" && !Cuts::isGoodEvent (*event_, energy_, 0, 0, 0, 1, 0, 0) ) continue;
+    if ( setup_ == "cbm" && !Cuts::isGoodEventCbm (*event_) ) continue;
+    else if ( setup_ == "na49" && !Cuts::isGoodEvent (*event_, energy_, 0, 0, 0, 1, 0, 0) ) continue;
+    else if ( setup_ == "na61" && !Cuts::isGoodEvent (*event_) ) continue;
     nGoodEvents++;
     Process();
   }
@@ -79,10 +83,10 @@ void CorrectionTask::InitializeQA(std::string detectorName, DetectorType type)
 	}
 	if (type == DetectorType::Channel)
 	{
-		h2 -> push_back (new TProfile2D (Form ("p2modPosEnergy_%s", detectorName.c_str ()), Form ("module position vs energy (%s);x;y", detectorName.c_str ()), 150, -150, 150, 300, -150, 150));
-		h2 -> push_back (new TH2F (Form ("h2centEsum_%s", detectorName.c_str ()), Form ("Energy sum vs centrality (%s);centrality class;#sum E", detectorName.c_str ()), 6, 0, 6, 900, 0, 18000));
-		h2 -> push_back (new TH2F (Form ("h2centEveto_%s", detectorName.c_str ()), "Centrality vs Eveto;centrality class;E_{VCAL}", 6, 0, 6, 450, 0, 9000));
-		h2 -> push_back (new TH2F (Form ("h2EvetoEsum_%s", detectorName.c_str ()), Form ("Energy sum vs Eveto (%s);E_{VCAL};#sum E", detectorName.c_str ()), 450, 0, 9000, 900, 0, 18000));
+		h2 -> push_back (new TProfile2D (Form ("p2modPosEnergy_%s", detectorName.c_str ()), Form ("module position vs energy (%s);x;y", detectorName.c_str ()), 150, -150, 150, 150, -150, 150));
+		h2 -> push_back (new TH2F (Form ("h2centEsum_%s", detectorName.c_str ()), Form ("Energy sum vs centrality (%s);centrality class;#sum E", detectorName.c_str ()), 10, 0, 100, 900, 0, 2400));
+		h2 -> push_back (new TH2F (Form ("h2centEveto_%s", detectorName.c_str ()), "Centrality vs Eveto;centrality class;E_{VCAL}", 10, 0, 100, 500, 0, 100));
+		h2 -> push_back (new TH2F (Form ("h2EvetoEsum_%s", detectorName.c_str ()), Form ("Energy sum vs Eveto (%s);E_{VCAL};#sum E", detectorName.c_str ()), 500, 0, 100, 500, 0, 100));
 	}
 	
 	hist1.insert(std::make_pair (detectorName, h1));
@@ -96,14 +100,12 @@ void CorrectionTask::Initialize() {
   Axis ptaxis("Pt", { 0., .2, .4, .6, .8, 1., 1.2, 1.4, 1.8, 2.2, 2.6, 3.0 } );
 
   //40 AGeV
-  const float Ebeam = 8.32e3;
-  std::vector <float> eVetoBins ({0., 0.169 * Ebeam, 0.314 * Ebeam, 0.509 * Ebeam, 0.66 * Ebeam, 0.778 * Ebeam, 9.e3});
-  std::vector <float> multBins5 ({0, 2.6, 4.4, 6.6, 9.9, 14.5, 20.4, 28.3, 38.1, 50.2, 64.7,
-                                81.9, 102.1, 125.0, 152.1, 183.1, 218.5, 259.9, 307.3, 364.2, 510});
-  std::vector <float> multBins10 ({0, 4.4, 9.9, 20.4, 38.1, 64.7, 102.1, 152.1, 218.5, 307.3, 510});
-  std::vector <float> centAxis ({0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0});
-	
-	
+  //const float Ebeam = 8.32e3;
+  //std::vector <float> eVetoBins ({0., 0.169 * Ebeam, 0.314 * Ebeam, 0.509 * Ebeam, 0.66 * Ebeam, 0.778 * Ebeam, 9.e3});
+  //std::vector <float> multBins5 ({0, 2.6, 4.4, 6.6, 9.9, 14.5, 20.4, 28.3, 38.1, 50.2, 64.7,
+  //                              81.9, 102.1, 125.0, 152.1, 183.1, 218.5, 259.9, 307.3, 364.2, 510});
+  //std::vector <float> multBins10 ({0, 4.4, 9.9, 20.4, 38.1, 64.7, 102.1, 152.1, 218.5, 307.3, 510});
+  //std::vector <float> centAxis ({0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0});
   //40 AGeV
 
 //  //158 AGeV
@@ -111,8 +113,9 @@ void CorrectionTask::Initialize() {
 //  std::vector <float> eVetoBins ({0., 0.251 * Ebeam, 0.399 * Ebeam, 0.576 * Ebeam, 0.709 * Ebeam, 0.797 * Ebeam, 33.e3});
 //  //158 AGeV
 
-  Axis multaxis("Multiplicity", multBins10);
-  Axis eVetoaxis("Eveto", eVetoBins);
+  //Axis multaxis("Multiplicity", multBins10);
+  //Axis eVetoaxis("Eveto", eVetoBins);
+  Axis centraxis ("Centrality", 10, 0, 100);
   Axes tpcaxes = {ptaxis, yaxis};
 
   auto confVcal = [](QnCorrectionsDetectorConfigurationBase *config) {
@@ -159,13 +162,13 @@ void CorrectionTask::Initialize() {
 };
 
   manager.AddVariable("Centrality", VAR::Variables::kCentrality);
-  manager.AddVariable("Multiplicity", VAR::Variables::kMultiplicity);
-  manager.AddVariable("Eveto", VAR::Variables::kEveto);
-  manager.AddVariable("RunNumber", VAR::Variables::kNRun);
+  //manager.AddVariable("Multiplicity", VAR::Variables::kMultiplicity);
+  //manager.AddVariable("Eveto", VAR::Variables::kEveto);
+  //manager.AddVariable("RunNumber", VAR::Variables::kNRun);
   manager.AddVariable("Pt", VAR::Variables::kPt);
-  manager.AddVariable("Eta", VAR::Variables::kEta);
+  //manager.AddVariable("Eta", VAR::Variables::kEta);
   manager.AddVariable("Rapidity", VAR::Variables::kRapidity);
-  manager.AddVariable("Charge", VAR::Variables::kCharge);
+  //manager.AddVariable("Charge", VAR::Variables::kCharge);
 
   int psd_size[3];
   if (setup_ == "na61" ) {psd_size[0] = 16; psd_size[1] = 12; psd_size[2] = 16;}
@@ -176,78 +179,87 @@ void CorrectionTask::Initialize() {
   manager.AddDetector("PSD1", DetectorType::Channel, psd_size[0]);
   manager.AddDetector("PSD2", DetectorType::Channel, psd_size[1]);
   manager.AddDetector("PSD3", DetectorType::Channel, psd_size[2]);
+  manager.AddDetector("STS", DetectorType::Track);
   manager.AddDetector("TPC_1", DetectorType::Track);
-  manager.AddDetector("TPC_2", DetectorType::Track);
-  manager.AddDetector("TPC_3", DetectorType::Track);
-  manager.AddDetector("TPC_a_1", DetectorType::Track);
-  manager.AddDetector("TPC_b_1", DetectorType::Track);
-  manager.AddDetector("TPC_a_2", DetectorType::Track);
-  manager.AddDetector("TPC_b_2", DetectorType::Track);
+  //manager.AddDetector("TPC_2", DetectorType::Track);
+  //manager.AddDetector("TPC_3", DetectorType::Track);
+  //manager.AddDetector("TPC_a_1", DetectorType::Track);
+  //manager.AddDetector("TPC_b_1", DetectorType::Track);
+  //manager.AddDetector("TPC_a_2", DetectorType::Track);
+  //manager.AddDetector("TPC_b_2", DetectorType::Track);
   manager.AddDetector("TPC_pt", DetectorType::Track, {ptaxis});
   manager.AddDetector("TPC_y", DetectorType::Track, {yaxis});
-  manager.AddDetector("TPC_pt_a_1", DetectorType::Track, {ptaxis});
-  manager.AddDetector("TPC_y_a_1", DetectorType::Track, {yaxis});
-  manager.AddDetector("TPC_pt_a_2", DetectorType::Track, {ptaxis});
-  manager.AddDetector("TPC_y_a_2", DetectorType::Track, {yaxis});
-  manager.AddDetector("TPC_pt_b_1", DetectorType::Track, {ptaxis});
-  manager.AddDetector("TPC_y_b_1", DetectorType::Track, {yaxis});
-  manager.AddDetector("TPC_pt_b_2", DetectorType::Track, {ptaxis});
-  manager.AddDetector("TPC_y_b_2", DetectorType::Track, {yaxis});
+  //manager.AddDetector("TPC_pt_a_1", DetectorType::Track, {ptaxis});
+  //manager.AddDetector("TPC_y_a_1", DetectorType::Track, {yaxis});
+  //manager.AddDetector("TPC_pt_a_2", DetectorType::Track, {ptaxis});
+  //manager.AddDetector("TPC_y_a_2", DetectorType::Track, {yaxis});
+  //manager.AddDetector("TPC_pt_b_1", DetectorType::Track, {ptaxis});
+  //manager.AddDetector("TPC_y_b_1", DetectorType::Track, {yaxis});
+  //manager.AddDetector("TPC_pt_b_2", DetectorType::Track, {ptaxis});
+  //manager.AddDetector("TPC_y_b_2", DetectorType::Track, {yaxis});
 
   if (issim_)
   {
-    manager.AddDetector("MC_pT", DetectorType::Track, {ptaxis});
-    manager.AddDetector("MC_eta", DetectorType::Track, {yaxis});
+    manager.AddDetector("MC_pt", DetectorType::Track, {ptaxis});
+    manager.AddDetector("MC_y", DetectorType::Track, {yaxis});
     manager.AddDetector("PSI", DetectorType::Track); // check if the third argument is missing
   }
   manager.SetCorrectionSteps("PSD1", confVcal);
   manager.SetCorrectionSteps("PSD2", confRcal);
   manager.SetCorrectionSteps("PSD3", confRcal);
+  manager.SetCorrectionSteps("STS", confTracks);
   manager.SetCorrectionSteps("TPC_1", confTracks);
-  manager.SetCorrectionSteps("TPC_2", confTracks);
-  manager.SetCorrectionSteps("TPC_3", confTracks);
-  manager.SetCorrectionSteps("TPC_a_1", confTracks);
-  manager.SetCorrectionSteps("TPC_b_1", confTracks);
-  manager.SetCorrectionSteps("TPC_a_2", confTracks);
-  manager.SetCorrectionSteps("TPC_b_2", confTracks);
+  //manager.SetCorrectionSteps("TPC_2", confTracks);
+  //manager.SetCorrectionSteps("TPC_3", confTracks);
+  //manager.SetCorrectionSteps("TPC_a_1", confTracks);
+  //manager.SetCorrectionSteps("TPC_b_1", confTracks);
+  //manager.SetCorrectionSteps("TPC_a_2", confTracks);
+  //manager.SetCorrectionSteps("TPC_b_2", confTracks);
   manager.SetCorrectionSteps("TPC_pt", confTracks);
   manager.SetCorrectionSteps("TPC_y", confTracks);
-  manager.SetCorrectionSteps("TPC_pt_a_1", confTracks);
-  manager.SetCorrectionSteps("TPC_y_a_1", confTracks);
-  manager.SetCorrectionSteps("TPC_pt_a_2", confTracks);
-  manager.SetCorrectionSteps("TPC_y_a_2", confTracks);
-  manager.SetCorrectionSteps("TPC_pt_b_1", confTracks);
-  manager.SetCorrectionSteps("TPC_y_b_1", confTracks);
-  manager.SetCorrectionSteps("TPC_pt_b_2", confTracks);
-  manager.SetCorrectionSteps("TPC_y_b_2", confTracks);
+  //manager.SetCorrectionSteps("TPC_pt_a_1", confTracks);
+  //manager.SetCorrectionSteps("TPC_y_a_1", confTracks);
+  //manager.SetCorrectionSteps("TPC_pt_a_2", confTracks);
+  //manager.SetCorrectionSteps("TPC_y_a_2", confTracks);
+  //manager.SetCorrectionSteps("TPC_pt_b_1", confTracks);
+  //manager.SetCorrectionSteps("TPC_y_b_1", confTracks);
+  //manager.SetCorrectionSteps("TPC_pt_b_2", confTracks);
+  //manager.SetCorrectionSteps("TPC_y_b_2", confTracks);
 	
   InitializeQA("PSD1", DetectorType::Channel);
   InitializeQA("PSD2", DetectorType::Channel);
   InitializeQA("PSD3", DetectorType::Channel);
+  InitializeQA("STS", DetectorType::Track);
   InitializeQA("TPC_1", DetectorType::Track);
-  InitializeQA("TPC_2", DetectorType::Track);
-  InitializeQA("TPC_3", DetectorType::Track);
-  InitializeQA("TPC_a_1", DetectorType::Track);
-  InitializeQA("TPC_b_1", DetectorType::Track);
-  InitializeQA("TPC_a_2", DetectorType::Track);
-  InitializeQA("TPC_b_2", DetectorType::Track);
+  //InitializeQA("TPC_2", DetectorType::Track);
+  //InitializeQA("TPC_3", DetectorType::Track);
+  //InitializeQA("TPC_a_1", DetectorType::Track);
+  //InitializeQA("TPC_b_1", DetectorType::Track);
+  //InitializeQA("TPC_a_2", DetectorType::Track);
+  //InitializeQA("TPC_b_2", DetectorType::Track);
   InitializeQA("TPC_pt", DetectorType::Track);
   InitializeQA("TPC_y", DetectorType::Track);
-  InitializeQA("TPC_pt_a_1", DetectorType::Track);
-  InitializeQA("TPC_y_a_1", DetectorType::Track);
-  InitializeQA("TPC_pt_a_2", DetectorType::Track);
-  InitializeQA("TPC_y_a_2", DetectorType::Track);
-  InitializeQA("TPC_pt_b_1", DetectorType::Track);
-  InitializeQA("TPC_y_b_1", DetectorType::Track);
-  InitializeQA("TPC_pt_b_2", DetectorType::Track);
-  InitializeQA("TPC_y_b_2", DetectorType::Track);
+  //InitializeQA("TPC_pt_a_1", DetectorType::Track);
+  //InitializeQA("TPC_y_a_1", DetectorType::Track);
+  //InitializeQA("TPC_pt_a_2", DetectorType::Track);
+  //InitializeQA("TPC_y_a_2", DetectorType::Track);
+  //InitializeQA("TPC_pt_b_1", DetectorType::Track);
+  //InitializeQA("TPC_y_b_1", DetectorType::Track);
+  //InitializeQA("TPC_pt_b_2", DetectorType::Track);
+  //InitializeQA("TPC_y_b_2", DetectorType::Track);
+  //InitializeQA("TPC_y_b_1", DetectorType::Track);
+  //InitializeQA("TPC_pt_b_2", DetectorType::Track);
+  //InitializeQA("TPC_y_b_2", DetectorType::Track);
 	
 
   if (issim_)
   {
     manager.SetCorrectionSteps("PSI", confPsi);
-    manager.SetCorrectionSteps("MC_eta", confMC);
-    manager.SetCorrectionSteps("MC_pT",  confMC);
+    manager.SetCorrectionSteps("MC_y", confMC);
+    manager.SetCorrectionSteps("MC_pt",  confMC);
+    //InitializeQA("PSI", DetectorType::Channel);
+    //InitializeQA("MC_y", DetectorType::Track);
+    //InitializeQA("MC_pt", DetectorType::Track);
   }
 
 //  manager.AddCorrectionAxis(eVetoaxis);
@@ -261,13 +273,12 @@ void CorrectionTask::Initialize() {
 //  manager.AddCorrectionAxis({"Centrality", 10, 0, 100});
 //  manager.SetEventVariable("Centrality");
 //  manager.AddHist1D("Centrality", 20,0.,100.);
-	int numberOfRuns = maxRunNumber - minRunNumber + 1;
-	maxRunNumber += 1;
-  manager.AddCorrectionAxis({"Centrality", 6, 0, 6});
+	//int numberOfRuns = maxRunNumber - minRunNumber + 1;
+	//maxRunNumber += 1;
+  manager.AddCorrectionAxis({"Centrality", 10, 0, 100});
 //  manager.AddCorrectionAxis({"RunNumber", numberOfRuns, minRunNumber, maxRunNumber});
   manager.SetEventVariable("Centrality");
-  manager.SetEventVariable("RunNumber");
-  manager.AddHist1D("Centrality", 6, 0, 6);
+  manager.AddHist1D("Centrality", 10, 0, 100);
 //  manager.AddHist1D({"RunNumber", numberOfRuns, minRunNumber, maxRunNumber});
 
   manager.SaveQVectorsToTree(*out_tree_);
@@ -278,11 +289,9 @@ void CorrectionTask::Initialize() {
 
 void CorrectionTask::Process() {
   manager.Reset();
+	VarManager::FillEventInfo(*event_, manager.GetVariableContainer(), setup_, centrality_getter1d);
+  Differential::Interface::DataFiller filler (event_, manager.GetVariableContainer(), pid_getter, hist1, hist2);
 
-	VarManager::FillEventInfo(*event_, manager.GetVariableContainer(), setup_, centr_);
-  Differential::Interface::DataFiller filler (event_, manager.GetVariableContainer(), hist1, hist2);
-
-//  filler.SetCentrality(centr_);
   filler.SetSetup(setup_);
   filler.SetIsSim(issim_);
 	filler.SetEff(heff_);
@@ -318,11 +327,11 @@ std::unique_ptr<TChain> CorrectionTask::MakeChain(std::string filename, std::str
       std::cout << line << std::endl;
     }
   }
-	minRunNumber = chain -> GetMinimum("fRunId");
-	maxRunNumber = chain -> GetMaximum("fRunId");
+	//minRunNumber = chain -> GetMinimum("fRunId");
+	//maxRunNumber = chain -> GetMaximum("fRunId");
   std::cout << "Number of entries = " << chain->GetEntries() << std::endl;
-  std::cout << "Fist run = " << minRunNumber << std::endl;
-  std::cout << "Last run = " << maxRunNumber << std::endl;
+  //std::cout << "Fist run = " << minRunNumber << std::endl;
+  //std::cout << "Last run = " << maxRunNumber << std::endl;
 	
   return chain;
 }
